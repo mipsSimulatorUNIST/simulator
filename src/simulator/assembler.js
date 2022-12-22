@@ -2,26 +2,26 @@
 let symbol_table_cur_index = 0;
 
 // Temporary file stream pointers
-let data_seg = None;
-let text_seg = None;
+let data_seg;
+let text_seg;
 
 // Size of each section
 let data_section_size = 0;
 let text_section_size = 0;
 
-const makeSymbolTable = (input) => {
+export const makeSymbolTable = input => {
   // here
 };
 
-const recordTextSection = (fout) => {
+export const recordTextSection = fout => {
   // here
 };
 
-const recordDataSection = (fout) => {
+export const recordDataSection = fout => {
   // here
 };
 
-const makeBinaryFile = (fout) => {
+export const makeBinaryFile = fout => {
   // here
 
   recordTextSection(fout);
