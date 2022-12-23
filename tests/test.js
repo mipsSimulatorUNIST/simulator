@@ -35,7 +35,7 @@ lab5:
 	ori	$16, $16, 0xf0f0
 `;
 
-const test_output = `00000000000000000000000001011000
+const testOutput = `00000000000000000000000001011000
 00000000000000000000000000001100
 00000010001000001000100000100100
 00000010010000001001000000100100
@@ -68,7 +68,7 @@ const output = assemble(testInput);
 export const test = output => {
   console.log('\n-------------RESULT-------------');
   console.log(`[${bcolors.YELLOW}TEST OUTPUT${bcolors.ENDC}]  `);
-  console.log(test_output);
+  console.log(testOutput);
   console.log(`[${bcolors.GREEN}YOUR OUTPUT${bcolors.ENDC}]  `);
   console.log(output);
 };
