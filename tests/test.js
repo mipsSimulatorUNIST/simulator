@@ -1,8 +1,8 @@
 import {assemble} from '../main.js';
 import {bcolors} from '../src/utils/constants.js';
-import {makeLines} from '../src/utils/functions.js';
+import {makeInput} from '../src/utils/functions.js';
 
-const lines = makeLines("./sample_input/example1.s")
+const input = makeInput("./sample_input/example1.s")
 
 const testInput = `	.data
 data1:	.word	100
@@ -66,7 +66,7 @@ const testOutput = `00000000000000000000000001011000
 00000000000000000000000011001000
 00010010001101000101011001111000
 `;
-const output = assemble(lines);
+const output = assemble(input);
 
 export const test = output => {
   console.log('\n-------------RESULT-------------');
