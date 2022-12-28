@@ -1,5 +1,3 @@
-// For indexing of symbol table
-
 // Temporary file stream pointers
 export let dataSeg;
 export let textSeg;
