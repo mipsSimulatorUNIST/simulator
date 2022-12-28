@@ -1,5 +1,4 @@
 import {DEBUG, pType, SYMBOL_TABLE} from './constants.js';
-import * as fs from 'fs';
 
 export function numToBits(num) {
   // 10진수 정수를 2진수 bit로 변경해서 return
