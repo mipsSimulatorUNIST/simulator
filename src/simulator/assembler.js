@@ -14,6 +14,12 @@ export const makeSymbolTable = input => {
    * - indicates that following data items are stored in the data segment 
    * - It always starts from 0x10000000 (MEM_DATA_START)
 ​   */
+  console.log("input file\n", input);
+  console.log("input file per lines\n");
+  for (let val in input) {
+    if (val < 10) console.log("line", 0+val, input[val]);
+    else console.log("line", val, input[val]);
+  }
 };
 
 export const recordTextSection = fout => {
