@@ -1,5 +1,4 @@
 import {DEBUG, pType, SYMBOL_TABLE} from './constants.js';
-import { symbolTableCurIndex } from './state';
 import * as fs from 'fs';
 
 export function numToBits(num) {
