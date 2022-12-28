@@ -1,9 +1,10 @@
-import { section, MEM_DATA_START, MEM_TEXT_START, symbolT, BYTES_PER_WORD, SYMBOL_TABLE} from "../utils/constants";
-import { symbolTableAddEntry, toHexAndPad } from "../utils/functions";
-import { dataSectionSize, dataSeg, textSectionSize, textSeg } from "../utils/state";
+import { section, MEM_DATA_START, MEM_TEXT_START, symbolT, BYTES_PER_WORD, SYMBOL_TABLE, DEBUG} from "../utils/constants.js";
+import { symbolTableAddEntry, toHexAndPad } from "../utils/functions.js";
+import { dataSeg, increaseDataSectionSize, increaseTextSectionSize, textSeg } from "../utils/state.js";
 
 
 export const makeSymbolTable = inputs => {
+  console.log(inputs);
   /*
    * make symbol table from assembly file
    * using SYMBOL_TABLE in constants.js
@@ -26,21 +27,19 @@ export const makeSymbolTable = inputs => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol = new symbolT();
     
-    if (input == '.data') {
+    if (splited[0] == '.data') {
       curSection = section.DATA;
       address = MEM_DATA_START;
-      dataSeg = [];
       return;
     } 
     
-    if (input == '.text') {
+    if (splited[0] == '.text') {
       curSection = section.TEXT;
       address = MEM_TEXT_START;
-      textSeg = [];
       return;
     }
 
-    if (curSection === section.DATA) {     
+    if (curSection === section.DATA) {    
       if (splited.length === 2) { // ex. ['.word','123']
         dataSeg.push(splited[1]);
       } else { // ex. ['array:', '.word', '3']
@@ -49,7 +48,7 @@ export const makeSymbolTable = inputs => {
         symbolTableAddEntry(symbol);
         dataSeg.push(splited[2]);
       }
-      dataSectionSize += BYTES_PER_WORD;
+      increaseDataSectionSize();
     }
 
     if (curSection === section.TEXT) {
@@ -60,21 +59,28 @@ export const makeSymbolTable = inputs => {
         return;
       } else { // ex. ['and', '$17, $17, $0']
         const name = splited[0];
-        textSeg.push(inputs); // ex. 'and	$17, $17, $0'
+        textSeg.push(input); // ex. 'and	$17, $17, $0'
         if (name === 'la') {
           const targetSymbol = splited[1].split(' ')[1]; // ex. 'data1'
           const targetAddress = toHexAndPad(SYMBOL_TABLE[targetSymbol]);
           if (targetAddress.slice(4) !== '0000') {
-            textSectionSize += BYTES_PER_WORD;
+            increaseTextSectionSize();
             address += BYTES_PER_WORD;
           }
         }
       }
-      textSectionSize += BYTES_PER_WORD;
+      increaseTextSectionSize();
     } 
 
     address += BYTES_PER_WORD;
   });
+  //확인 코드
+  console.log("[SYMBOL_TABLE] 10진수로 주소 출력됨")
+  console.log(SYMBOL_TABLE);
+  console.log("[dataSeg]")
+  console.log("", dataSeg);
+  console.log("[textSeg]")
+  console.log("", textSeg);
 };
 
 export const recordTextSection = fout => {
