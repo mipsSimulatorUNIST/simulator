@@ -4,7 +4,6 @@ import { dataSeg, increaseDataSectionSize, increaseTextSectionSize, resetDataSeg
 
 
 export const makeSymbolTable = inputs => {
-  console.log(inputs);
   /*
    * make symbol table from assembly file
    * using SYMBOL_TABLE in constants.js
@@ -25,7 +24,7 @@ export const makeSymbolTable = inputs => {
   
   resetDataSeg();
   resetTextSeg();
-  
+
   inputs.forEach(input => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol = new symbolT();
@@ -72,13 +71,6 @@ export const makeSymbolTable = inputs => {
     address += BYTES_PER_WORD;
     
   });
-  //확인 코드
-  console.log("[SYMBOL_TABLE] 10진수로 주소 출력됨")
-  console.log(SYMBOL_TABLE);
-  console.log("[dataSeg]")
-  console.log("", dataSeg);
-  console.log("[textSeg]")
-  console.log("", textSeg);
 };
 
 export const recordTextSection = fout => {
