@@ -31,15 +31,11 @@ export const makeSymbolTable = inputs => {
       curSection = section.DATA;
       address = MEM_DATA_START;
       return;
-    } 
-    
-    if (splited[0] == '.text') {
+    } else if (splited[0] == '.text') {
       curSection = section.TEXT;
       address = MEM_TEXT_START;
       return;
-    }
-
-    if (curSection === section.DATA) {    
+    } else if (curSection === section.DATA) {    
       if (splited.length === 2) { // ex. ['.word','123']
         dataSeg.push(splited[1]);
       } else { // ex. ['array:', '.word', '3']
@@ -49,9 +45,7 @@ export const makeSymbolTable = inputs => {
         dataSeg.push(splited[2]);
       }
       increaseDataSectionSize();
-    }
-
-    if (curSection === section.TEXT) {
+    } else if (curSection === section.TEXT) {
       if (splited.length === 1) { // ex. ['main:']
         symbol.name = splited[0].replace(':', '');
         symbol.address = address;
@@ -73,6 +67,7 @@ export const makeSymbolTable = inputs => {
     } 
 
     address += BYTES_PER_WORD;
+    
   });
   //확인 코드
   console.log("[SYMBOL_TABLE] 10진수로 주소 출력됨")
