@@ -15,3 +15,11 @@ export const increaseDataSectionSize = () => {
 export const increaseTextSectionSize = () => {
     textSectionSize += BYTES_PER_WORD;
 }
+
+export const resetDataSeg = () => {
+    dataSeg = [];
+}
+
+export const resetTextSeg = () => {
+    textSeg = [];
+}

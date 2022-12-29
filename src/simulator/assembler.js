@@ -1,6 +1,6 @@
 import { section, MEM_DATA_START, MEM_TEXT_START, symbolT, BYTES_PER_WORD, SYMBOL_TABLE, DEBUG} from "../utils/constants.js";
 import { symbolTableAddEntry, toHexAndPad } from "../utils/functions.js";
-import { dataSeg, increaseDataSectionSize, increaseTextSectionSize, textSeg } from "../utils/state.js";
+import { dataSeg, increaseDataSectionSize, increaseTextSectionSize, resetDataSeg, resetTextSeg, textSeg } from "../utils/state.js";
 
 
 export const makeSymbolTable = inputs => {
@@ -22,6 +22,9 @@ export const makeSymbolTable = inputs => {
 ​   */
   let address = 0;
   let curSection = section.MAX_SIZE;
+  
+  resetDataSeg();
+  resetTextSeg();
   
   inputs.forEach(input => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
