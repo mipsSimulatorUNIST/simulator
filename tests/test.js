@@ -1,10 +1,10 @@
-import {assemble} from '../main.js';
-import {bcolors} from '../src/utils/constants.js';
-import {makeInput} from '../src/utils/functions.js';
+import { assemble } from '../main.js'
+import { bcolors } from '../src/utils/constants.js'
+import { makeInput } from '../src/utils/functions.js'
 
-const inputFolderName = 'sample_input';
-const inputFileName = 'example1.s';
-const input = makeInput(inputFolderName, inputFileName); 
+const inputFolderName = 'sample_input'
+const inputFileName = 'example1.s'
+const input = makeInput(inputFolderName, inputFileName)
 
 const testOutput = `00000000000000000000000001011000
 00000000000000000000000000001100
@@ -33,15 +33,15 @@ const testOutput = `00000000000000000000000001011000
 00000000000000000000000001100100
 00000000000000000000000011001000
 00010010001101000101011001111000
-`;
-const output = assemble(input);
+`
+const output = assemble(input)
 
-export const test = output => {
-  console.log('\n-------------RESULT-------------');
-  console.log(`[${bcolors.YELLOW}TEST OUTPUT${bcolors.ENDC}]  `);
-  console.log(testOutput);
-  console.log(`[${bcolors.GREEN}YOUR OUTPUT${bcolors.ENDC}]  `);
-  console.log(output);
-};
+export const test = (output) => {
+  console.log('\n-------------RESULT-------------')
+  console.log(`[${bcolors.YELLOW}TEST OUTPUT${bcolors.ENDC}]  `)
+  console.log(testOutput)
+  console.log(`[${bcolors.GREEN}YOUR OUTPUT${bcolors.ENDC}]  `)
+  console.log(output)
+}
 
-test(output);
+test(output)
