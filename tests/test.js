@@ -2,7 +2,9 @@ import {assemble} from '../main.js';
 import {bcolors} from '../src/utils/constants.js';
 import {makeInput} from '../src/utils/functions.js';
 
-const input = makeInput("./sample_input/example1.s")
+const inputFolderPath = 'sample_input';
+const inputFileName = 'example1.s';
+const input = makeInput(inputFolderPath, inputFileName);
 
 const testOutput = `00000000000000000000000001011000
 00000000000000000000000000001100
