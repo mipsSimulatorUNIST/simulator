@@ -114,4 +114,4 @@ const instList = [
 
 // Global symbol table
 export const symbolStruct = new symbolT();
-export const SYMBOL_TABLE = new Array(MAX_SYMBOL_TABLE_SIZE);
+export const SYMBOL_TABLE = {};
