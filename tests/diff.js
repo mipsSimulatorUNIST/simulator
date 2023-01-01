@@ -1,101 +1,66 @@
 import {bcolors} from '../src/utils/constants.js';
 
-function escape(s) {
-  var n = s;
-  n = n.replace(/&/g, '&amp;');
-  n = n.replace(/</g, '&lt;');
-  n = n.replace(/>/g, '&gt;');
-  n = n.replace(/"/g, '&quot;');
-
-  return n;
-}
-
 export function diffString(o, n) {
   o = o.replace(/\s+$/, '');
   n = n.replace(/\s+$/, '');
 
-  var out = diff(o == '' ? [] : o.split(/\s+/), n == '' ? [] : n.split(/\s+/));
-  var str = '';
-
-  var oSpace = o.match(/\s+/g);
-  if (oSpace == null) {
-    oSpace = ['\n'];
-  } else {
-    oSpace.push('\n');
-  }
-  var nSpace = n.match(/\s+/g);
-  if (nSpace == null) {
-    nSpace = ['\n'];
-  } else {
-    nSpace.push('\n');
-  }
+  let out = diff(o == '' ? [] : o.split(/\s+/), n == '' ? [] : n.split(/\s+/));
+  let str = '';
 
   if (out.n.length == 0) {
-    for (var i = 0; i < out.o.length; i++) {
-      str += bcolors.RED + escape(out.o[i]) + oSpace[i] + bcolors.ENDC;
+    for (let i = 0; i < out.o.length; i++) {
+      str += i + '. ' + bcolors.RED + out.o[i] + '\n' + bcolors.ENDC;
     }
   } else {
     if (out.n[0].text == null) {
       for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
-        str += bcolors.RED + escape(out.o[n]) + oSpace[n] + bcolors.ENDC;
+        str += i + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
       }
     }
 
-    for (var i = 0; i < out.n.length; i++) {
+    for (let i = 0; i < out.n.length; i++) {
       if (out.n[i].text == null) {
-        str += bcolors.GREEN + escape(out.n[i]) + nSpace[i] + bcolors.ENDC;
+        str += i + '. ' + bcolors.GREEN + out.n[i] + '\n' + bcolors.ENDC;
       } else {
-        var pre = '';
+        let pre = '';
 
         for (
           n = out.n[i].row + 1;
           n < out.o.length && out.o[n].text == null;
           n++
         ) {
-          pre += bcolors.RED + escape(out.o[n]) + oSpace[n] + bcolors.ENDC;
+          pre += i + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
         }
-        str += ' ' + out.n[i].text + nSpace[i] + pre;
+        str += i + '.  ' + out.n[i].text + '\n' + pre;
       }
     }
   }
 
-  return str;
+  console.log('\n-------------RESULT-------------');
+  console.log(str);
 }
 
 export function diffString2(o, n) {
   o = o.replace(/\s+$/, '');
   n = n.replace(/\s+$/, '');
 
-  var out = diff(o == '' ? [] : o.split(/\s+/), n == '' ? [] : n.split(/\s+/));
+  let out = diff(o == '' ? [] : o.split(/\s+/), n == '' ? [] : n.split(/\s+/));
 
-  var oSpace = o.match(/\s+/g);
-  if (oSpace == null) {
-    oSpace = ['\n'];
-  } else {
-    oSpace.push('\n');
-  }
-  var nSpace = n.match(/\s+/g);
-  if (nSpace == null) {
-    nSpace = ['\n'];
-  } else {
-    nSpace.push('\n');
-  }
-
-  var os = '';
-  for (var i = 0; i < out.o.length; i++) {
+  let os = '';
+  for (let i = 0; i < out.o.length; i++) {
     if (out.o[i].text != null) {
-      os += bcolors.GREEN + escape(out.o[i].text) + oSpace[i] + bcolors.ENDC;
+      os += bcolors.GREEN + out.o[i].text + '\n' + bcolors.ENDC;
     } else {
-      os += bcolors.RED + escape(out.o[i]) + oSpace[i] + bcolors.ENDC;
+      os += bcolors.RED + out.o[i] + '\n' + bcolors.ENDC;
     }
   }
 
-  var ns = '';
-  for (var i = 0; i < out.n.length; i++) {
+  let ns = '';
+  for (let i = 0; i < out.n.length; i++) {
     if (out.n[i].text != null) {
-      ns += bcolors.GREEN + escape(out.n[i].text) + nSpace[i] + bcolors.ENDC;
+      ns += bcolors.GREEN + out.n[i].text + '\n' + bcolors.ENDC;
     } else {
-      ns += bcolors.RED + escape(out.n[i]) + nSpace[i] + bcolors.ENDC;
+      ns += bcolors.RED + out.n[i] + '\n' + bcolors.ENDC;
     }
   }
 
@@ -106,32 +71,104 @@ export function diffString2(o, n) {
   console.log(ns);
 }
 
-function diff(o, n) {
-  var ns = new Object();
-  var os = new Object();
+export function diffList(o, n) {
+  let out = diff(o, n);
 
-  for (var i = 0; i < n.length; i++) {
-    if (ns[n[i]] == null) ns[n[i]] = {rows: new Array(), o: null};
-    ns[n[i]].rows.push(i);
-  }
-
-  for (var i = 0; i < o.length; i++) {
-    if (os[o[i]] == null) os[o[i]] = {rows: new Array(), n: null};
-    os[o[i]].rows.push(i);
-  }
-
-  for (var i in ns) {
-    if (
-      ns[i].rows.length == 1 &&
-      typeof os[i] != 'undefined' &&
-      os[i].rows.length == 1
-    ) {
-      n[ns[i].rows[0]] = {text: n[ns[i].rows[0]], row: os[i].rows[0]};
-      o[os[i].rows[0]] = {text: o[os[i].rows[0]], row: ns[i].rows[0]};
+  let os = '';
+  for (let i = 0; i < out.o.length; i++) {
+    if (out.o[i].text != null) {
+      os += bcolors.GREEN + out.o[i].text + '\n' + bcolors.ENDC;
+    } else {
+      os += bcolors.RED + out.o[i] + '\n' + bcolors.ENDC;
     }
   }
 
-  for (var i = 0; i < n.length - 1; i++) {
+  let ns = '';
+  for (let i = 0; i < out.n.length; i++) {
+    if (out.n[i].text != null) {
+      ns += bcolors.GREEN + out.n[i].text + '\n' + bcolors.ENDC;
+    } else {
+      ns += bcolors.RED + out.n[i] + '\n' + bcolors.ENDC;
+    }
+  }
+
+  console.log('\n-------------RESULT-------------');
+  console.log(`[TEST OUTPUT]  `);
+  console.log(os);
+  console.log(`[YOUR OUTPUT]  `);
+  console.log(ns);
+}
+
+export function diffList2(o, n) {
+  let out = diff(o, n);
+
+  let str = '';
+
+  if (out.n.length == 0) {
+    for (let i = 0; i < out.o.length; i++) {
+      str += i + '. ' + bcolors.RED + out.o[i] + '\n' + bcolors.ENDC;
+    }
+  } else {
+    if (out.n[0].text == null) {
+      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
+        str += i + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
+      }
+    }
+
+    for (let i = 0; i < out.n.length; i++) {
+      if (out.n[i].text == null) {
+        str += '   ' + bcolors.RED + out.n[i] + '\n' + bcolors.ENDC;
+      } else {
+        let pre = '';
+
+        for (
+          n = out.n[i].row + 1;
+          n < out.o.length && out.o[n].text == null;
+          n++
+        ) {
+          pre += n + '. ' + bcolors.GREEN + out.o[n] + '\n' + bcolors.ENDC;
+        }
+        str += i + '. ' + out.n[i].text + '\n' + pre;
+      }
+    }
+  }
+
+  console.log('\n-------------RESULT-------------');
+  console.log(str);
+}
+
+function diff(o, n) {
+  let newSeq = new Object();
+  let oldSeq = new Object();
+
+  for (let i = 0; i < n.length; i++) {
+    if (newSeq[n[i]] == null) newSeq[n[i]] = {rows: new Array(), o: null};
+    newSeq[n[i]].rows.push(i);
+  }
+
+  for (let i = 0; i < o.length; i++) {
+    if (oldSeq[o[i]] == null) oldSeq[o[i]] = {rows: new Array(), n: null};
+    oldSeq[o[i]].rows.push(i);
+  }
+
+  for (let i in newSeq) {
+    if (
+      newSeq[i].rows.length == 1 &&
+      typeof oldSeq[i] != 'undefined' &&
+      oldSeq[i].rows.length == 1
+    ) {
+      n[newSeq[i].rows[0]] = {
+        text: n[newSeq[i].rows[0]],
+        row: oldSeq[i].rows[0],
+      };
+      o[oldSeq[i].rows[0]] = {
+        text: o[oldSeq[i].rows[0]],
+        row: newSeq[i].rows[0],
+      };
+    }
+  }
+
+  for (let i = 0; i < n.length - 1; i++) {
     if (
       n[i].text != null &&
       n[i + 1].text == null &&
@@ -144,7 +181,7 @@ function diff(o, n) {
     }
   }
 
-  for (var i = n.length - 1; i > 0; i--) {
+  for (let i = n.length - 1; i > 0; i--) {
     if (
       n[i].text != null &&
       n[i - 1].text == null &&
