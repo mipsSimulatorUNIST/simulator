@@ -105,12 +105,12 @@ export const recordTextSection = fout => {
    *  - return 값은 별도로 없고 함수의 side effect 이용
    *  - ex) fout: ['00000000000000000000000001011000', '00000000000000000000000000001100']
 ​   */
-  let instruct;
-  let address, rs, rt, rd, imm, shamt, immReg;
+  let instruct, address, rs, rt, rd, imm, shamt, immReg, curAddress;
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName = instruct[0];
-    //console.log(instruct);
+    curAddress = MEM_TEXT_START;
+    console.log(instruct);
 
     if (opName === 'la') {
     } else if (opName === 'move') {
@@ -137,9 +137,16 @@ export const recordTextSection = fout => {
         console.log(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
       } else if (opInfo.type === 'I') {
         if (opInfo.name === 'lui') {
+          rt = numToBits(Number(instruct[1].replace('$', '')), 5);
+          rs = '00000';
+          imm =
+            instruct[1].slice(0, 2) === '0x'
+              ? parseInt(instruct[1].slice(2), 16)
+              : Number(instruct[1]);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
-          rs = r_to_bits(Number(instruct[1].replace('$', '')), 5);
-          rt = r_to_bits(Number(instruct[2].replace('$', '')), 5);
+          imm = Number(SYMBOL_TABLE[instruct[1] - curAddress]) / 4 - 1;
+          rs = numToBits(Number(instruct[1].replace('$', '')), 5);
+          rt = numToBits(Number(instruct[2].replace('$', '')), 5);
         } else if (
           opInfo.name === 'lw' ||
           opInfo.name === 'lhu' ||
@@ -151,12 +158,20 @@ export const recordTextSection = fout => {
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
           imm = Number(instruct[2].split('(')[0]);
         } else {
+          rs = numToBits(Number(instruct[2].replace('$', '')), 5);
+          rt = numToBits(Number(instruct[1].replace('$', '')), 5);
+          imm =
+            instruct[3].slice(0, 2) === '0x'
+              ? parseInt(instruct[3].slice(2), 16)
+              : Number(instruct[3]);
         }
+        console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
         console.log(opInfo.op + numToBits(address, 26));
       }
     }
+    curAddress += BYTES_PER_WORD;
   }
 };
 
