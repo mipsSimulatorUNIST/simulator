@@ -1,7 +1,26 @@
-import { section, MEM_DATA_START, MEM_TEXT_START, symbolT, BYTES_PER_WORD, SYMBOL_TABLE, DEBUG} from "../utils/constants.js";
-import { symbolTableAddEntry, toHexAndPad } from "../utils/functions.js";
-import { dataSeg, increaseDataSectionSize, increaseTextSectionSize, resetDataSeg, resetTextSeg, textSeg } from "../utils/state.js";
-
+import {
+  section,
+  MEM_DATA_START,
+  MEM_TEXT_START,
+  symbolT,
+  BYTES_PER_WORD,
+  SYMBOL_TABLE,
+  DEBUG,
+} from '../utils/constants.js';
+import {
+  symbolTableAddEntry,
+  toHexAndPad,
+  numToBits,
+  hexToBits,
+} from '../utils/functions.js';
+import {
+  dataSeg,
+  increaseDataSectionSize,
+  increaseTextSectionSize,
+  resetDataSeg,
+  resetTextSeg,
+  textSeg,
+} from '../utils/state.js';
 
 export const makeSymbolTable = inputs => {
   /*
@@ -21,14 +40,14 @@ export const makeSymbolTable = inputs => {
 ​   */
   let address = 0;
   let curSection = section.MAX_SIZE;
-  
+
   resetDataSeg();
   resetTextSeg();
 
   inputs.forEach(input => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol = new symbolT();
-    
+
     if (splited[0] == '.data') {
       curSection = section.DATA;
       address = MEM_DATA_START;
@@ -37,10 +56,12 @@ export const makeSymbolTable = inputs => {
       curSection = section.TEXT;
       address = MEM_TEXT_START;
       return;
-    } else if (curSection === section.DATA) {    
-      if (splited.length === 2) { // ex. ['.word','123']
+    } else if (curSection === section.DATA) {
+      if (splited.length === 2) {
+        // ex. ['.word','123']
         dataSeg.push(splited[1]);
-      } else { // ex. ['array:', '.word', '3']
+      } else {
+        // ex. ['array:', '.word', '3']
         symbol.address = address;
         symbol.name = splited[0].replace(':', '');
         symbolTableAddEntry(symbol);
@@ -48,12 +69,14 @@ export const makeSymbolTable = inputs => {
       }
       increaseDataSectionSize();
     } else if (curSection === section.TEXT) {
-      if (splited.length === 1) { // ex. ['main:']
+      if (splited.length === 1) {
+        // ex. ['main:']
         symbol.name = splited[0].replace(':', '');
         symbol.address = address;
         symbolTableAddEntry(symbol);
         return;
-      } else { // ex. ['and', '$17, $17, $0']
+      } else {
+        // ex. ['and', '$17, $17, $0']
         const name = splited[0];
         textSeg.push(input); // ex. 'and	$17, $17, $0'
         if (name === 'la') {
@@ -66,14 +89,14 @@ export const makeSymbolTable = inputs => {
         }
       }
       increaseTextSectionSize();
-    } 
+    }
 
     address += BYTES_PER_WORD;
-    
   });
 };
 
 export const recordTextSection = fout => {
+  console.log('textSeg', textSeg);
   /**
    * textSeg에 있는 text들 한 줄 씩 체크해서 fout에 바이너리 문장으로 추가
    * 명령어 타입별(R, I, J)로 명령어 이름별로 묶어서 번역
@@ -94,7 +117,18 @@ export const recordDataSection = fout => {
    *  - fout이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
    *  - return 값은 별도로 없고 함수의 side effect 이용
    *  - ex) fout: ['00000010001000001000100000100100', '00000010010000001001000000100100']
-​   */
+  ​   */
+  let curAddress = MEM_DATA_START;
+  let dataNum;
+  for (const data of dataSeg) {
+    if (data.slice(0, 2) == '0x') {
+      dataNum = parseInt(data.slice(2), 16);
+    } else {
+      dataNum = Number(data);
+    }
+    console.log(numToBits(dataNum).padStart(32, '0'));
+    curAddress += BYTES_PER_WORD;
+  }
 };
 
 export const makeBinaryFile = fout => {
