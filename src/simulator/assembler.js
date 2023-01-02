@@ -6,12 +6,12 @@ import {
   BYTES_PER_WORD,
   SYMBOL_TABLE,
   DEBUG,
+  instList,
 } from '../utils/constants.js';
 import {
   symbolTableAddEntry,
   toHexAndPad,
   numToBits,
-  hexToBits,
 } from '../utils/functions.js';
 import {
   dataSeg,
@@ -96,7 +96,6 @@ export const makeSymbolTable = inputs => {
 };
 
 export const recordTextSection = fout => {
-  console.log('textSeg', textSeg);
   /**
    * textSeg에 있는 text들 한 줄 씩 체크해서 fout에 바이너리 문장으로 추가
    * 명령어 타입별(R, I, J)로 명령어 이름별로 묶어서 번역
@@ -106,6 +105,39 @@ export const recordTextSection = fout => {
    *  - return 값은 별도로 없고 함수의 side effect 이용
    *  - ex) fout: ['00000000000000000000000001011000', '00000000000000000000000000001100']
 ​   */
+  let instruct;
+  let rs, rt, rd, imm, shamt;
+  for (const text of textSeg) {
+    instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
+    const opName = instruct[0];
+
+    if (opName === 'la') {
+    } else if (opName === 'move') {
+    } else {
+      const opInfo = instList[opName];
+
+      if (opInfo.type === 'R') {
+        if (opInfo.name === 'sll' || opInfo.name === 'srl') {
+          rs = '00000';
+          rt = numToBits(Number(instruct[2].replace('$', '')), 5);
+          rd = numToBits(Number(instruct[1].replace('$', '')), 5);
+          shamt = numToBits(Number(instruct[3].replace('$', '')), 5);
+        } else if (opInfo.name === 'jr') {
+          rs = numToBits(Number(instruct[1].replace('$', '')), 5);
+          rt = '00000';
+          rd = '00000';
+          shamt = '00000';
+        } else {
+          rs = numToBits(Number(instruct[2].replace('$', '')), 5);
+          rt = numToBits(Number(instruct[3].replace('$', '')), 5);
+          rd = numToBits(Number(instruct[1].replace('$', '')), 5);
+          shamt = '00000';
+        }
+      } else if (opInfo.type === 'I') {
+      } else if (opInfo.type === 'J') {
+      }
+    }
+  }
 };
 
 export const recordDataSection = fout => {
@@ -121,12 +153,12 @@ export const recordDataSection = fout => {
   let curAddress = MEM_DATA_START;
   let dataNum;
   for (const data of dataSeg) {
-    if (data.slice(0, 2) == '0x') {
+    if (data.slice(0, 2) === '0x') {
       dataNum = parseInt(data.slice(2), 16);
     } else {
       dataNum = Number(data);
     }
-    console.log(numToBits(dataNum).padStart(32, '0'));
+    //console.log(numToBits(dataNum));
     curAddress += BYTES_PER_WORD;
   }
 };
