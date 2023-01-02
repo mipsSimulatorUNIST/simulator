@@ -20,6 +20,7 @@ import {
   resetDataSeg,
   resetTextSeg,
   textSeg,
+  binary,
 } from '../utils/state.js';
 
 export const makeSymbolTable = inputs => {
@@ -115,11 +116,13 @@ export const recordTextSection = fout => {
       address = SYMBOL_TABLE[instruct[2]].toString(16);
       rt = numToBits(Number(instruct[1].replace('$', '')), 5);
       imm = numToBits(parseInt(address.slice(0, 4), 16), 16);
-      console.log('001111' + '00000' + rt + imm); //LUI opcode
+      binary.push('001111' + '00000' + rt + imm);
+      //console.log('001111' + '00000' + rt + imm); //LUI opcode
 
       if (address.slice(4, 8) !== '0000') {
         imm = numToBits(parseInt(address.slice(4, 8), 16), 16);
-        console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
+        binary.push('001101' + rt + rt + numToBits(imm, 16));
+        //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
       }
     }
     //else if (opName === 'move') {}
@@ -143,7 +146,8 @@ export const recordTextSection = fout => {
           rd = numToBits(Number(instruct[1].replace('$', '')), 5);
           shamt = '00000';
         }
-        console.log(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
+        binary.push(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
+        //console.log(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
       } else if (opInfo.type === 'I') {
         if (opInfo.name === 'lui') {
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
@@ -174,14 +178,17 @@ export const recordTextSection = fout => {
               ? parseInt(instruct[3].slice(2), 16)
               : Number(instruct[3]);
         }
-        console.log(opInfo.op + rs + rt + numToBits(imm, 16));
+        binary.push(opInfo.op + rs + rt + numToBits(imm, 16));
+        //console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
-        console.log(opInfo.op + numToBits(address, 26));
+        binary.push(opInfo.op + numToBits(address, 26));
+        //console.log(opInfo.op + numToBits(address, 26));
       }
     }
     curAddress += BYTES_PER_WORD;
   }
+  console.log(binary);
 };
 
 export const recordDataSection = fout => {
@@ -202,6 +209,7 @@ export const recordDataSection = fout => {
     } else {
       dataNum = Number(data);
     }
+    binary.push(numToBits(dataNum));
     //console.log(numToBits(dataNum));
     curAddress += BYTES_PER_WORD;
   }
