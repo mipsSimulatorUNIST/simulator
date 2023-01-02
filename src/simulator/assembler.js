@@ -106,10 +106,11 @@ export const recordTextSection = fout => {
    *  - ex) fout: ['00000000000000000000000001011000', '00000000000000000000000000001100']
 ​   */
   let instruct;
-  let rs, rt, rd, imm, shamt;
+  let address, rs, rt, rd, imm, shamt, immReg;
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName = instruct[0];
+    //console.log(instruct);
 
     if (opName === 'la') {
     } else if (opName === 'move') {
@@ -133,8 +134,27 @@ export const recordTextSection = fout => {
           rd = numToBits(Number(instruct[1].replace('$', '')), 5);
           shamt = '00000';
         }
+        console.log(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
       } else if (opInfo.type === 'I') {
+        if (opInfo.name === 'lui') {
+        } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
+          rs = r_to_bits(Number(instruct[1].replace('$', '')), 5);
+          rt = r_to_bits(Number(instruct[2].replace('$', '')), 5);
+        } else if (
+          opInfo.name === 'lw' ||
+          opInfo.name === 'lhu' ||
+          opInfo.name === 'sw' ||
+          opInfo.name === 'sh'
+        ) {
+          immReg = instruct[2].split('(')[1].split(')')[0];
+          rs = numToBits(Number(immReg.replace('$', '')), 5);
+          rt = numToBits(Number(instruct[1].replace('$', '')), 5);
+          imm = Number(instruct[2].split('(')[0]);
+        } else {
+        }
       } else if (opInfo.type === 'J') {
+        address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
+        console.log(opInfo.op + numToBits(address, 26));
       }
     }
   }
