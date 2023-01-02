@@ -110,11 +110,20 @@ export const recordTextSection = fout => {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName = instruct[0];
     curAddress = MEM_TEXT_START;
-    console.log(instruct);
 
     if (opName === 'la') {
-    } else if (opName === 'move') {
-    } else {
+      address = SYMBOL_TABLE[instruct[2]].toString(16);
+      rt = numToBits(Number(instruct[1].replace('$', '')), 5);
+      imm = numToBits(parseInt(address.slice(0, 4), 16), 16);
+      console.log('001111' + '00000' + rt + imm); //LUI opcode
+
+      if (address.slice(4, 8) !== '0000') {
+        imm = numToBits(parseInt(address.slice(4, 8), 16), 16);
+        console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
+      }
+    }
+    //else if (opName === 'move') {}
+    else {
       const opInfo = instList[opName];
 
       if (opInfo.type === 'R') {
