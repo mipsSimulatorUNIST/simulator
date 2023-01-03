@@ -106,11 +106,12 @@ export const recordTextSection = fout => {
    *  - return 값은 별도로 없고 함수의 side effect 이용
    *  - ex) fout: ['00000000000000000000000001011000', '00000000000000000000000000001100']
 ​   */
-  let instruct, address, rs, rt, rd, imm, shamt, immReg, curAddress;
+  let curAddress = MEM_TEXT_START;
+  let instruct, address, rs, rt, rd, imm, shamt, immReg;
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName = instruct[0];
-    curAddress = MEM_TEXT_START;
+    console.log('instruct', instruct);
 
     if (opName === 'la') {
       address = SYMBOL_TABLE[instruct[2]].toString(16);
@@ -157,7 +158,7 @@ export const recordTextSection = fout => {
               ? parseInt(instruct[1].slice(2), 16)
               : Number(instruct[1]);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
-          imm = Number(SYMBOL_TABLE[instruct[1] - curAddress]) / 4 - 1;
+          imm = Number(SYMBOL_TABLE[instruct[3]] - curAddress) / 4 - 1;
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
           rt = numToBits(Number(instruct[2].replace('$', '')), 5);
         } else if (
@@ -179,14 +180,14 @@ export const recordTextSection = fout => {
               : Number(instruct[3]);
         }
         binary.push(opInfo.op + rs + rt + numToBits(imm, 16));
-        //console.log(opInfo.op + rs + rt + numToBits(imm, 16));
+        console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
         binary.push(opInfo.op + numToBits(address, 26));
         //console.log(opInfo.op + numToBits(address, 26));
       }
     }
-    curAddress += BYTES_PER_WORD;
+    //curAddress += BYTES_PER_WORD;
   }
   console.log(binary);
 };
