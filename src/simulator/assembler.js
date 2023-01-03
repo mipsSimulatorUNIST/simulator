@@ -132,10 +132,9 @@ export const recordTextSection = fout => {
       rd = numToBits(Number(instruct[1].replace('$', '')), 5);
       shamt = '000000';
       binary.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
-      console.log('000000' + rs + rt + rd + shamt + '100000');
+      //console.log('000000' + rs + rt + rd + shamt + '100000');
     } else {
       const opInfo = instList[opName];
-
       if (opInfo.type === 'R') {
         if (opInfo.name === 'sll' || opInfo.name === 'srl') {
           rs = '00000';
@@ -164,7 +163,7 @@ export const recordTextSection = fout => {
               ? parseInt(instruct[1].slice(2), 16)
               : Number(instruct[1]);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
-          imm = Number(SYMBOL_TABLE[instruct[3]] - curAddress) / 4 - 1;
+          imm = Number((SYMBOL_TABLE[instruct[3]] - curAddress) / 4 - 1);
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
           rt = numToBits(Number(instruct[2].replace('$', '')), 5);
         } else if (
@@ -180,22 +179,23 @@ export const recordTextSection = fout => {
         } else {
           rs = numToBits(Number(instruct[2].replace('$', '')), 5);
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
+
           imm =
             instruct[3].slice(0, 2) === '0x'
               ? parseInt(instruct[3].slice(2), 16)
               : Number(instruct[3]);
         }
         binary.push(opInfo.op + rs + rt + numToBits(imm, 16));
-        console.log(opInfo.op + rs + rt + numToBits(imm, 16));
+        //console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
         binary.push(opInfo.op + numToBits(address, 26));
         //console.log(opInfo.op + numToBits(address, 26));
       }
     }
-    //curAddress += BYTES_PER_WORD;
+    curAddress += BYTES_PER_WORD;
   }
-  console.log(binary);
+  //console.log(binary);
 };
 
 export const recordDataSection = fout => {
@@ -208,18 +208,13 @@ export const recordDataSection = fout => {
    *  - return 값은 별도로 없고 함수의 side effect 이용
    *  - ex) fout: ['00000010001000001000100000100100', '00000010010000001001000000100100']
   ​   */
-  let curAddress = MEM_DATA_START;
   let dataNum;
   for (const data of dataSeg) {
-    if (data.slice(0, 2) === '0x') {
-      dataNum = parseInt(data.slice(2), 16);
-    } else {
-      dataNum = Number(data);
-    }
-    binary.push(numToBits(dataNum));
-    //console.log(numToBits(dataNum));
-    curAddress += BYTES_PER_WORD;
+    dataNum =
+      data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
   }
+  binary.push(numToBits(dataNum));
+  //console.log(numToBits(dataNum));
 };
 
 export const makeBinaryFile = fout => {
