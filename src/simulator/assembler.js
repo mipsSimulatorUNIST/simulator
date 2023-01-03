@@ -59,26 +59,32 @@ export const makeSymbolTable = inputs => {
     } else if (curSection === section.DATA) {
       if (splited.length === 2) {
         // ex. ['.word','123']
+
         dataSeg.push(splited[1]);
       } else {
         // ex. ['array:', '.word', '3']
+
         symbol.address = address;
         symbol.name = splited[0].replace(':', '');
         symbolTableAddEntry(symbol);
         dataSeg.push(splited[2]);
       }
+
       dataSectionSize += BYTES_PER_WORD;
     } else if (curSection === section.TEXT) {
       if (splited.length === 1) {
         // ex. ['main:']
+
         symbol.name = splited[0].replace(':', '');
         symbol.address = address;
         symbolTableAddEntry(symbol);
         return;
       } else {
         // ex. ['and', '$17, $17, $0']
+
         const name = splited[0];
         textSeg.push(input); // ex. 'and	$17, $17, $0'
+
         if (name === 'la') {
           const targetSymbol = splited[1].split(' ')[1]; // ex. 'data1'
           const targetAddress = toHexAndPad(SYMBOL_TABLE[targetSymbol]);
