@@ -1,7 +1,12 @@
-import { section, MEM_DATA_START, MEM_TEXT_START, symbolT, BYTES_PER_WORD, SYMBOL_TABLE, DEBUG} from "../utils/constants.js";
-import { symbolTableAddEntry, toHexAndPad } from "../utils/functions.js";
-import { dataSeg, increaseDataSectionSize, increaseTextSectionSize, resetDataSeg, resetTextSeg, textSeg } from "../utils/state.js";
-
+import {
+  section,
+  MEM_DATA_START,
+  MEM_TEXT_START,
+  symbolT,
+  BYTES_PER_WORD,
+  SYMBOL_TABLE,
+} from '../utils/constants.js';
+import {symbolTableAddEntry, toHexAndPad} from '../utils/functions.js';
 
 export const makeSymbolTable = inputs => {
   /*
@@ -21,14 +26,17 @@ export const makeSymbolTable = inputs => {
 ​   */
   let address = 0;
   let curSection = section.MAX_SIZE;
-  
-  resetDataSeg();
-  resetTextSeg();
+
+  let dataSectionSize = 0;
+  let textSectionSize = 0;
+
+  let dataSeg = [];
+  let textSeg = [];
 
   inputs.forEach(input => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol = new symbolT();
-    
+
     if (splited[0] == '.data') {
       curSection = section.DATA;
       address = MEM_DATA_START;
@@ -37,40 +45,45 @@ export const makeSymbolTable = inputs => {
       curSection = section.TEXT;
       address = MEM_TEXT_START;
       return;
-    } else if (curSection === section.DATA) {    
-      if (splited.length === 2) { // ex. ['.word','123']
+    } else if (curSection === section.DATA) {
+      if (splited.length === 2) {
+        // ex. ['.word','123']
         dataSeg.push(splited[1]);
-      } else { // ex. ['array:', '.word', '3']
+      } else {
+        // ex. ['array:', '.word', '3']
         symbol.address = address;
         symbol.name = splited[0].replace(':', '');
         symbolTableAddEntry(symbol);
         dataSeg.push(splited[2]);
       }
-      increaseDataSectionSize();
+      dataSectionSize += BYTES_PER_WORD;
     } else if (curSection === section.TEXT) {
-      if (splited.length === 1) { // ex. ['main:']
+      if (splited.length === 1) {
+        // ex. ['main:']
         symbol.name = splited[0].replace(':', '');
         symbol.address = address;
         symbolTableAddEntry(symbol);
         return;
-      } else { // ex. ['and', '$17, $17, $0']
+      } else {
+        // ex. ['and', '$17, $17, $0']
         const name = splited[0];
         textSeg.push(input); // ex. 'and	$17, $17, $0'
         if (name === 'la') {
           const targetSymbol = splited[1].split(' ')[1]; // ex. 'data1'
           const targetAddress = toHexAndPad(SYMBOL_TABLE[targetSymbol]);
           if (targetAddress.slice(4) !== '0000') {
-            increaseTextSectionSize();
+            textSectionSize += BYTES_PER_WORD;
             address += BYTES_PER_WORD;
           }
         }
       }
-      increaseTextSectionSize();
-    } 
+      textSectionSize += BYTES_PER_WORD;
+    }
 
     address += BYTES_PER_WORD;
-    
   });
+
+  return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
 export const recordTextSection = fout => {

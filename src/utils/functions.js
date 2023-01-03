@@ -7,19 +7,19 @@ export function numToBits(num) {
   return bits;
 }
 
-export function toHexAndPad(num, pad = 8) { 
+export function toHexAndPad(num, pad = 8) {
   /*
-  * num : Number or String(숫자 형식, 10진법), pad : Number
-  * input : 18 => output: '00000012'
-  * Recommend | num을 Number 타입으로 넣을 것
-  */
-  return Number(num).toString(16).padStart(pad, '0'); 
+   * num : Number or String(숫자 형식, 10진법), pad : Number
+   * input : 18 => output: '00000012'
+   * Recommend | num을 Number 타입으로 넣을 것
+   */
+  return Number(num).toString(16).padStart(pad, '0');
 }
 
 export function symbolTableAddEntry(symbol) {
   SYMBOL_TABLE[symbol.name] = symbol.address;
   if (DEBUG) {
-    log(1, `${symbol.name}: 0x${toHexAndPad(symbol.address)}`)
+    log(1, `${symbol.name}: 0x${toHexAndPad(symbol.address)}`);
   }
 }
 
