@@ -125,9 +125,15 @@ export const recordTextSection = fout => {
         binary.push('001101' + rt + rt + numToBits(imm, 16));
         //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
       }
-    }
-    //else if (opName === 'move') {}
-    else {
+    } else if (opName === 'move') {
+      //op = ADD op "000000"
+      rs = numToBits(Number(instruct[2].replace('$', '')), 5);
+      rt = '000000';
+      rd = numToBits(Number(instruct[1].replace('$', '')), 5);
+      shamt = '000000';
+      binary.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
+      console.log('000000' + rs + rt + rd + shamt + '100000');
+    } else {
       const opInfo = instList[opName];
 
       if (opInfo.type === 'R') {
