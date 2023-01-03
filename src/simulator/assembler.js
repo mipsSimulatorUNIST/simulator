@@ -23,6 +23,17 @@ export const makeSymbolTable = inputs => {
    * .data 
    * - indicates that following data items are stored in the data segment 
    * - It always starts from 0x10000000 (MEM_DATA_START)
+   * 
+   * return
+   * {
+   *    dataSeg : dataSeg, 
+   *    textSeg : textSeg, 
+   *    dataSectionSize : dataSectionSize, 
+   *    textSectionSize : textSectionSize
+   * }
+   * 
+   * [USAGE EXAMPLE] 
+   * const {dataSeg, textSeg, dataSectionSize, textSectionSize} = makeSymbolTable(inputs);
 ​   */
   let address = 0;
   let curSection = section.MAX_SIZE;
