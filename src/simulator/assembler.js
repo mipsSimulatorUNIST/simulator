@@ -111,7 +111,7 @@ export const recordTextSection = fout => {
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName = instruct[0];
-    console.log('instruct', instruct);
+    //console.log('instruct', instruct);
 
     if (opName === 'la') {
       address = SYMBOL_TABLE[instruct[2]].toString(16);
@@ -195,7 +195,7 @@ export const recordTextSection = fout => {
     }
     curAddress += BYTES_PER_WORD;
   }
-  //console.log(binary);
+  console.log(binary);
 };
 
 export const recordDataSection = fout => {
