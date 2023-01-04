@@ -29,16 +29,62 @@ export function log(printType, content) {
   console.log(pType[printType] + content);
 }
 
-// Parsing an assembly file(*.s) into a list
-export function makeInput(path) {
-  try {
-    const input = fs.readFileSync(path, 'utf-8').split('\n');
-    return input;
-  } catch (err) {
-    console.error(err);
+// Check the value is empty or not
+export function isEmpty(value) {
+  if (
+    value === '' ||
+    value === null ||
+    value === undefined ||
+    (value !== null &&
+      typeof value === 'object' &&
+      !Object.keys(value).length) ||
+    value === ['']
+  ) {
+    return true;
+  } else {
+    return false;
   }
 }
 
+// Parsing an assembly file(*.s) into a list
+export function makeInput(inputFolderName, inputFileName) {
+  /*
+   if the inputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
+    currDirectory : /Users/junghaejune/simulator
+    inputFolderPath : sample_input/sample
+    inputFileName: example1.s
+  */
+
+  const currDirectory = process.cwd();
+  const inputFilePath = path.join(
+    currDirectory,
+    inputFolderName,
+    inputFileName,
+  );
+
+  try {
+    if (fs.existsSync(inputFilePath) === false) throw 'INPUT_PATH_ERROR';
+
+    const input = fs.readFileSync(inputFilePath, 'utf-8');
+
+    if (isEmpty(input)) throw 'INPUT_EMPTY';
+
+    return input.split('\n');
+  } catch (err) {
+    if (err === 'INPUT_PATH_ERROR') {
+      log(
+        3,
+        `No input file ${inputFileName} exists. Please check the file name and path.`,
+      );
+    } else if (err === 'INPUT_EMPTY') {
+      log(
+        3,
+        `input file ${inputFileName} is not opened. Please check the file`,
+      );
+    } else console.error(err);
+    exit(1);
+  }
+}
 // Create an Object file(*.o) in the desired path
 export function makeObjectFile(outputFolderPath, outputFileName, content) {
   /*
