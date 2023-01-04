@@ -41,6 +41,14 @@ export function makeInput(path) {
 
 // Create an Object file(*.o) in the desired path
 export function makeObjectFile(outputFolderPath, outputFileName, content) {
+  /*
+   if the outputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
+    currDirectory : /Users/junghaejune/simulator
+    outputFolderPath : sample_input/sample
+    outputFileName: example1.o 
+    content : ['01010', '01010']
+  */
+
   const currDirectory = process.cwd();
   const outputFilePath = path.join(
     currDirectory,
