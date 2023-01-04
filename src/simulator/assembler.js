@@ -105,18 +105,21 @@ export const makeSymbolTable = inputs => {
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
-export const recordTextSection = fout => {
+export const recordTextSection = textSeg => {
   /**
-   * textSeg에 있는 text들 한 줄 씩 체크해서 fout에 바이너리 문장으로 추가
+   * parameter로 textSeg를 받는다.
+   * textSeg 있는 text들 한 줄 씩 체크해서 binaryText 리스트에 바이너리 문장으로 추가
    * 명령어 타입별(R, I, J)로 명령어 이름별로 묶어서 번역
    * 
-   * parameter로 받는 fout은 list
-   *  - fout이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
-   *  - return 값은 별도로 없고 함수의 side effect 이용
-   *  - ex) fout: ['00000000000000000000000001011000', '00000000000000000000000000001100']
+   *  binaryText 이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
+   *  return binaryText
+   *  binaryText: ['00000000000000000000000001011000', '00000000000000000000000000001100']
 ​   */
+
   let curAddress = MEM_TEXT_START;
   let instruct, address, rs, rt, rd, imm, shamt, immReg;
+  let binaryText = [];
+
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName = instruct[0];
@@ -126,12 +129,12 @@ export const recordTextSection = fout => {
       address = SYMBOL_TABLE[instruct[2]].toString(16);
       rt = numToBits(Number(instruct[1].replace('$', '')), 5);
       imm = numToBits(parseInt(address.slice(0, 4), 16), 16);
-      binary.push('001111' + '00000' + rt + imm);
+      binaryText.push('001111' + '00000' + rt + imm);
       //console.log('001111' + '00000' + rt + imm); //LUI opcode
 
       if (address.slice(4, 8) !== '0000') {
         imm = numToBits(parseInt(address.slice(4, 8), 16), 16);
-        binary.push('001101' + rt + rt + numToBits(imm, 16));
+        binaryText.push('001101' + rt + rt + numToBits(imm, 16));
         //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
       }
     } else if (opName === 'move') {
@@ -140,7 +143,7 @@ export const recordTextSection = fout => {
       rt = '000000';
       rd = numToBits(Number(instruct[1].replace('$', '')), 5);
       shamt = '000000';
-      binary.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
+      binaryText.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
       //console.log('000000' + rs + rt + rd + shamt + '100000');
     } else {
       const opInfo = instList[opName];
@@ -161,7 +164,7 @@ export const recordTextSection = fout => {
           rd = numToBits(Number(instruct[1].replace('$', '')), 5);
           shamt = '00000';
         }
-        binary.push(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
+        binaryText.push(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
         //console.log(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
       } else if (opInfo.type === 'I') {
         if (opInfo.name === 'lui') {
@@ -194,44 +197,53 @@ export const recordTextSection = fout => {
               ? parseInt(instruct[3].slice(2), 16)
               : Number(instruct[3]);
         }
-        binary.push(opInfo.op + rs + rt + numToBits(imm, 16));
+        binaryText.push(opInfo.op + rs + rt + numToBits(imm, 16));
         //console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
-        binary.push(opInfo.op + numToBits(address, 26));
+        binaryText.push(opInfo.op + numToBits(address, 26));
         //console.log(opInfo.op + numToBits(address, 26));
       }
     }
     curAddress += BYTES_PER_WORD;
   }
-  console.log(binary);
+  console.log(binaryText);
+  return binaryText;
 };
 
-export const recordDataSection = fout => {
+export const recordDataSection = dataSeg => {
   /**
-   * dataSeg에 있는 data들 한 줄 씩 체크해서 fout에 바이너리 문장으로 추가
+   * input값을 dataSeg를 받는다.
+   * dataSeg에 있는 data들 한 줄 씩 체크해서 binaryData 리스트에 바이너리 문장으로 추가
    * data값을 그대로 binary 문자로 번역
    * 
-   * parameter로 받는 fout은 list
-   *  - fout이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
-   *  - return 값은 별도로 없고 함수의 side effect 이용
-   *  - ex) fout: ['00000010001000001000100000100100', '00000010010000001001000000100100']
-  ​   */
+   *  binaryData 이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
+   *  return binaryData
+   *  ex) binaryData: ['00000010001000001000100000100100', '00000010010000001001000000100100']
+  ​ **/
+
   let dataNum;
+  let binaryData = [];
   for (const data of dataSeg) {
     dataNum =
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
   }
-  binary.push(numToBits(dataNum));
+  binaryData.push(numToBits(dataNum));
   //console.log(numToBits(dataNum));
+  return binaryData;
 };
 
-export const makeBinaryFile = fout => {
+export const makeBinaryFile = inputs => {
+  const {dataSeg, textSeg} = makeSymbolTable(inputs);
+  let output = '';
   /**
-   * fout에 text 문장 개수를 binary로 번역해서 추가
-   * fout에 data 개수를 binary로 번역해서 추가
+   * output에 text 문장 개수를 binary로 번역해서 추가
+   * output에 data 개수를 binary로 번역해서 추가
    */
 
-  recordTextSection(fout);
-  recordDataSection(fout);
+  const binaryText = recordTextSection(textSeg);
+  const binaryData = recordDataSection(dataSeg);
+  console.log(binaryText.concat(binaryData));
+
+  return output;
 };

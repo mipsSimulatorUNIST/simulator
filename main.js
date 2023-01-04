@@ -6,11 +6,8 @@ export const assemble = assemblyFile => {
 
   const input = assemblyFile;
 
-  let output = '';
-
   makeSymbolTable(input);
-  makeBinaryFile(output);
-  output = '001010';
+  let output = makeBinaryFile(input);
 
   return output;
 };
