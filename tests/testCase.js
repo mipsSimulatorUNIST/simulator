@@ -2,12 +2,50 @@ import {
   recordDataSection,
   recordTextSection,
   makeBinaryFile,
+  makeSymbolTable,
 } from '../src/simulator/assembler.js';
-import {diffList, diffList2, diffString} from './diff.js';
+import {diffList, diffList2, diffString, diffString2} from './diff.js';
 
-const exSymbolTable1 = {};
+const exSymbolTable1 = {
+  dataSeg: [ '100', '200', '0x12345678' ],
+  textSeg: [
+    ' and  $17, $17, $0',
+    ' and  $18, $18, $0',
+    ' la $8, data1',
+    ' la $9, data2',
+    ' and  $10, $10, $0',
+    ' and  $11, $11, $0',
+    ' addi $17, $17, 0x1',
+    ' addi $11, $11, 0x1',
+    ' or $9, $9, $0',
+    ' bne  $11, $8, lab2',
+    ' addi $18, $18, 0x2',
+    ' addi $11, $11, 1',
+    ' sll  $18, $17, 1',
+    ' srl  $17, $18, 1',
+    ' and  $19, $17, $18',
+    ' bne  $11, $9, lab3',
+    ' add  $5, $5, $31',
+    ' nor  $16, $17, $18',
+    ' beq  $10, $8, lab5',
+    ' j  lab1',
+    ' ori  $16, $16, 0xf0f0'
+  ],
+  dataSectionSize: 12,
+  textSectionSize: 88
+}
 
-const testSymbolTable = () => {};
+const testSymbolTable = (sInput, sOutput) => {
+  const stOutput = makeSymbolTable(sInput);
+  console.log("DATA SEGMENT");
+  diffList(stOutput.dataSeg, sOutput.dataSeg);
+  console.log("TEXT SEGMENT");
+  diffList(stOutput.textSeg, sOutput.textSeg);
+  console.log("DATA SECTION SIZE");
+  diffString2(stOutput.dataSectionSize, sOutput.dataSectionSize);
+  console.log("TEXT SECTION SIZE");
+  diffList(stOutput.textSectionSize, sOutput.textSectionSize);
+};
 
 const testRecordText = (sInput, sOutput) => {
   const testOutput = recordTextSection(sInput);
