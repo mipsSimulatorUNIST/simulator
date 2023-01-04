@@ -4,10 +4,34 @@ import {
   makeBinaryFile,
   makeSymbolTable,
 } from '../src/simulator/assembler.js';
+import {SYMBOL_TABLE} from '../src/utils/constants.js';
 import {diffList, diffList2, diffString, diffString2} from './diff.js';
 
+const symbol1 = {
+  data1: 268435456,
+  data2: 268435461,
+  data3: 268435464,
+  main: 4194304,
+  lab1: 4194328,
+  lab2: 4194332,
+  lab3: 4194348,
+  lab4: 4194372,
+  lab5: 4194388,
+};
+
 const exSymbolTable1 = {
-  dataSeg: [ '100', '200', '0x12345678' ],
+  symbolTable: {
+    data1: 268435456,
+    data2: 268435460,
+    data3: 268435464,
+    main: 4194304,
+    lab1: 4194328,
+    lab2: 4194332,
+    lab3: 4194348,
+    lab4: 4194372,
+    lab5: 4194388,
+  },
+  dataSeg: ['100', '200', '0x12345678'],
   textSeg: [
     ' and  $17, $17, $0',
     ' and  $18, $18, $0',
@@ -29,22 +53,26 @@ const exSymbolTable1 = {
     ' nor  $16, $17, $18',
     ' beq  $10, $8, lab5',
     ' j  lab1',
-    ' ori  $16, $16, 0xf0f0'
+    ' ori  $16, $16, 0xf0f0',
   ],
   dataSectionSize: 12,
-  textSectionSize: 88
-}
-
+  textSectionSize: 88,
+};
 const testSymbolTable = (sInput, sOutput) => {
-  const stOutput = makeSymbolTable(sInput);
-  console.log("DATA SEGMENT");
-  diffList(stOutput.dataSeg, sOutput.dataSeg);
-  console.log("TEXT SEGMENT");
-  diffList(stOutput.textSeg, sOutput.textSeg);
-  console.log("DATA SECTION SIZE");
-  diffString2(stOutput.dataSectionSize, sOutput.dataSectionSize);
-  console.log("TEXT SECTION SIZE");
-  diffList(stOutput.textSectionSize, sOutput.textSectionSize);
+  const output = makeSymbolTable(sInput);
+  console.log('SYMBOL TABLE');
+  diffString(
+    JSON.stringify(SYMBOL_TABLE).replace(/,/g, ',\n'),
+    JSON.stringify(sOutput.symbolTable).replace(/,/g, ',\n'),
+  );
+  console.log('DATA SEGMENT');
+  diffList(output.dataSeg, sOutput.dataSeg);
+  console.log('TEXT SEGMENT');
+  diffList(output.textSeg, sOutput.textSeg);
+  console.log('DATA SECTION SIZE');
+  diffString2(output.dataSectionSize, sOutput.dataSectionSize);
+  console.log('TEXT SECTION SIZE');
+  diffString2(output.textSectionSize, sOutput.textSectionSize);
 };
 
 const testRecordText = (sInput, sOutput) => {
