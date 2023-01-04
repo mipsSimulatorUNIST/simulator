@@ -1,5 +1,7 @@
 import {DEBUG, pType, SYMBOL_TABLE} from './constants.js';
 import * as fs from 'fs';
+import path from 'path';
+import {exit} from 'process';
 
 export function numToBits(num) {
   // 10진수 정수를 2진수 bit로 변경해서 return
@@ -34,5 +36,45 @@ export function makeInput(path) {
     return input;
   } catch (err) {
     console.error(err);
+  }
+}
+
+// Create an Object file(*.o) in the desired path
+export function makeObjectFile(outputFolderPath, outputFileName, content) {
+  /*
+   if the outputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
+    currDirectory : /Users/junghaejune/simulator
+    outputFolderPath : sample_input/sample
+    outputFileName: example1.o 
+    content : ['01010', '01010']
+  */
+
+  const currDirectory = process.cwd();
+  const outputFilePath = path.join(
+    currDirectory,
+    outputFolderPath,
+    outputFileName,
+  );
+
+  try {
+    if (fs.existsSync(outputFilePath) === true) {
+      fs.unlinkSync(outputFilePath, err =>
+        err
+          ? console.error(err)
+          : log(0, `Output file ${outputFileName} exists. Remake the file`),
+      );
+    } else throw 'OUTPUT_NOT_EXISTS';
+    const fd = fs.openSync(outputFilePath, 'a');
+
+    for (const item of content) {
+      fs.appendFileSync(fd, item + '\n', 'utf-8');
+    }
+
+    fs.closeSync(fd);
+  } catch (err) {
+    if (err === 'OUTPUT_NOT_EXISTS') {
+      log(0, `Output file ${outputFileName} does not exists. Make the file`);
+    } else console.error(err);
+    exit(1);
   }
 }
