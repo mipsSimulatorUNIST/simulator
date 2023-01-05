@@ -3,9 +3,6 @@ import {log} from './src/utils/functions.js';
 
 export const assemble = assemblyFile => {
   log(1, `Input file: sample1`);
-
-  const input = makeSymbolTable(assemblyFile);
-  let output = makeBinaryFile(input);
-
+  let output = makeBinaryFile(assemblyFile);
   return output;
 };

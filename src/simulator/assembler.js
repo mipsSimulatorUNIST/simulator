@@ -205,7 +205,6 @@ export const recordTextSection = textSeg => {
     }
     curAddress += BYTES_PER_WORD;
   }
-  console.log(binaryText);
   return binaryText;
 };
 
@@ -250,5 +249,6 @@ export const makeBinaryFile = inputs => {
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
   });
+
   return output;
 };
