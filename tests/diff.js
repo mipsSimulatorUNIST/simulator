@@ -14,7 +14,7 @@ export function diffString(o, n) {
   } else {
     if (out.n[0].text == null) {
       for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
-        str += i + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
+        str += '  ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
       }
     }
 
@@ -36,7 +36,6 @@ export function diffString(o, n) {
     }
   }
 
-  console.log('\n-------------RESULT-------------');
   console.log(str);
 }
 
@@ -64,7 +63,6 @@ export function diffString2(o, n) {
     }
   }
 
-  console.log('\n-------------RESULT-------------');
   console.log(`[TEST OUTPUT]  `);
   console.log(os);
   console.log(`[YOUR OUTPUT]  `);
@@ -92,7 +90,6 @@ export function diffList(o, n) {
     }
   }
 
-  console.log('\n-------------RESULT-------------');
   console.log(`[TEST OUTPUT]  `);
   console.log(os);
   console.log(`[YOUR OUTPUT]  `);
@@ -133,7 +130,6 @@ export function diffList2(o, n) {
     }
   }
 
-  console.log('\n-------------RESULT-------------');
   console.log(str);
 }
 

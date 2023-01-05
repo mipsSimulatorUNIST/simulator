@@ -49,7 +49,6 @@ export const makeSymbolTable = inputs => {
 
   let dataSeg = [];
   let textSeg = [];
-
   inputs.forEach(input => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol = new symbolT();
@@ -101,7 +100,6 @@ export const makeSymbolTable = inputs => {
 
     address += BYTES_PER_WORD;
   });
-
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
