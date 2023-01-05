@@ -234,16 +234,23 @@ export const recordDataSection = dataSeg => {
 };
 
 export const makeBinaryFile = inputs => {
-  const {dataSeg, textSeg} = makeSymbolTable(inputs);
-  let output = '';
   /**
    * output에 text 문장 개수를 binary로 번역해서 추가
    * output에 data 개수를 binary로 번역해서 추가
+   *
    */
-
+  const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
+    makeSymbolTable(inputs);
+  const binarySize = [
+    numToBits(textSectionSize, 32),
+    numToBits(dataSectionSize, 32),
+  ];
   const binaryText = recordTextSection(textSeg);
   const binaryData = recordDataSection(dataSeg);
-  console.log(binaryText.concat(binaryData));
+  let output = '';
 
+  binarySize.concat(binaryText, binaryData).map(binaryLine => {
+    output += `${binaryLine}\n`;
+  });
   return output;
 };
