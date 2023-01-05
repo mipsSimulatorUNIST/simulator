@@ -8,25 +8,11 @@ import {SYMBOL_TABLE} from '../src/utils/constants.js';
 import {diffList, diffList2, diffString, diffString2} from './diff.js';
 
 export const testSymbolTable = (sInput, sOutput) => {
-  const {
-    symbolTable: solSymbolTable,
-    dataseg: solDataSeg,
-    textSeg: solTextSeg,
-    dataSectionSize: solDataSectionSize,
-    textSectionSize: solTextSectionSize,
-  } = sOutput;
-
-  const {
-    dataseg: testDataSeg,
-    textSeg: testTextSeg,
-    dataSectionSize: testDataSectionSize,
-    textSectionSize: testTextSectionSize,
-  } = makeSymbolTable(sInput);
   const output = makeSymbolTable(sInput);
   console.log('--------SYMBOL TABLE--------');
   diffString(
     JSON.stringify(SYMBOL_TABLE).replace(/,/g, ',\n'),
-    JSON.stringify(solSymbolTable).replace(/,/g, ',\n'),
+    JSON.stringify(sOutput.symbolTable).replace(/,/g, ',\n'),
   );
   console.log('--------DATA SEGMENT--------');
   diffList(sOutput.dataSeg, output.dataSeg);
