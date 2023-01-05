@@ -8,7 +8,7 @@ export function numToBits(num, pad = 32) {
   if (num >= 0) {
     return num.toString(2).padStart(pad, '0'); //양수일때
   } else {
-    num = 2 ** pad - 1 + num;
+    num = 2 ** pad + num;
     return num.toString(2).padStart(pad, '0'); //음수일때;
   }
 }
