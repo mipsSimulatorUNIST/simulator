@@ -49,7 +49,6 @@ export const makeSymbolTable = inputs => {
 
   let dataSeg = [];
   let textSeg = [];
-
   inputs.forEach(input => {
     const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol = new symbolT();
@@ -101,7 +100,6 @@ export const makeSymbolTable = inputs => {
 
     address += BYTES_PER_WORD;
   });
-
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
@@ -208,7 +206,6 @@ export const recordTextSection = textSeg => {
     }
     curAddress += BYTES_PER_WORD;
   }
-  console.log(binaryText);
   return binaryText;
 };
 
@@ -253,5 +250,6 @@ export const makeBinaryFile = inputs => {
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
   });
+
   return output;
 };
