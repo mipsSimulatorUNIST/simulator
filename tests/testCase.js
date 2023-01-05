@@ -40,12 +40,12 @@ export const testSymbolTable = (sInput, sOutput) => {
 
 export const testRecordText = (sInput, sOutput) => {
   const testOutput = recordTextSection(sInput);
-  diffList(testOutput, sOutput);
+  diffList(sOutput, testOutput);
 };
 
 export const testRecordData = (sInput, sOutput) => {
   const testOutput = recordDataSection(sInput);
-  diffList(testOutput, sOutput);
+  diffList(sOutput, testOutput);
 };
 
 export const symbolTableCase = {
