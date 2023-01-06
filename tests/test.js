@@ -1,6 +1,6 @@
 import {assemble} from '../main.js';
 import {diffString2} from './diff.js';
-import {makeInput} from '../src/utils/functions.js';
+import {log, makeInput} from '../src/utils/functions.js';
 import {
   recordDataCase,
   recordDataOutput,
@@ -14,13 +14,17 @@ import {
   testSymbolTable,
 } from './testCase.js';
 
-const input = makeInput('sample_input', 'example1.s');
-
-const output = assemble(input);
-
-export const test = output => {
+const test = output => {
   diffString2(testOutput, output);
 };
+
+for (let i = 1; i <= 7; i++) {
+  const input = makeInput('sample_input', `example${i}.s`);
+  log(1, `Input file: sample${i}`);
+  const output = assemble(input);
+
+  test(output);
+}
 
 // test symbol table
 testSymbolTable(testInput, symbolTableCase);
@@ -28,5 +32,3 @@ testSymbolTable(testInput, symbolTableCase);
 testRecordText(recordTextCase, recordTextOutput);
 // test record data
 testRecordData(recordDataCase, recordDataOutput);
-
-test(output);
