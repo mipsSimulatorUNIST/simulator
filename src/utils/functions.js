@@ -5,10 +5,10 @@ import {exit} from 'process';
 
 export function numToBits(num, pad = 32) {
   // 10진수 정수를 2진수 bit로 변경해서 return
-  if (num > 0) {
+  if (num >= 0) {
     return num.toString(2).padStart(pad, '0'); //양수일때
   } else {
-    num = 2 ** pad - 1 + num;
+    num = 2 ** pad + num;
     return num.toString(2).padStart(pad, '0'); //음수일때;
   }
 }

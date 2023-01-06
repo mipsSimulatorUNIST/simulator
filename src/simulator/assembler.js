@@ -134,6 +134,7 @@ export const recordTextSection = textSeg => {
         imm = numToBits(parseInt(address.slice(4, 8), 16), 16);
         binaryText.push('001101' + rt + rt + numToBits(imm, 16));
         //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
+        curAddress += BYTES_PER_WORD;
       }
     } else if (opName === 'move') {
       //op = ADD op "000000"
@@ -173,7 +174,7 @@ export const recordTextSection = textSeg => {
               ? parseInt(instruct[1].slice(2), 16)
               : Number(instruct[1]);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
-          imm = Number((SYMBOL_TABLE[instruct[3]] - curAddress) / 4 - 1);
+          imm = Number((SYMBOL_TABLE[instruct[3]] - (curAddress + 4)) / 4);
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
           rt = numToBits(Number(instruct[2].replace('$', '')), 5);
         } else if (
@@ -224,8 +225,8 @@ export const recordDataSection = dataSeg => {
   for (const data of dataSeg) {
     dataNum =
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
+    binaryData.push(numToBits(dataNum));
   }
-  binaryData.push(numToBits(dataNum));
   //console.log(numToBits(dataNum));
   return binaryData;
 };
