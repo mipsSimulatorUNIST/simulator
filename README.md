@@ -17,7 +17,7 @@ This open source provides functions to implement MIPS simulation in node.js envi
 
 Currently, we support a function to convert an assembly file to a binary file. In the future, we plan to add the function of simulating with actual assembly files.
 
----
+----
 
 ## Install
 
@@ -87,6 +87,12 @@ const binary = assemble(assemblyFile);
 
 makeObjectFile(outputFolderPath, outputFileName, binary);
 ```
+
+### Input/Output
+<p align="center">
+<img src="https://user-images.githubusercontent.com/44657722/211183736-c79836ed-8922-4a80-aacd-2aef353098dd.png" width="48%"/> 
+<img src="https://user-images.githubusercontent.com/44657722/211183724-1fccb82f-bc03-4598-8d19-af0a5fc0e77e.png" width="45%"/> 
+</p>
 
 ---
 
