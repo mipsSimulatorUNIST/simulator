@@ -171,14 +171,12 @@ export const recordTextSection = textSeg => {
           rs = '00000';
           imm =
             instruct[2].slice(0, 2) === '0x'
-              ? parseInt(instruct[2], 16)
+              ? parseInt(instruct[2].slice(2), 16)
               : Number(instruct[2]);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
           imm = Number((SYMBOL_TABLE[instruct[3]] - (curAddress + 4)) / 4);
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
           rt = numToBits(Number(instruct[2].replace('$', '')), 5);
-          console.log('imm : ', imm);
-          console.log(opInfo.op + rs + rt + numToBits(imm, 16));
         } else if (
           opInfo.name === 'lw' ||
           opInfo.name === 'lhu' ||
