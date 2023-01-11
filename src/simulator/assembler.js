@@ -139,9 +139,9 @@ export const recordTextSection = textSeg => {
     } else if (opName === 'move') {
       //op = ADD op "000000"
       rs = numToBits(Number(instruct[2].replace('$', '')), 5);
-      rt = '000000';
+      rt = '00000';
       rd = numToBits(Number(instruct[1].replace('$', '')), 5);
-      shamt = '000000';
+      shamt = '00000';
       binaryText.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
       //console.log('000000' + rs + rt + rd + shamt + '100000');
     } else {
@@ -151,7 +151,7 @@ export const recordTextSection = textSeg => {
           rs = '00000';
           rt = numToBits(Number(instruct[2].replace('$', '')), 5);
           rd = numToBits(Number(instruct[1].replace('$', '')), 5);
-          shamt = numToBits(Number(instruct[3].replace('$', '')), 5);
+          shamt = numToBits(Number(instruct[3]), 5);
         } else if (opInfo.name === 'jr') {
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
           rt = '00000';
@@ -170,9 +170,9 @@ export const recordTextSection = textSeg => {
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
           rs = '00000';
           imm =
-            instruct[1].slice(0, 2) === '0x'
-              ? parseInt(instruct[1].slice(2), 16)
-              : Number(instruct[1]);
+            instruct[2].slice(0, 2) === '0x'
+              ? parseInt(instruct[2].slice(2), 16)
+              : Number(instruct[2]);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
           imm = Number((SYMBOL_TABLE[instruct[3]] - (curAddress + 4)) / 4);
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
@@ -226,8 +226,8 @@ export const recordDataSection = dataSeg => {
     dataNum =
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
     binaryData.push(numToBits(dataNum));
+    //console.log(numToBits(dataNum));
   }
-  //console.log(numToBits(dataNum));
   return binaryData;
 };
 
