@@ -1,6 +1,6 @@
-import {assemble} from '../main.js';
-import {diffString2} from './diff.js';
-import {log, makeInput, makeOutput} from '../src/utils/functions.js';
+import {assemble} from '../main';
+import {diffString2} from './diff';
+import {log, makeInput, makeOutput} from '../src/utils/functions';
 import {
   recordDataCase,
   recordDataOutput,

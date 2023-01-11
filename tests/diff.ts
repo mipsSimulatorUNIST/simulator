@@ -1,4 +1,4 @@
-import {bcolors} from '../src/utils/constants.js';
+import {bcolors} from '../src/utils/constants';
 
 export function diffString(o: string, n: string) {
   o = o.replace(/\s+$/, '');
