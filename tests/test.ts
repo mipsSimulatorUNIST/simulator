@@ -13,7 +13,7 @@ import {
   testSymbolTable,
 } from './testCase.js';
 
-const test = (testOutput, output) => {
+const test = (testOutput: string, output: string) => {
   diffString2(testOutput, output);
 };
 
