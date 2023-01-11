@@ -26,8 +26,8 @@ for (let i = 1; i <= 7; i++) {
 }
 
 // // test symbol table
-// testSymbolTable(testInput, symbolTableCase);
+testSymbolTable(testInput, symbolTableCase);
 // // test record text
-// testRecordText(recordTextCase, recordTextOutput);
+testRecordText(recordTextCase, recordTextOutput);
 // // test record data
-// testRecordData(recordDataCase, recordDataOutput);
+testRecordData(recordDataCase, recordDataOutput);

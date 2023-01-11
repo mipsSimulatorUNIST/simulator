@@ -133,7 +133,7 @@ export function diffList2(o: string[], n: string[]) {
   console.log(str);
 }
 
-function diff(o, n) {
+function diff(o: any, n: any) {
   let newSeq = new Object();
   let oldSeq = new Object();
 
