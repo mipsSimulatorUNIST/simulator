@@ -1,4 +1,4 @@
-import {DEBUG, pType, SYMBOL_TABLE} from './constants.js';
+import {DEBUG, pType, SYMBOL_TABLE} from './constants';
 import * as fs from 'fs';
 import path from 'path';
 import {exit} from 'process';
@@ -34,15 +34,13 @@ export function log(printType, content) {
 }
 
 // Check the value is empty or not
-export function isEmpty(value) {
+export function isEmpty(value: any) {
   if (
     value === '' ||
     value === null ||
     value === undefined ||
-    (value !== null &&
-      typeof value === 'object' &&
-      !Object.keys(value).length) ||
-    value === ['']
+    (value !== null && typeof value === 'object' && !Object.keys(value).length)
+    //|| value === ['']
   ) {
     return true;
   } else {
@@ -108,10 +106,12 @@ export function makeObjectFile(outputFolderPath, outputFileName, content) {
 
   try {
     if (fs.existsSync(outputFilePath) === true) {
-      fs.unlinkSync(outputFilePath, err =>
-        err
-          ? console.error(err)
-          : log(0, `Output file ${outputFileName} exists. Remake the file`),
+      fs.unlinkSync(
+        outputFilePath,
+        //  err =>
+        // err
+        //   ? console.error(err)
+        //   : log(0, `Output file ${outputFileName} exists. Remake the file`),
       );
     } else throw 'OUTPUT_NOT_EXISTS';
     const fd = fs.openSync(outputFilePath, 'a');

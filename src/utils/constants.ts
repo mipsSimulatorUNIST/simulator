@@ -23,7 +23,12 @@ export const pType = [start, done, success, error];
 // Structure Declaration
 
 export class instT {
-  constructor(name, op, type, funct) {
+  name: string;
+  op: string;
+  type: string;
+  funct: string;
+
+  constructor(name: string, op: string, type: string, funct: string) {
     this.name = name;
     this.op = op;
     this.type = type;
@@ -32,6 +37,9 @@ export class instT {
 }
 
 export class symbolT {
+  name: any;
+  address: any;
+
   constructor() {
     this.name = 0;
     this.address = 0;
@@ -39,7 +47,11 @@ export class symbolT {
 }
 
 export class laStruct {
-  constructor(op, rt, imm) {
+  op: string;
+  rt: string;
+  imm: string;
+
+  constructor(op: string, rt: string, imm: string) {
     this.op = op;
     this.rt = rt;
     this.imm = imm;

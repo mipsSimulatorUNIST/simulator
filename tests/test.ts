@@ -1,6 +1,6 @@
-import {assemble} from '../main.js';
-import {diffString2} from './diff.js';
-import {makeInput} from '../src/utils/functions.js';
+import {assemble} from '../main';
+import {diffString2} from './diff';
+import {makeInput} from '../src/utils/functions';
 import {
   recordDataCase,
   recordDataOutput,
@@ -12,7 +12,7 @@ import {
   testRecordData,
   testRecordText,
   testSymbolTable,
-} from './testCase.js';
+} from './testCase';
 
 const input = makeInput('sample_input', 'example1.s');
 

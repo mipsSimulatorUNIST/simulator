@@ -7,12 +7,8 @@ import {
   SYMBOL_TABLE,
   DEBUG,
   instList,
-} from '../utils/constants.js';
-import {
-  symbolTableAddEntry,
-  toHexAndPad,
-  numToBits,
-} from '../utils/functions.js';
+} from '../utils/constants';
+import {symbolTableAddEntry, toHexAndPad, numToBits} from '../utils/functions';
 
 export const makeSymbolTable = inputs => {
   /*

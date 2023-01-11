@@ -3,9 +3,9 @@ import {
   recordTextSection,
   makeBinaryFile,
   makeSymbolTable,
-} from '../src/simulator/assembler.js';
-import {SYMBOL_TABLE} from '../src/utils/constants.js';
-import {diffList, diffList2, diffString, diffString2} from './diff.js';
+} from '../src/simulator/assembler';
+import {SYMBOL_TABLE} from '../src/utils/constants';
+import {diffList, diffList2, diffString, diffString2} from './diff';
 
 export const testSymbolTable = (sInput, sOutput) => {
   const output = makeSymbolTable(sInput);
