@@ -1,6 +1,6 @@
 	.data
-data1:	.word   1
-data2:	.word   10
+data1:	.word	1
+data2:	.word	10
 	.text
 main:
 	addiu	$29, $29, -24
