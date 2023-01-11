@@ -1,6 +1,6 @@
 import {assemble} from '../main';
 import {diffString2} from './diff';
-import {makeInput} from '../src/utils/functions';
+import {log, makeInput, makeOutput} from '../src/utils/functions';
 import {
   recordDataCase,
   recordDataOutput,
@@ -8,25 +8,26 @@ import {
   recordTextOutput,
   symbolTableCase,
   testInput,
-  testOutput,
   testRecordData,
   testRecordText,
   testSymbolTable,
 } from './testCase';
 
-const input = makeInput('sample_input', 'example1.s');
-
-const output = assemble(input);
-
-export const test = output => {
+const test = (testOutput, output) => {
   diffString2(testOutput, output);
 };
 
-// test symbol table
-testSymbolTable(testInput, symbolTableCase);
-// test record text
-testRecordText(recordTextCase, recordTextOutput);
-// test record data
-testRecordData(recordDataCase, recordDataOutput);
+for (let i = 1; i <= 7; i++) {
+  const input = makeInput('sample_input', `example${i}.s`);
+  log(1, `Input file: sample${i}`);
+  const output = assemble(input);
+  const testOutput = makeOutput('sample_output', `example${i}.o`);
+  test(testOutput, output);
+}
 
-test(output);
+// // test symbol table
+// testSymbolTable(testInput, symbolTableCase);
+// // test record text
+// testRecordText(recordTextCase, recordTextOutput);
+// // test record data
+// testRecordData(recordDataCase, recordDataOutput);
