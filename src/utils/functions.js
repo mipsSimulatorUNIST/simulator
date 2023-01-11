@@ -72,7 +72,6 @@ export function makeInput(inputFolderName, inputFileName) {
     const input = fs.readFileSync(inputFilePath, 'utf-8');
 
     if (isEmpty(input)) throw 'INPUT_EMPTY';
-
     return input.split('\n');
   } catch (err) {
     if (err === 'INPUT_PATH_ERROR') {
@@ -89,6 +88,46 @@ export function makeInput(inputFolderName, inputFileName) {
     exit(1);
   }
 }
+
+export function makeOutput(inputFolderName, inputFileName) {
+  /*
+   if the inputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
+    currDirectory : /Users/junghaejune/simulator
+    inputFolderPath : sample_input/sample
+    inputFileName: example1.s
+  */
+
+  const currDirectory = process.cwd();
+  const inputFilePath = path.join(
+    currDirectory,
+    inputFolderName,
+    inputFileName,
+  );
+
+  try {
+    if (fs.existsSync(inputFilePath) === false) throw 'INPUT_PATH_ERROR';
+
+    const input = fs.readFileSync(inputFilePath, 'utf-8');
+
+    if (isEmpty(input)) throw 'INPUT_EMPTY';
+
+    return input;
+  } catch (err) {
+    if (err === 'INPUT_PATH_ERROR') {
+      log(
+        3,
+        `No input file ${inputFileName} exists. Please check the file name and path.`,
+      );
+    } else if (err === 'INPUT_EMPTY') {
+      log(
+        3,
+        `input file ${inputFileName} is not opened. Please check the file`,
+      );
+    } else console.error(err);
+    exit(1);
+  }
+}
+
 // Create an Object file(*.o) in the desired path
 export function makeObjectFile(outputFolderPath, outputFileName, content) {
   /*
