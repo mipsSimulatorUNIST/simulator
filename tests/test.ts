@@ -11,7 +11,7 @@ import {
   testRecordData,
   testRecordText,
   testSymbolTable,
-} from './testCase.js';
+} from './testCase';
 
 const test = (testOutput: string, output: string) => {
   diffString2(testOutput, output);
