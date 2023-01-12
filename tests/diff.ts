@@ -1,4 +1,4 @@
-import {bcolors} from '../src/utils/constants.js';
+import {bcolors} from '../src/utils/constants';
 
 export function diffString(o, n) {
   o = o.replace(/\s+$/, '');
@@ -108,7 +108,7 @@ export function diffList2(o, n) {
   } else {
     if (out.n[0].text == null) {
       for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
-        str += i + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
+        str += n + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
       }
     }
 

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "allowJs": true,
+    "target": "ES5",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "moduleResolution": "Node",
+    "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    "esModuleInterop": true
+  },
+  "include": ["./src/**/*.ts", "./test/*.ts"],
+  "files": ["main.ts"],
+  "exclude": ["node_modules", "dist", ".github"]
+}
