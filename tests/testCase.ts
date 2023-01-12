@@ -7,7 +7,15 @@ import {
 import {SYMBOL_TABLE} from '../src/utils/constants';
 import {diffList, diffList2, diffString, diffString2} from './diff';
 
-export const testSymbolTable = (sInput, sOutput) => {
+interface symbolTableForm {
+  symbolTable: any;
+  dataSeg: string[];
+  textSeg: string[];
+  dataSectionSize: number;
+  textSectionSize: number;
+}
+
+export const testSymbolTable = (sInput: string[], sOutput: symbolTableForm) => {
   const output = makeSymbolTable(sInput);
   console.log('--------SYMBOL TABLE--------');
   diffString2(
@@ -30,12 +38,12 @@ export const testSymbolTable = (sInput, sOutput) => {
   );
 };
 
-export const testRecordText = (sInput, sOutput) => {
+export const testRecordText = (sInput: string[], sOutput: string[]) => {
   const testOutput = recordTextSection(sInput);
   diffList(sOutput, testOutput);
 };
 
-export const testRecordData = (sInput, sOutput) => {
+export const testRecordData = (sInput: string[], sOutput: string[]) => {
   const testOutput = recordDataSection(sInput);
   diffList(sOutput, testOutput);
 };

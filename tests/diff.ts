@@ -1,6 +1,6 @@
 import {bcolors} from '../src/utils/constants';
 
-export function diffString(o, n) {
+export function diffString(o: string, n: string) {
   o = o.replace(/\s+$/, '');
   n = n.replace(/\s+$/, '');
 
@@ -8,13 +8,13 @@ export function diffString(o, n) {
   let str = '';
 
   if (out.n.length == 0) {
-    for (let i = 0; i < out.o.length; i++) {
+    for (let i: number = 0; i < out.o.length; i++) {
       str += i + '. ' + bcolors.RED + out.o[i] + '\n' + bcolors.ENDC;
     }
   } else {
     if (out.n[0].text == null) {
-      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
-        str += '  ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
+      for (let j: number = 0; j < out.o.length && out.o[j].text == null; j++) {
+        str += '  ' + bcolors.RED + out.o[j] + '\n' + bcolors.ENDC;
       }
     }
 
@@ -25,9 +25,9 @@ export function diffString(o, n) {
         let pre = '';
 
         for (
-          n = out.n[i].row + 1;
-          n < out.o.length && out.o[n].text == null;
-          n++
+          let j: number = out.n[i].row + 1;
+          j < out.o.length && out.o[n].text == null;
+          j++
         ) {
           pre += i + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
         }
@@ -39,7 +39,7 @@ export function diffString(o, n) {
   console.log(str);
 }
 
-export function diffString2(o, n) {
+export function diffString2(o: string, n: string) {
   o = o.replace(/\s+$/, '');
   n = n.replace(/\s+$/, '');
 
@@ -69,7 +69,7 @@ export function diffString2(o, n) {
   console.log(ns);
 }
 
-export function diffList(o, n) {
+export function diffList(o: string[], n: string[]) {
   let out = diff(o, n);
 
   let os = '';
@@ -96,7 +96,7 @@ export function diffList(o, n) {
   console.log(ns);
 }
 
-export function diffList2(o, n) {
+export function diffList2(o: string[], n: string[]) {
   let out = diff(o, n);
 
   let str = '';
@@ -107,8 +107,8 @@ export function diffList2(o, n) {
     }
   } else {
     if (out.n[0].text == null) {
-      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
-        str += n + '. ' + bcolors.RED + out.o[n] + '\n' + bcolors.ENDC;
+      for (let j = 0; j < out.o.length && out.o[j].text == null; j++) {
+        str += '   ' + bcolors.RED + out.o[j] + '\n' + bcolors.ENDC;
       }
     }
 
@@ -119,11 +119,11 @@ export function diffList2(o, n) {
         let pre = '';
 
         for (
-          n = out.n[i].row + 1;
-          n < out.o.length && out.o[n].text == null;
-          n++
+          let j = out.n[i].row + 1;
+          j < out.o.length && out.o[j].text == null;
+          j++
         ) {
-          pre += n + '. ' + bcolors.GREEN + out.o[n] + '\n' + bcolors.ENDC;
+          pre += j + '. ' + bcolors.GREEN + out.o[j] + '\n' + bcolors.ENDC;
         }
         str += i + '. ' + out.n[i].text + '\n' + pre;
       }
@@ -133,7 +133,7 @@ export function diffList2(o, n) {
   console.log(str);
 }
 
-function diff(o, n) {
+function diff(o: any, n: any) {
   let newSeq = new Object();
   let oldSeq = new Object();
 

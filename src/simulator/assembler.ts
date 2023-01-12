@@ -7,6 +7,7 @@ import {
   SYMBOL_TABLE,
   DEBUG,
   instList,
+  resetSymbolTable,
 } from '../utils/constants';
 import {symbolTableAddEntry, toHexAndPad, numToBits} from '../utils/functions';
 
@@ -37,6 +38,7 @@ export const makeSymbolTable = (inputs: string[]) => {
    * [USAGE EXAMPLE] 
    * const {dataSeg, textSeg, dataSectionSize, textSectionSize} = makeSymbolTable(inputs);
 ​   */
+  resetSymbolTable();
   let address: number = 0;
   let curSection: number = section.MAX_SIZE;
 

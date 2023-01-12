@@ -144,4 +144,8 @@ export const instList = {
 
 // Global symbol table
 export const symbolStruct = new symbolT();
-export const SYMBOL_TABLE: object = {};
+export let SYMBOL_TABLE: object = {};
+
+export const resetSymbolTable = () => {
+  SYMBOL_TABLE = {};
+};
