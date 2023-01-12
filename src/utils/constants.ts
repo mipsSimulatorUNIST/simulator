@@ -1,10 +1,10 @@
-export const DEBUG: number = 0;
+export const DEBUG = 0;
 
-export const MAX_SYMBOL_TABLE_SIZE: number = 1024;
-export const MEM_TEXT_START: number = 0x00400000;
-export const MEM_DATA_START: number = 0x10000000;
-export const BYTES_PER_WORD: number = 4;
-export const INST_LIST_LEN: number = 27;
+export const MAX_SYMBOL_TABLE_SIZE = 1024;
+export const MEM_TEXT_START = 0x00400000;
+export const MEM_DATA_START = 0x10000000;
+export const BYTES_PER_WORD = 4;
+export const INST_LIST_LEN = 27;
 
 type BcolorsType = {
   BLUE: string;
@@ -39,10 +39,10 @@ export const bcolors: BcolorsType = {
   ENDC: '\x1B[0m',
 };
 
-const start: string = `[${bcolors.BLUE}START${bcolors.ENDC}]  `;
-const done: string = `[${bcolors.YELLOW}DONE${bcolors.ENDC}]  `;
-const success: string = `[${bcolors.GREEN}SUCCESS${bcolors.ENDC}]  `;
-const error: string = `[${bcolors.RED}ERROR${bcolors.ENDC}]  `;
+const start = `[${bcolors.BLUE}START${bcolors.ENDC}]  `;
+const done = `[${bcolors.YELLOW}DONE${bcolors.ENDC}]  `;
+const success = `[${bcolors.GREEN}SUCCESS${bcolors.ENDC}]  `;
+const error = `[${bcolors.RED}ERROR${bcolors.ENDC}]  `;
 
 export const pType: string[] = [start, done, success, error];
 // Structure Declaration
@@ -112,7 +112,11 @@ const SLTIU = new instT('sltiu', '001011', 'I', '');
 const J = new instT('j', '000010', 'J', '');
 const JAL = new instT('jal', '000011', 'J', '');
 
-export const instList = {
+export interface IinstList {
+  [key: string]: instT;
+}
+
+export const instList: IinstList = {
   add: ADD,
   addi: ADDI,
   addiu: ADDIU,
@@ -144,7 +148,11 @@ export const instList = {
 
 // Global symbol table
 export const symbolStruct = new symbolT();
-export let SYMBOL_TABLE: object = {};
+
+export interface ISYMBOL_TABLE {
+  [key: string]: number;
+}
+export let SYMBOL_TABLE: ISYMBOL_TABLE = {};
 
 export const resetSymbolTable = () => {
   SYMBOL_TABLE = {};

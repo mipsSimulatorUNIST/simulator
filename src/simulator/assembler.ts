@@ -5,8 +5,8 @@ import {
   symbolT,
   BYTES_PER_WORD,
   SYMBOL_TABLE,
-  DEBUG,
   instList,
+  instT,
   resetSymbolTable,
 } from '../utils/constants';
 import {symbolTableAddEntry, toHexAndPad, numToBits} from '../utils/functions';
@@ -37,16 +37,16 @@ export const makeSymbolTable = (inputs: string[]) => {
    * 
    * [USAGE EXAMPLE] 
    * const {dataSeg, textSeg, dataSectionSize, textSectionSize} = makeSymbolTable(inputs);
-​   */
+  */
   resetSymbolTable();
-  let address: number = 0;
-  let curSection: number = section.MAX_SIZE;
+  let address = 0;
+  let curSection = section.MAX_SIZE;
 
-  let dataSectionSize: number = 0;
-  let textSectionSize: number = 0;
+  let dataSectionSize = 0;
+  let textSectionSize = 0;
 
-  let dataSeg: string[] = [];
-  let textSeg: string[] = [];
+  const dataSeg: string[] = [];
+  const textSeg: string[] = [];
   inputs.forEach((input: string) => {
     const splited: string[] = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol: symbolT = new symbolT();
@@ -106,11 +106,11 @@ export const recordTextSection = (textSeg: string[]) => {
    * parameter로 textSeg를 받는다.
    * textSeg 있는 text들 한 줄 씩 체크해서 binaryText 리스트에 바이너리 문장으로 추가
    * 명령어 타입별(R, I, J)로 명령어 이름별로 묶어서 번역
-   * 
+   *
    *  binaryText 이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
    *  return binaryText
    *  binaryText: ['00000000000000000000000001011000', '00000000000000000000000000001100']
-​   */
+   */
 
   let curAddress: number = MEM_TEXT_START;
   let instruct: string[];
@@ -121,7 +121,7 @@ export const recordTextSection = (textSeg: string[]) => {
   let imm: string;
   let shamt: string;
   let immReg: string;
-  let binaryText: string[] = [];
+  const binaryText: string[] = [];
 
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
@@ -150,7 +150,7 @@ export const recordTextSection = (textSeg: string[]) => {
       binaryText.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
       //console.log('000000' + rs + rt + rd + shamt + '100000');
     } else {
-      const opInfo = instList[opName];
+      const opInfo: instT = instList[opName];
       if (opInfo.type === 'R') {
         if (opInfo.name === 'sll' || opInfo.name === 'srl') {
           rs = '00000';
@@ -222,14 +222,14 @@ export const recordDataSection = (dataSeg: string[]) => {
    * input값을 dataSeg를 받는다.
    * dataSeg에 있는 data들 한 줄 씩 체크해서 binaryData 리스트에 바이너리 문장으로 추가
    * data값을 그대로 binary 문자로 번역
-   * 
+   *
    *  binaryData 이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
    *  return binaryData
    *  ex) binaryData: ['00000010001000001000100000100100', '00000010010000001001000000100100']
-  ​ */
+   */
 
   let dataNum: number;
-  let binaryData: string[] = [];
+  const binaryData: string[] = [];
   for (const data of dataSeg) {
     dataNum =
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
@@ -253,7 +253,7 @@ export const makeBinaryFile = (inputs: string[]) => {
   ];
   const binaryText: string[] = recordTextSection(textSeg);
   const binaryData: string[] = recordDataSection(dataSeg);
-  let output: string = '';
+  let output = '';
 
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;

@@ -4,7 +4,10 @@ export function diffString(o: string, n: string) {
   o = o.replace(/\s+$/, '');
   n = n.replace(/\s+$/, '');
 
-  let out = diff(o == '' ? [] : o.split(/\s+/), n == '' ? [] : n.split(/\s+/));
+  const out = diff(
+    o == '' ? [] : o.split(/\s+/),
+    n == '' ? [] : n.split(/\s+/),
+  );
   let str = '';
 
   if (out.n.length == 0) {
@@ -134,8 +137,8 @@ export function diffList2(o: string[], n: string[]) {
 }
 
 function diff(o: any, n: any) {
-  let newSeq = new Object();
-  let oldSeq = new Object();
+  let newSeq: any = {};
+  let oldSeq: any = {};
 
   for (let i = 0; i < n.length; i++) {
     if (newSeq[n[i]] == null) newSeq[n[i]] = {rows: new Array(), o: null};

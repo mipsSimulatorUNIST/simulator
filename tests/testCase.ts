@@ -1,14 +1,13 @@
 import {
   recordDataSection,
   recordTextSection,
-  makeBinaryFile,
   makeSymbolTable,
 } from '../src/simulator/assembler';
-import {SYMBOL_TABLE} from '../src/utils/constants';
-import {diffList, diffList2, diffString, diffString2} from './diff';
+import {ISYMBOL_TABLE, SYMBOL_TABLE} from '../src/utils/constants';
+import {diffList, diffString2} from './diff';
 
 interface symbolTableForm {
-  symbolTable: any;
+  symbolTable: ISYMBOL_TABLE;
   dataSeg: string[];
   textSeg: string[];
   dataSectionSize: number;
