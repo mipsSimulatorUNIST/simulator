@@ -11,10 +11,10 @@ import {
 } from '../utils/constants';
 import {symbolTableAddEntry, toHexAndPad, numToBits} from '../utils/functions';
 
-export const makeSymbolTable = inputs => {
+export const makeSymbolTable = (inputs: string[]) => {
   /*
    * make symbol table from assembly file
-   * using SYMBOL_TABLE in constants.js
+   * using SYMBOL_TABLE in constants.ts
    * 
    * 'dataSeg'에 data 저장
    * 'textSeg'에 text 저장
@@ -39,17 +39,17 @@ export const makeSymbolTable = inputs => {
    * const {dataSeg, textSeg, dataSectionSize, textSectionSize} = makeSymbolTable(inputs);
 ​   */
   resetSymbolTable();
-  let address = 0;
-  let curSection = section.MAX_SIZE;
+  let address: number = 0;
+  let curSection: number = section.MAX_SIZE;
 
-  let dataSectionSize = 0;
-  let textSectionSize = 0;
+  let dataSectionSize: number = 0;
+  let textSectionSize: number = 0;
 
-  let dataSeg = [];
-  let textSeg = [];
-  inputs.forEach(input => {
-    const splited = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
-    const symbol = new symbolT();
+  let dataSeg: string[] = [];
+  let textSeg: string[] = [];
+  inputs.forEach((input: string) => {
+    const splited: string[] = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
+    const symbol: symbolT = new symbolT();
 
     if (splited[0] == '.data') {
       curSection = section.DATA;
@@ -81,12 +81,12 @@ export const makeSymbolTable = inputs => {
         return;
       } else {
         // ex. ['and', '$17, $17, $0']
-        const name = splited[0];
+        const name: string = splited[0];
         textSeg.push(input); // ex. 'and	$17, $17, $0'
 
         if (name === 'la') {
-          const targetSymbol = splited[1].split(' ')[1]; // ex. 'data1'
-          const targetAddress = toHexAndPad(SYMBOL_TABLE[targetSymbol]);
+          const targetSymbol: string = splited[1].split(' ')[1]; // ex. 'data1'
+          const targetAddress: string = toHexAndPad(SYMBOL_TABLE[targetSymbol]);
           if (targetAddress.slice(4) !== '0000') {
             textSectionSize += BYTES_PER_WORD;
             address += BYTES_PER_WORD;
@@ -101,8 +101,8 @@ export const makeSymbolTable = inputs => {
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
-export const recordTextSection = textSeg => {
-  /**
+export const recordTextSection = (textSeg: string[]) => {
+  /*
    * parameter로 textSeg를 받는다.
    * textSeg 있는 text들 한 줄 씩 체크해서 binaryText 리스트에 바이너리 문장으로 추가
    * 명령어 타입별(R, I, J)로 명령어 이름별로 묶어서 번역
@@ -112,25 +112,32 @@ export const recordTextSection = textSeg => {
    *  binaryText: ['00000000000000000000000001011000', '00000000000000000000000000001100']
 ​   */
 
-  let curAddress = MEM_TEXT_START;
-  let instruct, address, rs, rt, rd, imm, shamt, immReg;
-  let binaryText = [];
+  let curAddress: number = MEM_TEXT_START;
+  let instruct: string[];
+  let address: number;
+  let rs: string;
+  let rt: string;
+  let rd: string;
+  let imm: string;
+  let shamt: string;
+  let immReg: string;
+  let binaryText: string[] = [];
 
   for (const text of textSeg) {
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
-    const opName = instruct[0];
+    const opName: string = instruct[0];
     //console.log('instruct', instruct);
 
     if (opName === 'la') {
-      address = SYMBOL_TABLE[instruct[2]].toString(16);
+      address = SYMBOL_TABLE[instruct[2]];
       rt = numToBits(Number(instruct[1].replace('$', '')), 5);
-      imm = numToBits(parseInt(address.slice(0, 4), 16), 16);
+      imm = numToBits(parseInt(address.toString(16).slice(0, 4), 16), 16);
       binaryText.push('001111' + '00000' + rt + imm);
       //console.log('001111' + '00000' + rt + imm); //LUI opcode
 
-      if (address.slice(4, 8) !== '0000') {
-        imm = numToBits(parseInt(address.slice(4, 8), 16), 16);
-        binaryText.push('001101' + rt + rt + numToBits(imm, 16));
+      if (address.toString(16).slice(4, 8) !== '0000') {
+        imm = numToBits(parseInt(address.toString(16).slice(4, 8), 16), 16);
+        binaryText.push('001101' + rt + rt + imm);
         //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
         curAddress += BYTES_PER_WORD;
       }
@@ -169,10 +176,13 @@ export const recordTextSection = textSeg => {
           rs = '00000';
           imm =
             instruct[2].slice(0, 2) === '0x'
-              ? parseInt(instruct[2].slice(2), 16)
-              : Number(instruct[2]);
+              ? numToBits(parseInt(instruct[2].slice(2), 16), 16)
+              : numToBits(Number(instruct[2]), 16);
         } else if (opInfo.name === 'beq' || opInfo.name === 'bne') {
-          imm = Number((SYMBOL_TABLE[instruct[3]] - (curAddress + 4)) / 4);
+          imm = numToBits(
+            Number((SYMBOL_TABLE[instruct[3]] - (curAddress + 4)) / 4),
+            16,
+          );
           rs = numToBits(Number(instruct[1].replace('$', '')), 5);
           rt = numToBits(Number(instruct[2].replace('$', '')), 5);
         } else if (
@@ -184,17 +194,17 @@ export const recordTextSection = textSeg => {
           immReg = instruct[2].split('(')[1].split(')')[0];
           rs = numToBits(Number(immReg.replace('$', '')), 5);
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
-          imm = Number(instruct[2].split('(')[0]);
+          imm = numToBits(Number(instruct[2].split('(')[0]), 16);
         } else {
           rs = numToBits(Number(instruct[2].replace('$', '')), 5);
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
 
           imm =
             instruct[3].slice(0, 2) === '0x'
-              ? parseInt(instruct[3].slice(2), 16)
-              : Number(instruct[3]);
+              ? numToBits(parseInt(instruct[3].slice(2), 16), 16)
+              : numToBits(Number(instruct[3]), 16);
         }
-        binaryText.push(opInfo.op + rs + rt + numToBits(imm, 16));
+        binaryText.push(opInfo.op + rs + rt + imm);
         //console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
@@ -207,8 +217,8 @@ export const recordTextSection = textSeg => {
   return binaryText;
 };
 
-export const recordDataSection = dataSeg => {
-  /**
+export const recordDataSection = (dataSeg: string[]) => {
+  /*
    * input값을 dataSeg를 받는다.
    * dataSeg에 있는 data들 한 줄 씩 체크해서 binaryData 리스트에 바이너리 문장으로 추가
    * data값을 그대로 binary 문자로 번역
@@ -216,34 +226,34 @@ export const recordDataSection = dataSeg => {
    *  binaryData 이라는 list에 명령어를 번역한 binary 문장을 한 줄씩 추가
    *  return binaryData
    *  ex) binaryData: ['00000010001000001000100000100100', '00000010010000001001000000100100']
-  ​ **/
+  ​ */
 
-  let dataNum;
-  let binaryData = [];
+  let dataNum: number;
+  let binaryData: string[] = [];
   for (const data of dataSeg) {
     dataNum =
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
     binaryData.push(numToBits(dataNum));
-    //console.log(numToBits(dataNum));
   }
+  //console.log(numToBits(dataNum));
   return binaryData;
 };
 
-export const makeBinaryFile = inputs => {
-  /**
+export const makeBinaryFile = (inputs: string[]) => {
+  /*
    * output에 text 문장 개수를 binary로 번역해서 추가
    * output에 data 개수를 binary로 번역해서 추가
    *
    */
   const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
     makeSymbolTable(inputs);
-  const binarySize = [
+  const binarySize: string[] = [
     numToBits(textSectionSize, 32),
     numToBits(dataSectionSize, 32),
   ];
-  const binaryText = recordTextSection(textSeg);
-  const binaryData = recordDataSection(dataSeg);
-  let output = '';
+  const binaryText: string[] = recordTextSection(textSeg);
+  const binaryData: string[] = recordDataSection(dataSeg);
+  let output: string = '';
 
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
