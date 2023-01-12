@@ -1,4 +1,19 @@
 {
+  "name": "simulator",
+  "version": "0.0.1",
+  "description": "MIPS Simulator npm package",
+  "main": "./dist/src/main.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mipsSimulatorUNIST/simulator.git"
+  },
+  "author": "mipsSimulatorUNIST",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mipsSimulatorUNIST/simulator/issues"
+  },
+  "homepage": "https://github.com/mipsSimulatorUNIST/simulator#readme",
   "devDependencies": {
     "typescript": "^4.9.4",
     "@types/node": "^18.11.18"
