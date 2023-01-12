@@ -8,6 +8,6 @@
     "lib": ["ES2015", "DOM", "DOM.Iterable"],
     "esModuleInterop": true
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "main.ts"],
   "exclude": ["node_modules", "dist"]
 }
