@@ -20,6 +20,11 @@ type SectionType = {
   MAX_SIZE: number;
 };
 
+export interface SymbolTableType {
+  name: string;
+  address: number;
+}
+
 export const section: SectionType = {
   DATA: 0,
   TEXT: 1,

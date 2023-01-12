@@ -1,9 +1,9 @@
-import {DEBUG, pType, SYMBOL_TABLE} from './constants';
+import {DEBUG, pType, SYMBOL_TABLE, SymbolTableType} from './constants';
 import * as fs from 'fs';
 import path from 'path';
 import {exit} from 'process';
 
-export function numToBits(num, pad = 32) {
+export function numToBits(num: number, pad: number = 32): string {
   // 10진수 정수를 2진수 bit로 변경해서 return
   if (num >= 0) {
     return num.toString(2).padStart(pad, '0'); //양수일때
@@ -13,7 +13,7 @@ export function numToBits(num, pad = 32) {
   }
 }
 
-export function toHexAndPad(num, pad = 8) {
+export function toHexAndPad(num: number, pad: number = 8): string {
   /*
    * num : Number or String(숫자 형식, 10진법), pad : Number
    * input : 18 => output: '00000012'
@@ -22,14 +22,14 @@ export function toHexAndPad(num, pad = 8) {
   return Number(num).toString(16).padStart(pad, '0');
 }
 
-export function symbolTableAddEntry(symbol) {
+export function symbolTableAddEntry(symbol: SymbolTableType) {
   SYMBOL_TABLE[symbol.name] = symbol.address;
   if (DEBUG) {
     log(1, `${symbol.name}: 0x${toHexAndPad(symbol.address)}`);
   }
 }
 
-export function log(printType, content) {
+export function log(printType: number, content: string) {
   console.log(pType[printType] + content);
 }
 
@@ -52,7 +52,7 @@ export function isEmpty(value: any) {
 }
 
 // Parsing an assembly file(*.s) into a list
-export function makeInput(inputFolderName, inputFileName) {
+export function makeInput(inputFolderName: string, inputFileName: string): any {
   /*
    if the inputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
     currDirectory : /Users/junghaejune/simulator
@@ -60,8 +60,8 @@ export function makeInput(inputFolderName, inputFileName) {
     inputFileName: example1.s
   */
 
-  const currDirectory = process.cwd();
-  const inputFilePath = path.join(
+  const currDirectory: string = process.cwd();
+  const inputFilePath: string = path.join(
     currDirectory,
     inputFolderName,
     inputFileName,
@@ -70,7 +70,7 @@ export function makeInput(inputFolderName, inputFileName) {
   try {
     if (fs.existsSync(inputFilePath) === false) throw 'INPUT_PATH_ERROR';
 
-    const input = fs.readFileSync(inputFilePath, 'utf-8');
+    const input: any = fs.readFileSync(inputFilePath, 'utf-8');
 
     if (isEmpty(input)) throw 'INPUT_EMPTY';
     return input.split('\n');
@@ -90,7 +90,10 @@ export function makeInput(inputFolderName, inputFileName) {
   }
 }
 
-export function makeOutput(inputFolderName, inputFileName) {
+export function makeOutput(
+  inputFolderName: string,
+  inputFileName: string,
+): any {
   /*
    if the inputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
     currDirectory : /Users/junghaejune/simulator
@@ -98,8 +101,8 @@ export function makeOutput(inputFolderName, inputFileName) {
     inputFileName: example1.s
   */
 
-  const currDirectory = process.cwd();
-  const inputFilePath = path.join(
+  const currDirectory: string = process.cwd();
+  const inputFilePath: string = path.join(
     currDirectory,
     inputFolderName,
     inputFileName,
@@ -108,10 +111,9 @@ export function makeOutput(inputFolderName, inputFileName) {
   try {
     if (fs.existsSync(inputFilePath) === false) throw 'INPUT_PATH_ERROR';
 
-    const input = fs.readFileSync(inputFilePath, 'utf-8');
+    const input: any = fs.readFileSync(inputFilePath, 'utf-8');
 
     if (isEmpty(input)) throw 'INPUT_EMPTY';
-
     return input;
   } catch (err) {
     if (err === 'INPUT_PATH_ERROR') {
@@ -130,7 +132,11 @@ export function makeOutput(inputFolderName, inputFileName) {
 }
 
 // Create an Object file(*.o) in the desired path
-export function makeObjectFile(outputFolderPath, outputFileName, content) {
+export function makeObjectFile(
+  outputFolderPath: string,
+  outputFileName: string,
+  content: [],
+): any {
   /*
    if the outputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
     currDirectory : /Users/junghaejune/simulator
@@ -139,8 +145,8 @@ export function makeObjectFile(outputFolderPath, outputFileName, content) {
     content : ['01010', '01010']
   */
 
-  const currDirectory = process.cwd();
-  const outputFilePath = path.join(
+  const currDirectory: string = process.cwd();
+  const outputFilePath: string = path.join(
     currDirectory,
     outputFolderPath,
     outputFileName,
@@ -154,7 +160,7 @@ export function makeObjectFile(outputFolderPath, outputFileName, content) {
           : log(0, `Output file ${outputFileName} exists. Remake the file`);
       });
     } else throw 'OUTPUT_NOT_EXISTS';
-    const fd = fs.openSync(outputFilePath, 'a');
+    const fd: any = fs.openSync(outputFilePath, 'a');
 
     for (const item of content) {
       fs.appendFileSync(fd, item + '\n', 'utf-8');
