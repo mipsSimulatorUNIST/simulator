@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // "types": ["jest"],
     "module": "CommonJS",
     "allowJs": true,
     "target": "ES5",
