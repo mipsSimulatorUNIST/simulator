@@ -135,7 +135,7 @@ export function makeOutput(
 export function makeObjectFile(
   outputFolderPath: string,
   outputFileName: string,
-  content: [],
+  content: string[],
 ): any {
   /*
    if the outputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,

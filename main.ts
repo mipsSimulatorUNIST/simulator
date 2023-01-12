@@ -1,7 +1,6 @@
-import {makeBinaryFile, makeSymbolTable} from './src/simulator/assembler';
-import {log} from './src/utils/functions';
+import {makeBinaryFile} from './src/simulator/assembler';
 
-export const assemble = assemblyFile => {
-  let output = makeBinaryFile(assemblyFile);
+export function assemble(assemblyFile: object): string {
+  let output: string = makeBinaryFile(assemblyFile);
   return output;
-};
+}

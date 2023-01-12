@@ -44,12 +44,7 @@ const done: string = `[${bcolors.YELLOW}DONE${bcolors.ENDC}]  `;
 const success: string = `[${bcolors.GREEN}SUCCESS${bcolors.ENDC}]  `;
 const error: string = `[${bcolors.RED}ERROR${bcolors.ENDC}]  `;
 
-export const pType: [string, string, string, string] = [
-  start,
-  done,
-  success,
-  error,
-];
+export const pType: string[] = [start, done, success, error];
 // Structure Declaration
 
 export class instT {
