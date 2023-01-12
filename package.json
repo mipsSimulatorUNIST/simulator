@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "MIPS Simulator npm package",
   "main": "./dist/src/main.js",
-  "scripts": {},
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mipsSimulatorUNIST/simulator.git"
