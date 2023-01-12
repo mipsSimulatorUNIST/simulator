@@ -37,11 +37,11 @@ export class instT {
 }
 
 export class symbolT {
-  name: any;
-  address: any;
+  name: string;
+  address: number;
 
   constructor() {
-    this.name = 0;
+    this.name = '';
     this.address = 0;
   }
 }
