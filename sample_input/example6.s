@@ -22,7 +22,7 @@ loop2:
 	sw	$3, 0($2)
 loop1:
 	la	$2, iter
-	addi $28, $0, 10
+	addi	$28, $0, 10
 	slt	$2, $2, $28
 	bne	$2, $0, loop3
 	addu	$2, $2, $0

@@ -222,8 +222,8 @@ export const recordDataSection = dataSeg => {
     dataNum =
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
     binaryData.push(numToBits(dataNum));
+    //console.log(numToBits(dataNum));
   }
-  //console.log(numToBits(dataNum));
   return binaryData;
 };
 
