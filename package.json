@@ -15,8 +15,12 @@
   },
   "homepage": "https://github.com/mipsSimulatorUNIST/simulator#readme",
   "devDependencies": {
-    "typescript": "^4.9.4",
-    "@types/node": "^18.11.18"
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "^8.31.0",
+    "prettier": "^2.8.2",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
     "ts-node": "^10.9.1"

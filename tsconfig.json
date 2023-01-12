@@ -9,7 +9,7 @@
     "lib": ["ES2015", "DOM", "DOM.Iterable"],
     "esModuleInterop": true
   },
-  "include": ["./src/**/*.ts", "./test/*.ts"],
+  "include": ["./src/**/*.ts", "./tests/*.ts"],
   "files": ["main.ts"],
   "exclude": ["node_modules", "dist", ".github"]
 }
