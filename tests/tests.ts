@@ -1,3 +1,4 @@
+/*
 import {assemble} from '../main';
 import {diffString2} from './diff';
 import {log, makeInput, makeOutput} from '../src/utils/functions';
@@ -31,3 +32,4 @@ testSymbolTable(testInput, symbolTableCase);
 testRecordText(recordTextCase, recordTextOutput);
 // // test record data
 testRecordData(recordDataCase, recordDataOutput);
+*/

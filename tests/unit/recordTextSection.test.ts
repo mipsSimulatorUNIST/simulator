@@ -90,8 +90,7 @@ const recordTextOutput = [
 
 test('testing recordTextSection', () => {
   resetSymbolTable();
-  const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
-    makeSymbolTable(testInput);
+  makeSymbolTable(testInput);
 
   const output = recordTextSection(recordTextCase);
   expect(output).toEqual(recordTextOutput);

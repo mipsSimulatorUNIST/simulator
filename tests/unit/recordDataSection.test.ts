@@ -49,8 +49,7 @@ const recordDataOutput = [
 
 test('testing recordDataSection', () => {
   resetSymbolTable();
-  const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
-    makeSymbolTable(testInput);
+  makeSymbolTable(testInput);
 
   const output = recordDataSection(recordDataCase);
   expect(output).toEqual(recordDataOutput);
