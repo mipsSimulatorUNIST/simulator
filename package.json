@@ -5,7 +5,8 @@
   "main": "./dist/src/main.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
-    "test": "jest"
+    "test": "jest",
+    "pre": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
