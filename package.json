@@ -4,9 +4,10 @@
   "description": "MIPS Simulator npm package",
   "main": "./dist/src/main.js",
   "scripts": {
+    "build": "rm -rf ./dist/ && tsc",
     "lint": "./node_modules/.bin/eslint .",
     "test": "jest",
-    "pre": "npm run lint && npm run test"
+    "pre-test": "npm run build && npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
