@@ -1,0 +1,5 @@
+{
+  "clearMocks": true,
+  "verbose": true,
+  "collectCoverage": true
+}
