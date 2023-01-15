@@ -1,10 +1,25 @@
 export const DEBUG: number = 0;
 
 export const MAX_SYMBOL_TABLE_SIZE: number = 1024;
+
 export const MEM_TEXT_START: number = 0x00400000;
+export const MEM_TEXT_SIZE: number = 0x00100000;
 export const MEM_DATA_START: number = 0x10000000;
+export const MEM_DATA_SIZE: number = 0x00100000;
+export const MEM_STACK_START: number = 0x80000000;
+export const MEM_STACK_SIZE: number = 0x00100000;
+
 export const BYTES_PER_WORD: number = 4;
 export const INST_LIST_LEN: number = 27;
+
+export const MIPS_REGS: number = 32;
+export const MEM_GROW_UP: number = 1;
+export const MEM_GROW_DOWN: number = -1;
+export const MEM_NREGIONS: number = 3;
+export const DEBUG_SET = 1;
+export const MEM_DUMP_SET = 1;
+
+export let NUM_INST_SET = 10000; // how many cycles
 
 type BcolorsType = {
   BLUE: string;
@@ -83,6 +98,61 @@ export class laStruct {
   }
 }
 
+export class CPU_State {
+  PC: number;
+  REGS: Array<number>;
+  constructor() {
+    this.PC = 0; // program counter
+    this.REGS = Array.from({length: 32}, () => 0); // register file
+    this.REGS[29] = MEM_STACK_START; // initialize $sp
+  }
+}
+
+export class instruction {
+  opcode: number;
+  func_code: number;
+  value: number;
+  target: number;
+  rs: number;
+  rt: number;
+  imm: number;
+  rd: number;
+  shamt: number;
+  constructor() {
+    this.opcode = 0; //short
+    this.func_code = 0; // short
+    this.value = 0; // uint32_t
+    this.target = 0; // uint32_t
+    this.rs = 0; // unsigned char
+    this.rt = 0; // unsigned char
+    this.imm = 0; // short
+    this.rd = 0; // unsigned char
+    this.shamt = 0; // unsigned char
+  }
+}
+
+/*
+  All simulated memory will be managed by this class
+  use the mem_write and mem_read functions to
+  access/modify the simulated memory
+*/
+export class mem_region_t {
+  start: number;
+  size: number;
+  mem: any; ////
+  off_bound: number; // For useful memory dump
+  type: number;
+  dirty: boolean;
+  constructor(start: number, size: number, type: number = MEM_GROW_UP) {
+    this.start = start;
+    this.size = size;
+    this.mem = [];
+    this.off_bound = -(size - 4) * type;
+    this.type = type;
+    this.dirty = false;
+  }
+}
+
 // Global Variable Declaration
 const SLL = new instT('sll', '000000', 'R', '000000');
 const SRL = new instT('srl', '000000', 'R', '000010');
@@ -149,3 +219,28 @@ export let SYMBOL_TABLE: object = {};
 export const resetSymbolTable = () => {
   SYMBOL_TABLE = {};
 };
+
+/*
+  Main memory
+  memory will be dynamically allocated at initialization
+*/
+export const MEM_TEXT = new mem_region_t(MEM_TEXT_START, MEM_TEXT_SIZE);
+export const MEM_DATA = new mem_region_t(MEM_DATA_START, MEM_DATA_SIZE);
+export const MEM_STACK = new mem_region_t(
+  MEM_STACK_START - MEM_STACK_SIZE,
+  MEM_STACK_SIZE,
+  MEM_GROW_DOWN,
+);
+export const MEM_REGIONS = [MEM_TEXT, MEM_DATA, MEM_STACK];
+export let CURRENT_STATE = new CPU_State();
+export let RUN_BIT: number = 0;
+export let INSTRUCTION_COUNT: number = 0;
+
+/* INSTRUCTION COUNT ADD */
+export function INST_ADD() {
+  INSTRUCTION_COUNT += 1;
+}
+
+export function NUM_INST_SUB() {
+  NUM_INST_SET -= 1;
+}
