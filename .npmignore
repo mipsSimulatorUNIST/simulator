@@ -1,0 +1,14 @@
+node_modules/
+src/
+coverage/
+.github/
+tests/
+.eslintrc.json
+.gitignore
+.gitmessage.txt
+.prettierrc.json
+babel.config.json
+COMMIT_README.md
+main.ts
+tsconfig.json
+typescript.eslintrc.json
