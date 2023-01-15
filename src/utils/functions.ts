@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import path from 'path';
 import {exit} from 'process';
 
-export function numToBits(num: number, pad: number = 32): string {
+export function numToBits(num: number, pad = 32): string {
   // 10진수 정수를 2진수 bit로 변경해서 return
   if (num >= 0) {
     return num.toString(2).padStart(pad, '0'); //양수일때
@@ -13,7 +13,7 @@ export function numToBits(num: number, pad: number = 32): string {
   }
 }
 
-export function toHexAndPad(num: number, pad: number = 8): string {
+export function toHexAndPad(num: number, pad = 8): string {
   /*
    * num : Number or String(숫자 형식, 10진법), pad : Number
    * input : 18 => output: '00000012'
@@ -34,8 +34,8 @@ export function log(printType: number, content: string) {
 }
 
 // Check the value is empty or not
-export function isEmpty(value: any) {
-  const emptyArray: any = [''];
+export function isEmpty(value: string | null | undefined | object) {
+  const emptyArray: string[] = [''];
   if (
     value === '' ||
     value === null ||
@@ -52,7 +52,10 @@ export function isEmpty(value: any) {
 }
 
 // Parsing an assembly file(*.s) into a list
-export function makeInput(inputFolderName: string, inputFileName: string): any {
+export function makeInput(
+  inputFolderName: string,
+  inputFileName: string,
+): string[] {
   /*
    if the inputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
     currDirectory : /Users/junghaejune/simulator
@@ -70,7 +73,7 @@ export function makeInput(inputFolderName: string, inputFileName: string): any {
   try {
     if (fs.existsSync(inputFilePath) === false) throw 'INPUT_PATH_ERROR';
 
-    const input: any = fs.readFileSync(inputFilePath, 'utf-8');
+    const input: string = fs.readFileSync(inputFilePath, 'utf-8');
 
     if (isEmpty(input)) throw 'INPUT_EMPTY';
     return input.split('\n');
@@ -93,7 +96,7 @@ export function makeInput(inputFolderName: string, inputFileName: string): any {
 export function makeOutput(
   inputFolderName: string,
   inputFileName: string,
-): any {
+): string {
   /*
    if the inputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
     currDirectory : /Users/junghaejune/simulator
@@ -111,7 +114,7 @@ export function makeOutput(
   try {
     if (fs.existsSync(inputFilePath) === false) throw 'INPUT_PATH_ERROR';
 
-    const input: any = fs.readFileSync(inputFilePath, 'utf-8');
+    const input: string = fs.readFileSync(inputFilePath, 'utf-8');
 
     if (isEmpty(input)) throw 'INPUT_EMPTY';
     return input;
@@ -136,7 +139,7 @@ export function makeObjectFile(
   outputFolderPath: string,
   outputFileName: string,
   content: string[],
-): any {
+) {
   /*
    if the outputFilePath is /Users/junghaejune/simulator/sample_input/sample/example1.s,
     currDirectory : /Users/junghaejune/simulator
@@ -160,7 +163,7 @@ export function makeObjectFile(
           : log(0, `Output file ${outputFileName} exists. Remake the file`);
       });
     } else throw 'OUTPUT_NOT_EXISTS';
-    const fd: any = fs.openSync(outputFilePath, 'a');
+    const fd: number = fs.openSync(outputFilePath, 'a');
 
     for (const item of content) {
       fs.appendFileSync(fd, item + '\n', 'utf-8');
