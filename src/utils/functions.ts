@@ -24,13 +24,15 @@ import {
   INST_INFO,
   instruction,
   InstructionType,
+  TEXT_SIZE,
+  DATA_SIZE,
 } from './constants';
 import * as fs from 'fs';
 import path from 'path';
 import {exit} from 'process';
 import {process_instruction} from '../simulator/run';
 
-export function parseInstr(buffer: string, index: number) {
+export function parseInstr(buffer: string, index: number): InstructionType {
   //[TODO] Implement this function
   let instr: InstructionType = new instruction();
   return instr;
@@ -42,8 +44,69 @@ export function parseData(buffer: string, index: number) {
 }
 
 export function printParseResult(INST_INFO: InstructionType[]) {
-  //[TODO] Implement this function
-  return;
+  console.log('Instruction Information');
+  /*
+    TYPE I
+    0x8: (0x001000)ADDI
+    0x9: (0x001001)ADDIU
+    0xc: (0x001100)ANDI
+    0x4: (0x000100)BEQ
+    0x5: (0x000101)BNE
+    0x25: (0x011001)LHU
+    0xf: (0x001111)LUI
+    0x23: (0x100011)LW
+    0xd: (0x001101)ORI
+    0xa: (0x001010)SLTI
+    0xb: (0x001011)SLTIU
+    0x29: (0x011101)SH
+    0x2b: (0x101011)SW
+
+    TYPE R
+    0x0: (0x000000)ADD, ADDU, AND, NOR, OR, SLT, SLTU, SLL, SRL, SUB, SUBU  if JR
+
+    TYPE J
+    0x2: (0x000010)J
+    0x3: (0x000011)JAL
+    */
+
+  const TypeIList = [
+    0x8, 0x9, 0xc, 0x4, 0x5, 0x25, 0xf, 0x23, 0xd, 0xa, 0xb, 0x29, 0x2b,
+  ];
+  const TypeRList = [0x0];
+  const TypeJList = [0x2, 0x3];
+
+  for (let i = 0; i < TEXT_SIZE / 4; i++) {
+    console.log(`INST_INFO[${i}].value : 0x${INST_INFO[i].value.toString(16)}`);
+    console.log(`INST_INFO[${i}].opcode : ${INST_INFO[i].opcode}`);
+
+    if (INST_INFO[i].opcode in TypeIList) {
+      console.log(`INST_INFO[${i}].rs : ${INST_INFO[i].rs}`);
+      console.log(`INST_INFO[${i}].rt : ${INST_INFO[i].rt}`);
+      console.log(`INST_INFO[${i}].imm : ${INST_INFO[i].imm}`);
+    } else if (INST_INFO[i].opcode in TypeRList) {
+      console.log(`INST_INFO[${i}].funcCode : ${INST_INFO[i].funcCode}`);
+      console.log(`INST_INFO[${i}].rs : ${INST_INFO[i].rs}`);
+      console.log(`INST_INFO[${i}].rt : ${INST_INFO[i].rt}`);
+      console.log(`INST_INFO[${i}].rd : ${INST_INFO[i].rd}`);
+      console.log(`INST_INFO[${i}].shamt : ${INST_INFO[i].shamt}`);
+    } else if (INST_INFO[i].opcode in TypeJList) {
+      console.log(`INST_INFO[${i}].target : ${INST_INFO[i].target}`);
+    } else {
+      console.log('Not available instrution\n');
+    }
+  }
+  console.log('Memory Dump - Text Segment\n');
+  for (let i = 0; i < TEXT_SIZE; i += 4) {
+    console.log(
+      `text_seg[${i}] : 0x${memRead(MEM_TEXT_START + i).toString(16)}`,
+    );
+  }
+  for (let i = 0; i < DATA_SIZE; i += 4) {
+    console.log(
+      `text_seg[${i}] : 0x${memRead(MEM_DATA_START + i).toString(16)}`,
+    );
+  }
+  console.log(`Current PC: ${CURRENT_STATE.PC.toString(16)}`);
 }
 
 export function numToBits(num: number, pad = 32): string {
