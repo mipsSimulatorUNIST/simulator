@@ -3,6 +3,7 @@
     // "types": ["jest"],
     "module": "CommonJS",
     "allowJs": true,
+    "declaration": true,
     "target": "ES5",
     "outDir": "./dist",
     "rootDir": "./",
