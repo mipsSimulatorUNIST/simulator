@@ -1,3 +1,12 @@
+import {
+  initMemory,
+  makeInput,
+  fromBinary,
+  initInstInfo,
+  parseInstr,
+  parseData,
+} from './functions';
+
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE: number = 1024;
 
@@ -19,6 +28,24 @@ export const DEBUG_SET = 1;
 export const MEM_DUMP_SET = 1;
 
 export let NUM_INST_SET = 10000; // how many cycles
+
+export let TEXT_SIZE: number;
+export let DATA_SIZE: number;
+export let NUM_INST: number;
+
+export let INST_INFO: InstructionType[];
+
+export type InstructionType = {
+  opcode: number;
+  funcCode: number;
+  value: number;
+  target: number;
+  rs: number;
+  rt: number;
+  imm: number;
+  rd: number;
+  shamt: number;
+};
 
 type BcolorsType = {
   BLUE: string;
@@ -60,18 +87,6 @@ const error = `[${bcolors.RED}ERROR${bcolors.ENDC}]  `;
 
 export const pType: string[] = [start, done, success, error];
 // Structure Declaration
-
-export class MIPS {
-  path: string;
-  RUN_BIT: boolean;
-
-  constructor(path: string) {
-    this.path = path;
-    this.RUN_BIT = true;
-    initMemory();
-  }
-}
-
 export class instT {
   name: string;
   type: string;
@@ -120,7 +135,7 @@ export class CPU_State {
 
 export class instruction {
   opcode: number;
-  func_code: number;
+  funcCode: number;
   value: number;
   target: number;
   rs: number;
@@ -130,7 +145,7 @@ export class instruction {
   shamt: number;
   constructor() {
     this.opcode = 0; //short
-    this.func_code = 0; // short
+    this.funcCode = 0; // short
     this.value = 0; // uint32_t
     this.target = 0; // uint32_t
     this.rs = 0; // unsigned char
@@ -138,6 +153,57 @@ export class instruction {
     this.imm = 0; // short
     this.rd = 0; // unsigned char
     this.shamt = 0; // unsigned char
+  }
+}
+
+export class MIPS {
+  //Load machine language program and set up initial state of the machine
+  inputFolderName: string;
+  inputFileName: string;
+  RUN_BIT: boolean;
+
+  constructor(inputFolderName: string, inputFileName: string) {
+    this.inputFolderName = inputFolderName;
+    this.inputFileName = inputFileName;
+
+    initMemory();
+    this.loadProgram();
+    this.RUN_BIT = true;
+  }
+
+  async loadProgram() {
+    // Load program and service routines into mem
+    let textIndex = 0;
+    let instructs: InstructionType = new instruction();
+    let bufferCount: number;
+    let buffer: string;
+
+    const line: string = makeInput(this.inputFolderName, this.inputFileName)[0];
+
+    // check text & data segment size
+    TEXT_SIZE = await fromBinary(line.substr(0, 32));
+    NUM_INST = ~~(TEXT_SIZE / 4); //몫
+    DATA_SIZE = await fromBinary(line.substr(32, 64));
+
+    // initial memory allocation of text segment
+    INST_INFO = new Array();
+    for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
+    await initInstInfo(NUM_INST);
+
+    bufferCount = ~~(line.substr(64).length / 32);
+    for (let i = 0, readStart = 64; i < bufferCount; i += 4, readStart += 64) {
+      buffer = line.substr(readStart, readStart + 32); //read 32bits
+
+      if (i < TEXT_SIZE) {
+        INST_INFO[textIndex] = parseInstr(buffer, i);
+        textIndex += 1;
+      } else if (i < TEXT_SIZE + DATA_SIZE) {
+        parseData(buffer, i - TEXT_SIZE);
+      }
+      //printParseResult(INST_INFO)
+    }
+    CURRENT_STATE.PC = MEM_TEXT_START;
+    //print("Read ", i/4, "words from program into memory.\n")
   }
 }
 

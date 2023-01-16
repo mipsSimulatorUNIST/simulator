@@ -21,11 +21,30 @@ import {
   NUM_INST_SET,
   DEBUG_SET,
   MEM_DUMP_SET,
+  INST_INFO,
+  instruction,
+  InstructionType,
 } from './constants';
 import * as fs from 'fs';
 import path from 'path';
 import {exit} from 'process';
 import {process_instruction} from '../simulator/run';
+
+export function parseInstr(buffer: string, index: number) {
+  //[TODO] Implement this function
+  let instr: InstructionType = new instruction();
+  return instr;
+}
+
+export function parseData(buffer: string, index: number) {
+  //[TODO] Implement this function
+  return;
+}
+
+export function printParseResult(INST_INFO: InstructionType[]) {
+  //[TODO] Implement this function
+  return;
+}
 
 export function numToBits(num: number, pad = 32): string {
   // 10진수 정수를 2진수 bit로 변경해서 return
@@ -438,7 +457,7 @@ export function initInstInfo(NUM_INST: number) {
   for (let i = 0; i < NUM_INST; ++i) {
     INST_INFO[i].value = 0;
     INST_INFO[i].opcode = 0;
-    INST_INFO[i].func_code = 0;
+    INST_INFO[i].funcCode = 0;
     INST_INFO[i].rs = 0;
     INST_INFO[i].rt = 0;
     INST_INFO[i].rd = 0;
@@ -458,11 +477,11 @@ export function setOPCODE(INST, VAL) {
 }
 
 export function FUNC(INST) {
-  return INST.func_code;
+  return INST.funcCode;
 }
 
 export function setFUNC(INST, VAL) {
-  INST.func_code = VAL;
+  INST.funcCode = VAL;
 }
 
 export function RS(INST) {
@@ -627,9 +646,9 @@ export function loadINST(LD, MASK) {
   Procedure: get_inst_info
   Purpose: Read instruction information
 */
-export function getInstInfo(pc) {
-  return INST_INFO[(pc - MEM_TEXT_START) >> 2];
-}
+// export function getInstInfo(pc) {
+//   return INST_INFO[(pc - MEM_TEXT_START) >> 2];
+// }
 
 export function mainProcess() {
   if (DEBUG_SET) {
