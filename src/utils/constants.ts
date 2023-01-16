@@ -1,3 +1,5 @@
+import {BlockLike} from 'typescript';
+
 export const DEBUG = 0;
 
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
@@ -46,6 +48,17 @@ const error = `[${bcolors.RED}ERROR${bcolors.ENDC}]  `;
 
 export const pType: string[] = [start, done, success, error];
 // Structure Declaration
+
+export class MIPS {
+  path: string;
+  RUN_BIT: boolean;
+
+  constructor(path: string) {
+    this.path = path;
+    this.RUN_BIT = true;
+    initMemory();
+  }
+}
 
 export class instT {
   name: string;
