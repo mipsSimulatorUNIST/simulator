@@ -312,20 +312,44 @@ export function fromBinary(bits: string): number {
   Purpose: read a 32-bit word from memory
 */
 
-export function memRead(address: number): unknown {
-  for (let i = 0; i < MEM_NREGIONS; ++i) {
-    if (
-      address >= memRegions[i].start &&
-      address < memRegions[i].start + memRegions[i].size
-    ) {
-      const offset = address - memRegions[i].start;
-      return (
-        memRegions[i].mem[offset + 3] << 24 ||
-        memRegions[i].mem[offset + 2] << 16 ||
-        memRegions[i].mem[offset + 1] << 8 ||
-        memRegions[i].mem[offset + 0] << 0
-      );
-    }
+export function memRead(address: number): number {
+  if (
+    address >= memRegions[0].start &&
+    address < memRegions[0].start + memRegions[0].size
+  ) {
+    const offset = address - memRegions[0].start;
+    return (
+      memRegions[0].mem[offset + 3] << 24 ||
+      memRegions[0].mem[offset + 2] << 16 ||
+      memRegions[0].mem[offset + 1] << 8 ||
+      memRegions[0].mem[offset + 0] << 0
+    );
+  }
+
+  if (
+    address >= memRegions[1].start &&
+    address < memRegions[1].start + memRegions[1].size
+  ) {
+    const offset = address - memRegions[1].start;
+    return (
+      memRegions[1].mem[offset + 3] << 24 ||
+      memRegions[1].mem[offset + 2] << 16 ||
+      memRegions[1].mem[offset + 1] << 8 ||
+      memRegions[1].mem[offset + 0] << 0
+    );
+  }
+
+  if (
+    address >= memRegions[2].start &&
+    address < memRegions[2].start + memRegions[2].size
+  ) {
+    const offset = address - memRegions[2].start;
+    return (
+      memRegions[2].mem[offset + 3] << 24 ||
+      memRegions[2].mem[offset + 2] << 16 ||
+      memRegions[2].mem[offset + 1] << 8 ||
+      memRegions[2].mem[offset + 0] << 0
+    );
   }
 }
 
