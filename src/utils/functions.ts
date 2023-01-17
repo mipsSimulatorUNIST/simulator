@@ -535,9 +535,9 @@ export function initInstInfo(NUM_INST: number): void {
   Procedure: get_inst_info
   Purpose: Read instruction information
 */
-// export function getInstInfo(pc) {
-//   return INST_INFO[(pc - MEM_TEXT_START) >> 2];
-// }
+export function getInstInfo(pc: number): InstructionType {
+  return INST_INFO[(pc - MEM_TEXT_START) >> 2];
+}
 
 export function mainProcess(): void {
   if (DEBUG_SET) {
