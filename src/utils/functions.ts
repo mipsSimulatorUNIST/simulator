@@ -4,20 +4,20 @@ import {
   SYMBOL_TABLE,
   SymbolTableType,
   MEM_NREGIONS,
-  MEM_REGIONS,
+  memRegions,
   MEM_GROW_UP,
   MEM_GROW_DOWN,
   RUN_BIT,
   MIPS_REGS,
-  MEM_DATA,
-  MEM_TEXT,
-  MEM_STACK,
+  memData,
+  memText,
+  memStack,
   MEM_DATA_START,
   MEM_TEXT_START,
   MEM_STACK_START,
   MEM_STACK_SIZE,
-  CURRENT_STATE,
-  INST_ADD,
+  currentState,
+  instAdd,
   NUM_INST_SET,
   DEBUG_SET,
   MEM_DUMP_SET,
@@ -106,7 +106,7 @@ export function printParseResult(INST_INFO: InstructionType[]) {
       `text_seg[${i}] : 0x${memRead(MEM_DATA_START + i).toString(16)}`,
     );
   }
-  console.log(`Current PC: ${CURRENT_STATE.PC.toString(16)}`);
+  console.log(`Current PC: ${currentState.PC.toString(16)}`);
 }
 
 export function numToBits(num: number, pad = 32): string {
@@ -303,7 +303,7 @@ assignment2 util
   Purpose: From binary to integer
 */
 
-export function fromBinary(bits: string) {
+export function fromBinary(bits: string): number {
   return parseInt(bits, 2);
 }
 
@@ -312,18 +312,18 @@ export function fromBinary(bits: string) {
   Purpose: read a 32-bit word from memory
 */
 
-export function memRead(address: number) {
+export function memRead(address: number): unknown {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
     if (
-      address >= MEM_REGIONS[i].start &&
-      address < MEM_REGIONS[i].start + MEM_REGIONS[i].size
+      address >= memRegions[i].start &&
+      address < memRegions[i].start + memRegions[i].size
     ) {
-      const offset = address - MEM_REGIONS[i].start;
+      const offset = address - memRegions[i].start;
       return (
-        MEM_REGIONS[i].mem[offset + 3] << 24 ||
-        MEM_REGIONS[i].mem[offset + 2] << 16 ||
-        MEM_REGIONS[i].mem[offset + 1] << 8 ||
-        MEM_REGIONS[i].mem[offset + 0] << 0
+        memRegions[i].mem[offset + 3] << 24 ||
+        memRegions[i].mem[offset + 2] << 16 ||
+        memRegions[i].mem[offset + 1] << 8 ||
+        memRegions[i].mem[offset + 0] << 0
       );
     }
   }
@@ -334,31 +334,31 @@ export function memRead(address: number) {
   Purpose: Write a 32-bit word to memory
 */
 
-function memWrite(address: number, value: number) {
+function memWrite(address: number, value: number): void {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
     if (
-      address >= MEM_REGIONS[i].start &&
-      address < MEM_REGIONS[i].start + MEM_REGIONS[i].size
+      address >= memRegions[i].start &&
+      address < memRegions[i].start + memRegions[i].size
     ) {
-      const offset = address - MEM_REGIONS[i].start;
+      const offset = address - memRegions[i].start;
 
-      MEM_REGIONS[i].mem[offset + 3] = (value >> 24) & 0xff;
-      MEM_REGIONS[i].mem[offset + 2] = (value >> 16) & 0xff;
-      MEM_REGIONS[i].mem[offset + 1] = (value >> 8) & 0xff;
-      MEM_REGIONS[i].mem[offset + 0] = (value >> 0) & 0xff;
+      memRegions[i].mem[offset + 3] = (value >> 24) & 0xff;
+      memRegions[i].mem[offset + 2] = (value >> 16) & 0xff;
+      memRegions[i].mem[offset + 1] = (value >> 8) & 0xff;
+      memRegions[i].mem[offset + 0] = (value >> 0) & 0xff;
 
-      /* set_off_bound */
-      MEM_REGIONS[i].dirty = true;
-      if (MEM_REGIONS[i].type === MEM_GROW_UP)
-        MEM_REGIONS[i].off_bound =
-          offset + 4 > MEM_REGIONS[i].off_bound
+      /* set_offBound */
+      memRegions[i].dirty = true;
+      if (memRegions[i].type === MEM_GROW_UP) {
+        memRegions[i].offBound =
+          offset + 4 > memRegions[i].offBound
             ? offset + 4
-            : MEM_REGIONS[i].off_bound;
-      else
-        MEM_REGIONS[i].off_bound =
-          offset + 4 < MEM_REGIONS[i].off_bound
+            : memRegions[i].offBound;
+      } else
+        memRegions[i].offBound =
+          offset + 4 < memRegions[i].offBound
             ? offset + 4
-            : MEM_REGIONS[i].off_bound;
+            : memRegions[i].offBound;
     }
   }
 }
@@ -368,29 +368,29 @@ function memWrite(address: number, value: number) {
   Purpose: Write a half of 32-bit word to memory
 */
 
-function memWriteHalf(address: number, value: number) {
+function memWriteHalf(address: number, value: number): void {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
     if (
-      address >= MEM_REGIONS[i].start &&
-      address < MEM_REGIONS[i].start + MEM_REGIONS[i].size
+      address >= memRegions[i].start &&
+      address < memRegions[i].start + memRegions[i].size
     ) {
-      const offset = address - MEM_REGIONS[i].start;
+      const offset = address - memRegions[i].start;
 
-      MEM_REGIONS[i].mem[offset + 1] = (value >> 8) & 0xff;
-      MEM_REGIONS[i].mem[offset + 0] = (value >> 0) & 0xff;
+      memRegions[i].mem[offset + 1] = (value >> 8) & 0xff;
+      memRegions[i].mem[offset + 0] = (value >> 0) & 0xff;
 
-      /* set_off_bound */
-      MEM_REGIONS[i].dirty = true;
-      if (MEM_REGIONS[i].type === MEM_GROW_UP)
-        MEM_REGIONS[i].off_bound =
-          offset + 2 > MEM_REGIONS[i].off_bound
+      /* set_offBound */
+      memRegions[i].dirty = true;
+      if (memRegions[i].type === MEM_GROW_UP)
+        memRegions[i].offBound =
+          offset + 2 > memRegions[i].offBound
             ? offset + 2
-            : MEM_REGIONS[i].off_bound;
+            : memRegions[i].offBound;
       else
-        MEM_REGIONS[i].off_bound =
-          offset + 2 < MEM_REGIONS[i].off_bound
+        memRegions[i].offBound =
+          offset + 2 < memRegions[i].offBound
             ? offset + 2
-            : MEM_REGIONS[i].off_bound;
+            : memRegions[i].offBound;
     }
   }
 }
@@ -400,22 +400,22 @@ function memWriteHalf(address: number, value: number) {
   Purpose: Execute a cycle
 */
 
-export function cycle() {
+export function cycle(): void {
   process_instruction();
   // INSTRUCTION_COUNT += 1;
-  INST_ADD();
+  instAdd();
 }
 
 /*
   Procedure: run n
   Purpose: Simulate MIPS for n cycles
 */
-export function running(num_cycles: number) {
+export function running(num_cycles: number): void {
   if (RUN_BIT === 0) {
     console.log("Can't simulate, Simulator is halted\n");
     return;
   }
-  console.log('Simulating for ' + num_cycles + ' cycles...\n');
+  console.log('Simulating for ', num_cycles, ' cycles...\n');
   for (let i = 0; i < num_cycles; ++i) {
     if (RUN_BIT === 0) {
       console.log('Simulator halted\n');
@@ -429,7 +429,7 @@ export function running(num_cycles: number) {
   Procedure: go
   Purpose: Simulate MIPS until HALTed
 */
-export function go() {
+export function go(): void {
   if (RUN_BIT === 0) {
     console.log("Can't simulate, Simulator is halted\n");
     return;
@@ -439,10 +439,10 @@ export function go() {
   console.log('Simulator halted\n');
 }
 
-export function dumpMemory() {
-  if (MEM_DATA.dirty) {
-    const dstart = MEM_DATA.start;
-    const dstop = MEM_DATA_START + MEM_DATA.off_bound;
+export function dumpMemory(): void {
+  if (memData.dirty) {
+    const dstart = memData.start;
+    const dstop = memData.start + memData.offBound;
     console.log(
       'Data section [' +
         dstart.toString(16).padStart(8, '0') +
@@ -455,9 +455,9 @@ export function dumpMemory() {
     console.log('');
   }
 
-  if (MEM_STACK.dirty) {
-    const dstart = MEM_STACK.start + MEM_STACK.off_bound;
-    const dstop = MEM_STACK_START + MEM_STACK_SIZE - 4;
+  if (memStack.dirty) {
+    const dstart = memStack.start + memStack.offBound;
+    const dstop = memStack.start + memStack.size - 4;
     console.log(
       'Stack section [' +
         dstart.toString(16).padStart(8, '0') +
@@ -475,13 +475,12 @@ export function dumpMemory() {
   Procedure: mdump
   Purpose: Dump a word-aligned region of memory to the output file.
 */
-export function mdump(start: number, stop: number) {
+export function mdump(start: number, stop: number): void {
   console.log('-------------------------------------');
   for (let i = start; i < stop + 1; i += 4) {
     console.log(
-      i.toString(16).padStart(8, '0') +
-        ': ' +
-        memRead(i).toString(16).padStart(8, '0'),
+      i.toString(16).padStart(8, '0') + ': ',
+      memRead(i).toString(16).padStart(8, '0'),
     );
     // console.log("0x%08x: 0x%08x" % (i, memRead(i)))
   }
@@ -492,31 +491,33 @@ export function mdump(start: number, stop: number) {
   Procedure: rdump
   Purpose:  Dump current register and bus values to the output file.
 */
-export function rdump() {
+export function rdump(): void {
   console.log('Current register values :');
   console.log('-------------------------------------');
-  console.log('PC:' + CURRENT_STATE.PC.toString(16).padStart(8, '0'));
+  console.log('PC:' + currentState.PC.toString(16).padStart(8, '0'));
   console.log('Registers:');
   for (let k = 0; k < MIPS_REGS; ++k) {
     console.log(
-      'R' + k + ':' + CURRENT_STATE.REGS[k].toString(16).padStart(8, '0'),
+      'R',
+      k,
+      ':' + currentState.REGS[k].toString(16).padStart(8, '0'),
     );
   }
-  // console.log("PC: 0x%08x" % CURRENT_STATE.PC)
+  // console.log("PC: 0x%08x" % currentState.PC)
   // console.log("Registers:")
   // for k in range(MIPS_REGS):
-  //     console.log("R%d: 0x%08x" % (k, ctypes.c_uint(CURRENT_STATE.REGS[k]).value))
+  //     console.log("R%d: 0x%08x" % (k, ctypes.c_uint(currentState.REGS[k]).value))
   console.log('');
 }
 
-export function initMemory() {
+export function initMemory(): void {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
-    MEM_REGIONS[i].mem = Array.from({length: MEM_REGIONS[i].size}, () => 0);
-    // MEM_REGIONS[i].mem = [0] * MEM_REGIONS[i].size;
+    memRegions[i].mem = Array.from({length: memRegions[i].size}, () => 0);
+    // memRegions[i].mem = [0] * memRegions[i].size;
   }
 }
 
-export function initInstInfo(NUM_INST: number) {
+export function initInstInfo(NUM_INST: number): void {
   for (let i = 0; i < NUM_INST; ++i) {
     INST_INFO[i].value = 0;
     INST_INFO[i].opcode = 0;
@@ -530,181 +531,6 @@ export function initInstInfo(NUM_INST: number) {
   }
 }
 
-/* assignment2 run*/
-export function OPCODE(INST) {
-  return INST.opcode;
-}
-
-export function setOPCODE(INST, VAL) {
-  INST.opcode = VAL;
-}
-
-export function FUNC(INST) {
-  return INST.funcCode;
-}
-
-export function setFUNC(INST, VAL) {
-  INST.funcCode = VAL;
-}
-
-export function RS(INST) {
-  return INST.rs;
-}
-
-export function setRS(INST, VAL) {
-  INST.rs = VAL;
-}
-
-export function RT(INST) {
-  return INST.rt;
-}
-
-export function setRT(INST, VAL) {
-  INST.rt = VAL;
-}
-
-export function RD(INST) {
-  return INST.rd;
-}
-
-export function setRD(INST, VAL) {
-  INST.rd = VAL;
-}
-
-export function FS(INST) {
-  return RD(INST);
-}
-
-export function setFS(INST, VAL) {
-  setRD(INST, VAL);
-}
-
-export function FT(INST) {
-  return RT(INST);
-}
-
-export function SET_FT(INST, VAL) {
-  setRT(INST, VAL);
-}
-
-export function FD(INST) {
-  return SHAMT(INST);
-}
-
-export function setFD(INST, VAL) {
-  setSHAMT(INST, VAL);
-}
-
-export function SHAMT(INST) {
-  return INST.shamt;
-}
-
-export function setSHAMT(INST, VAL) {
-  INST.shamt = VAL;
-}
-
-export function IMM(INST) {
-  return INST.imm;
-}
-
-export function setIMM(INST, VAL) {
-  INST.imm = VAL;
-}
-
-export function BASE(INST) {
-  return RS(INST);
-}
-
-export function setBASE(INST, VAL) {
-  setRS(INST, VAL);
-}
-
-export function IOFFSET(INST) {
-  return IMM(INST);
-}
-
-export function setIOFFSET(INST, VAL) {
-  setIMM(INST, VAL);
-}
-
-export function IDISP(INST) {
-  const X = INST.imm << 2;
-  return SIGN_EX(X);
-}
-
-export function COND(INST) {
-  return RS(INST);
-}
-
-export function setCOND(INST, VAL) {
-  setRS(INST, VAL);
-}
-
-export function CC(INST) {
-  return RT(INST) >> 2;
-}
-
-export function ND(INST) {
-  return (RT(INST) & 0x2) >> 1;
-}
-
-export function TF(INST) {
-  return RT(INST) & 0x1;
-}
-
-export function TARGET(INST) {
-  return INST.target;
-}
-
-export function setTARGET(INST, VAL) {
-  INST.target = VAL;
-}
-
-export function ENCODING(INST) {
-  return INST.encoding;
-}
-
-export function setENCODIGN(INST, VAL) {
-  INST.encoding = VAL;
-}
-
-export function EXPR(INST) {
-  return INST.expr;
-}
-
-export function setEXPR(INST, VAL) {
-  INST.expr = VAL;
-}
-
-export function SOURCE(INST) {
-  return INST.source_line;
-}
-
-export function setSOURCE(INST, VAL) {
-  INST.source_line = VAL;
-}
-
-/* Sign Extension */
-export function SIGN_EX(X) {
-  if (X & 0x8000) return X | 0xffff0000;
-  else return X;
-}
-
-export function branchINST(TEST, TARGET) {
-  if (TEST) {
-    const target = TARGET;
-    jumpINST(target);
-  }
-}
-
-export function jumpINST(TARGET) {
-  CURRENT_STATE.PC = TARGET;
-}
-
-export function loadINST(LD, MASK) {
-  return LD & MASK;
-}
-
 /*
   Procedure: get_inst_info
   Purpose: Read instruction information
@@ -713,9 +539,9 @@ export function loadINST(LD, MASK) {
 //   return INST_INFO[(pc - MEM_TEXT_START) >> 2];
 // }
 
-export function mainProcess() {
+export function mainProcess(): void {
   if (DEBUG_SET) {
-    console.log('Simulating for ' + NUM_INST_SET + ' cycles');
+    console.log('Simulating for ', NUM_INST_SET, ' cycles');
 
     while (NUM_INST_SET > 0) {
       cycle();
