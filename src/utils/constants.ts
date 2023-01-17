@@ -47,6 +47,9 @@ export type InstructionType = {
   imm: number;
   rd: number;
   shamt: number;
+
+  encoding: number;
+  expr: number;
 };
 
 type BcolorsType = {
@@ -217,7 +220,7 @@ export class MIPS {
 export class memRegionT {
   start: number;
   size: number;
-  mem: unknown; ////////////////////////////////////
+  mem: number[]; ////////////////////////////////////
   offBound: number;
   type: number;
   dirty: boolean;
@@ -317,7 +320,7 @@ export const memStack = new memRegionT(
   MEM_STACK_SIZE,
   MEM_GROW_DOWN,
 );
-export const memRegions = [memText, memData, memStack];
+export const memRegions: memRegionT[] = [memText, memData, memStack];
 export const currentState = new cpuState();
 
 /* INSTRUCTION COUNT ADD */
