@@ -6,18 +6,14 @@ import {
   MEM_NREGIONS,
   memRegions,
   MEM_GROW_UP,
-  MEM_GROW_DOWN,
   RUN_BIT,
   MIPS_REGS,
   memData,
-  memText,
   memStack,
   MEM_DATA_START,
   MEM_TEXT_START,
-  MEM_STACK_START,
-  MEM_STACK_SIZE,
   currentState,
-  instAdd,
+  instAddOne,
   NUM_INST_SET,
   DEBUG_SET,
   MEM_DUMP_SET,
@@ -30,16 +26,52 @@ import {
 import * as fs from 'fs';
 import path from 'path';
 import {exit} from 'process';
-import {process_instruction} from '../simulator/run';
+import {
+  process_instruction,
+  setFUNC,
+  setIMM,
+  setOPCODE,
+  setRD,
+  setRS,
+  setRT,
+  setSHAMT,
+  setTARGET,
+} from '../simulator/run';
 
-export function parseInstr(buffer: string, index: number): InstructionType {
+export function parseInstr(buffer: string, index: number): instruction {
   //[TODO] Implement this function
-  let instr: InstructionType = new instruction();
+  const instr: instruction = new instruction();
+
+  setOPCODE(instr, fromBinary(buffer.slice(0, 6)));
+
+  // R type
+  if (instr.opcode === 0x0) {
+    setRS(instr, fromBinary(buffer.slice(6, 11)));
+    setRT(instr, fromBinary(buffer.slice(11, 16)));
+    setRD(instr, fromBinary(buffer.slice(16, 21)));
+    setSHAMT(instr, fromBinary(buffer.slice(21, 26)));
+    setFUNC(instr, fromBinary(buffer.slice(26, 32)));
+  }
+
+  // J type
+  else if (instr.opcode === 0x2 || instr.opcode === 0x3) {
+    setTARGET(instr, fromBinary(buffer.slice(6, 32)));
+  }
+
+  // I type
+  else {
+    setRS(instr, fromBinary(buffer.slice(6, 11)));
+    setRT(instr, fromBinary(buffer.slice(11, 16)));
+    setIMM(instr, fromBinary(buffer.slice(16, 32)));
+  }
+
+  memWrite(MEM_TEXT_START + index, fromBinary(buffer));
   return instr;
 }
 
 export function parseData(buffer: string, index: number) {
   //[TODO] Implement this function
+  memWrite(MEM_DATA_START + index, fromBinary(buffer));
   return;
 }
 
@@ -358,7 +390,7 @@ export function memRead(address: number): number {
   Purpose: Write a 32-bit word to memory
 */
 
-function memWrite(address: number, value: number): void {
+export function memWrite(address: number, value: number): void {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
     if (
       address >= memRegions[i].start &&
@@ -392,7 +424,7 @@ function memWrite(address: number, value: number): void {
   Purpose: Write a half of 32-bit word to memory
 */
 
-function memWriteHalf(address: number, value: number): void {
+export function memWriteHalf(address: number, value: number): void {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
     if (
       address >= memRegions[i].start &&
@@ -426,8 +458,8 @@ function memWriteHalf(address: number, value: number): void {
 
 export function cycle(): void {
   process_instruction();
-  // INSTRUCTION_COUNT += 1;
-  instAdd();
+
+  instAddOne();
 }
 
 /*
