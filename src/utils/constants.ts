@@ -35,7 +35,7 @@ export let TEXT_SIZE: number;
 export let DATA_SIZE: number;
 export let NUM_INST: number;
 
-export let INST_INFO: InstructionType[];
+export let INST_INFO: instruction[];
 
 export type InstructionType = {
   opcode: number;
@@ -148,6 +148,8 @@ export class instruction {
   imm: number;
   rd: number;
   shamt: number;
+  encoding: number;
+  expr: number;
   constructor() {
     this.opcode = 0;
     this.funcCode = 0;
@@ -158,6 +160,8 @@ export class instruction {
     this.imm = 0;
     this.rd = 0;
     this.shamt = 0;
+    this.encoding = 0;
+    this.expr = 0;
   }
 }
 
@@ -207,11 +211,9 @@ export class MIPS {
       }
       //printParseResult(INST_INFO)
     }
-    CURRENT_STATE.PC = MEM_TEXT_START;
-    //print("Read ", i/4, "words from program into memory.\n")
+    currentState.PC = MEM_TEXT_START;
   }
 }
-
 /*
   All simulated memory will be managed by this class
   use the mem_write and mem_read functions to
@@ -324,10 +326,14 @@ export const memRegions: memRegionT[] = [memText, memData, memStack];
 export const currentState = new cpuState();
 
 /* INSTRUCTION COUNT ADD */
-export const instAdd = () => {
+export const instAddOne = () => {
   INSTRUCTION_COUNT += 1;
 };
 
 export const numInstSub = () => {
   NUM_INST_SET -= 1;
+};
+
+export const changeRunBit = () => {
+  RUN_BIT = 0;
 };
