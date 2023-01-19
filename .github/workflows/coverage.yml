@@ -30,19 +30,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/configure-pages@v2
-      - uses: actions/setup-node@v3
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/checkout@v3
+        uses: actions/configure-pages@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run pre-test
-      - name: Setup Pages
-      - name: Upload artifact
+        run: npm ci
+        run: npm run pre-test
+        name: Setup Pages
+        name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload the coverage directory from the repository
           path: './coverage/lcov-report'
-      - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v1
