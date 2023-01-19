@@ -17,7 +17,6 @@ import {
   NUM_INST_SET,
   DEBUG_SET,
   MEM_DUMP_SET,
-  INST_INFO,
   instruction,
   InstructionType,
 } from './constants';
@@ -565,7 +564,10 @@ export function initMemory(): void {
   }
 }
 
-export function initInstInfo(NUM_INST: number): void {
+export function initInstInfo(
+  NUM_INST: number,
+  INST_INFO: InstructionType[],
+): void {
   for (let i = 0; i < NUM_INST; ++i) {
     INST_INFO[i].value = 0;
     INST_INFO[i].opcode = 0;

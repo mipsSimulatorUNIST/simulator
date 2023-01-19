@@ -164,6 +164,42 @@ export class instruction {
   }
 }
 
+export function initialize(
+  binary: string[],
+  textSize: number,
+  dataSize: number,
+) {
+  initMemory();
+
+  // Load program and service routines into mem
+  let textIndex = 0;
+  let buffer: string;
+  let size = 0;
+  const instructs: InstructionType = new instruction();
+
+  const NUM_INST: number = ~~(textSize / 4); //몫
+
+  // initial memory allocation of text segment
+  for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
+  initInstInfo(NUM_INST, INST_INFO);
+
+  for (let i = 0; i < binary.length; i++) {
+    buffer = binary[i];
+    if (size < textSize) {
+      INST_INFO[textIndex] = parseInstr(buffer, size);
+      textIndex += 1;
+    } else if (size < textSize + dataSize) {
+      parseData(buffer, size - textSize);
+    }
+    size += 4;
+  }
+  //printParseResult(INST_INFO, textSize, dataSize);
+  currentState.PC = MEM_TEXT_START;
+
+  RUN_BIT = 1;
+  return {INST_INFO};
+}
+
 export class MIPS {
   //Load machine language program and set up initial state of the machine
   binary: string[];
@@ -179,33 +215,6 @@ export class MIPS {
     initMemory();
     this.loadProgram();
     this.RUN_BIT = true;
-  }
-
-  loadProgram() {
-    // Load program and service routines into mem
-    let textIndex = 0;
-    let buffer: string;
-    let size = 0;
-    const instructs: InstructionType = new instruction();
-
-    const NUM_INST: number = ~~(this.textSize / 4); //몫
-
-    // initial memory allocation of text segment
-    for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
-    initInstInfo(NUM_INST);
-
-    for (let i = 0; i < this.binary.length; i++) {
-      buffer = this.binary[i];
-      if (size < this.textSize) {
-        INST_INFO[textIndex] = parseInstr(buffer, size);
-        textIndex += 1;
-      } else if (size < this.textSize + this.dataSize) {
-        parseData(buffer, size - this.textSize);
-      }
-      size += 4;
-    }
-    //printParseResult(INST_INFO, this.textSize, this.dataSize);
-    currentState.PC = MEM_TEXT_START;
   }
 }
 /*

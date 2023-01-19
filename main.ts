@@ -1,5 +1,5 @@
 import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
-import {MIPS} from './src/utils/constants';
+import {initialize} from './src/utils/constants';
 
 export function assemble(assemblyFile: string[]): string {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
@@ -19,11 +19,11 @@ export function simulator(assemblyFile: string[]) {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
     makeBinaryObject(assemblyFile);
 
-  const output: object = new MIPS(
+  const {INST_INFO} = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
   );
 
-  return output;
+  return INST_INFO;
 }
