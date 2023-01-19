@@ -169,45 +169,51 @@ export class MIPS {
   //Load machine language program and set up initial state of the machine
   inputFolderName: string;
   inputFileName: string;
+  textSize: number;
+  dataSize: number;
   RUN_BIT: boolean;
 
-  constructor(inputFolderName: string, inputFileName: string) {
+  constructor(
+    inputFolderName: string,
+    inputFileName: string,
+    textSize: number,
+    dataSize: number,
+  ) {
     this.inputFolderName = inputFolderName;
     this.inputFileName = inputFileName;
+    this.textSize = textSize;
+    this.dataSize = dataSize;
 
     initMemory();
     this.loadProgram();
     this.RUN_BIT = true;
   }
 
-  async loadProgram() {
+  loadProgram() {
     // Load program and service routines into mem
     let textIndex = 0;
-    let instructs: InstructionType = new instruction();
-    let bufferCount: number;
     let buffer: string;
+    const instructs: InstructionType = new instruction();
 
     const line: string = makeInput(this.inputFolderName, this.inputFileName)[0];
 
     // check text & data segment size
-    TEXT_SIZE = await fromBinary(line.substr(0, 32));
-    NUM_INST = ~~(TEXT_SIZE / 4); //몫
-    DATA_SIZE = await fromBinary(line.substr(32, 64));
+    const NUM_INST: number = ~~(this.textSize / 4); //몫
 
     // initial memory allocation of text segment
     INST_INFO = new Array();
     for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
-    await initInstInfo(NUM_INST);
+    initInstInfo(NUM_INST);
 
-    bufferCount = ~~(line.substr(64).length / 32);
+    const bufferCount: number = ~~(line.substr(64).length / 32);
     for (let i = 0, readStart = 64; i < bufferCount; i += 4, readStart += 64) {
       buffer = line.substr(readStart, readStart + 32); //read 32bits
 
-      if (i < TEXT_SIZE) {
+      if (i < this.textSize) {
         INST_INFO[textIndex] = parseInstr(buffer, i);
         textIndex += 1;
-      } else if (i < TEXT_SIZE + DATA_SIZE) {
-        parseData(buffer, i - TEXT_SIZE);
+      } else if (i < this.textSize + this.dataSize) {
+        parseData(buffer, i - this.textSize);
       }
       //printParseResult(INST_INFO)
     }

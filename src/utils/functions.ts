@@ -317,17 +317,7 @@ export function makeObjectFile(
 }
 
 /*
-
-
-
-
-
 assignment2 util
-
-
-
-
-
 */
 
 /*
