@@ -5,6 +5,7 @@ import {
   initInstInfo,
   parseInstr,
   parseData,
+  printParseResult,
 } from './functions';
 
 export const DEBUG = 0;
@@ -31,11 +32,9 @@ export let NUM_INST_SET = 10000; // how many cycles
 export let RUN_BIT = 0;
 export let INSTRUCTION_COUNT = 0;
 
-export let TEXT_SIZE: number;
-export let DATA_SIZE: number;
 export let NUM_INST: number;
 
-export let INST_INFO: instruction[];
+export const INST_INFO: InstructionType[] = [];
 
 export type InstructionType = {
   opcode: number;
@@ -47,7 +46,6 @@ export type InstructionType = {
   imm: number;
   rd: number;
   shamt: number;
-
   encoding: number;
   expr: number;
 };
@@ -150,6 +148,7 @@ export class instruction {
   shamt: number;
   encoding: number;
   expr: number;
+
   constructor() {
     this.opcode = 0;
     this.funcCode = 0;
@@ -167,20 +166,13 @@ export class instruction {
 
 export class MIPS {
   //Load machine language program and set up initial state of the machine
-  inputFolderName: string;
-  inputFileName: string;
+  binary: string[];
   textSize: number;
   dataSize: number;
   RUN_BIT: boolean;
 
-  constructor(
-    inputFolderName: string,
-    inputFileName: string,
-    textSize: number,
-    dataSize: number,
-  ) {
-    this.inputFolderName = inputFolderName;
-    this.inputFileName = inputFileName;
+  constructor(binary: string[], textSize: number, dataSize: number) {
+    this.binary = binary;
     this.textSize = textSize;
     this.dataSize = dataSize;
 
@@ -193,30 +185,26 @@ export class MIPS {
     // Load program and service routines into mem
     let textIndex = 0;
     let buffer: string;
+    let size = 0;
     const instructs: InstructionType = new instruction();
 
-    const line: string = makeInput(this.inputFolderName, this.inputFileName)[0];
-
-    // check text & data segment size
     const NUM_INST: number = ~~(this.textSize / 4); //몫
 
     // initial memory allocation of text segment
-    INST_INFO = new Array();
     for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
     initInstInfo(NUM_INST);
 
-    const bufferCount: number = ~~(line.substr(64).length / 32);
-    for (let i = 0, readStart = 64; i < bufferCount; i += 4, readStart += 64) {
-      buffer = line.substr(readStart, readStart + 32); //read 32bits
-
-      if (i < this.textSize) {
-        INST_INFO[textIndex] = parseInstr(buffer, i);
+    for (let i = 0; i < this.binary.length; i++) {
+      buffer = this.binary[i];
+      if (size < this.textSize) {
+        INST_INFO[textIndex] = parseInstr(buffer, size);
         textIndex += 1;
-      } else if (i < this.textSize + this.dataSize) {
-        parseData(buffer, i - this.textSize);
+      } else if (size < this.textSize + this.dataSize) {
+        parseData(buffer, size - this.textSize);
       }
-      //printParseResult(INST_INFO)
+      size += 4;
     }
+    //printParseResult(INST_INFO, this.textSize, this.dataSize);
     currentState.PC = MEM_TEXT_START;
   }
 }

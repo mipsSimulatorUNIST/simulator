@@ -20,8 +20,6 @@ import {
   INST_INFO,
   instruction,
   InstructionType,
-  TEXT_SIZE,
-  DATA_SIZE,
 } from './constants';
 import * as fs from 'fs';
 import path from 'path';
@@ -75,7 +73,11 @@ export function parseData(buffer: string, index: number) {
   return;
 }
 
-export function printParseResult(INST_INFO: InstructionType[]) {
+export function printParseResult(
+  INST_INFO: InstructionType[],
+  textSize: number,
+  dataSize: number,
+) {
   console.log('Instruction Information');
   /*
     TYPE I
@@ -107,7 +109,7 @@ export function printParseResult(INST_INFO: InstructionType[]) {
   const TypeRList = [0x0];
   const TypeJList = [0x2, 0x3];
 
-  for (let i = 0; i < TEXT_SIZE / 4; i++) {
+  for (let i = 0; i < textSize / 4; i++) {
     console.log(`INST_INFO[${i}].value : 0x${INST_INFO[i].value.toString(16)}`);
     console.log(`INST_INFO[${i}].opcode : ${INST_INFO[i].opcode}`);
 
@@ -128,12 +130,12 @@ export function printParseResult(INST_INFO: InstructionType[]) {
     }
   }
   console.log('Memory Dump - Text Segment\n');
-  for (let i = 0; i < TEXT_SIZE; i += 4) {
+  for (let i = 0; i < textSize; i += 4) {
     console.log(
       `text_seg[${i}] : 0x${memRead(MEM_TEXT_START + i).toString(16)}`,
     );
   }
-  for (let i = 0; i < DATA_SIZE; i += 4) {
+  for (let i = 0; i < dataSize; i += 4) {
     console.log(
       `text_seg[${i}] : 0x${memRead(MEM_DATA_START + i).toString(16)}`,
     );
