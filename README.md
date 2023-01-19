@@ -1,13 +1,31 @@
 # MIPS Simulator v0.0.1
 
-**_npm_ link** [Not Yet]()
+You can use Node.js MIPS Simulator with [**npm**](https://www.npmjs.com/package/mips-simulator-js)
 
-**_Git Repository_** [Not Yet]()
+[**_Git Repository_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator)
 
-- **_Always opening_** to join this project for developing this library.
-- **_Typescript_** is supported.
+<br/>
 
-**_View Demo_** [Not Yet]()
+### Contribution
+
+We have completed building CI, and test automation is also ready.
+
+**_Always opening_** to join this project for developing this library.
+
+❗️[**_ISSUE_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/issues)
+
+✅ [**_Pull Request_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/pulls)
+
+<br/>
+
+### support
+
+![JavaScript](https://img.shields.io/badge/-JavaScript-black?style=flat-square&logo=javascript)
+![TypeScript](https://img.shields.io/badge/-TypeScript-black?style=flat-square&logo=typescript)
+
+### Demo GUI
+
+[Not Yet]()
 
 ---
 
@@ -97,9 +115,90 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 
 ---
 
-## Contributing
+## Supported Instruction
 
-If you want to contribute to `mips-simulator`, please contact me 'Email address'
+you can check
+[**MIPS Reference**](https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_Green_Sheet.pdf)
+
+In this library, we support below instructions
+
+| Instruction | Format | opcode | funct  |
+| :---------: | :----: | :----: | :----: |
+|     SLL     |   R    | 000000 | 000000 |
+|     SRL     |   R    | 000000 | 000010 |
+|     JR      |   R    | 000000 | 001000 |
+|     ADD     |   R    | 000000 | 100000 |
+|    ADDU     |   R    | 000000 | 100001 |
+|     AND     |   R    | 000000 | 100100 |
+|     NOR     |   R    | 000000 | 100111 |
+|     OR      |   R    | 000000 | 100101 |
+|     SLT     |   R    | 000000 | 101010 |
+|    SLTU     |   R    | 000000 | 101011 |
+|     SUB     |   R    | 000000 | 100010 |
+|    SUBU     |   R    | 000000 | 100011 |
+|     LUI     |   I    | 001111 |  null  |
+|     BEQ     |   I    | 000100 |  null  |
+|     BNE     |   I    | 000101 |  null  |
+|     LW      |   I    | 100011 |  null  |
+|     LHU     |   I    | 100101 |  null  |
+|     SW      |   I    | 101011 |  null  |
+|     SH      |   I    | 101001 |  null  |
+|    ADDI     |   I    | 001000 |  null  |
+|    ADDIU    |   I    | 001001 |  null  |
+|    ANDI     |   I    | 001100 |  null  |
+|     ORI     |   I    | 001101 |  null  |
+|    SLTI     |   I    | 001010 |  null  |
+|    SLTIU    |   I    | 001011 |  null  |
+|      J      |   J    | 000010 |  null  |
+|     JAL     |   J    | 000011 |  null  |
+
+## pseudo Instruction
+
+#### **la (load address)**
+
+`la $2, VAR1`
+
+- `VAR1` is a label in the data section. It should be converted to lui and ori instructions.
+- lui $register, upper 16bit address
+  ori $register, lower 16bit address
+  If the lower 16bit address is 0x0000, the ori instruction is useless.
+  - Case1) load address is 0x1000 0000
+    <br/>
+    lui $2, 0x1000
+
+  - Case2) load address is 0x1000 0004
+    <br/>
+    lui $2, 0x1000
+    <br/>
+    ori $2, $2, 0x0004
+
+#### **move**
+
+`move $1, $2`
+
+It should be converted to add instruction with $0 as a target register(rt).
+
+---
+
+## Contribution
+
+If you want to contribute to [**mips-simulator-js**](https://www.npmjs.com/package/mips-simulator-js), please come in [**_Git Repository_**](https://github.com/mipsSimulatorUNIST/simulator) and clone!
+
+We have completed building CI, and test automation is also ready.
+
+We are using testing library with `jest`
+
+**_Always opening_** to join this project for developing this library.
+
+❗️[**_ISSUE_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/issues)
+
+✅ [**_Pull Request_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/pulls)
+
+### required environment (global)
+
+```bash
+$ npm install typescript -g
+```
 
 ---
 
