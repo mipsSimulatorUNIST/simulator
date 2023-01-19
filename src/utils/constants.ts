@@ -199,24 +199,6 @@ export function initialize(
   RUN_BIT = 1;
   return {INST_INFO};
 }
-
-export class MIPS {
-  //Load machine language program and set up initial state of the machine
-  binary: string[];
-  textSize: number;
-  dataSize: number;
-  RUN_BIT: boolean;
-
-  constructor(binary: string[], textSize: number, dataSize: number) {
-    this.binary = binary;
-    this.textSize = textSize;
-    this.dataSize = dataSize;
-
-    initMemory();
-    this.loadProgram();
-    this.RUN_BIT = true;
-  }
-}
 /*
   All simulated memory will be managed by this class
   use the mem_write and mem_read functions to
