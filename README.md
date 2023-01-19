@@ -1,8 +1,14 @@
-# MIPS Simulator v1.0.1
+# MIPS Simulator
+
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/mipsSimulatorUNIST/simulator/ci.yml?style=plastic)
+![Weekly Downloads](https://img.shields.io/npm/dw/mips-simulator-js?style=plastic)
+![version](https://img.shields.io/npm/v/mips-simulator-js?style=plastic)
 
 You can use Node.js MIPS Simulator with [**npm**](https://www.npmjs.com/package/mips-simulator-js)
 
 [**_Git Repository_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator)
+
+[**_Coverage Status_ &rarr;**](https://mipssimulatorunist.github.io/simulator/)
 
 ### Contribution
 
