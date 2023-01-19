@@ -239,25 +239,38 @@ export const recordDataSection = (dataSeg: string[]) => {
   return binaryData;
 };
 
-export const makeBinaryFile = (inputs: string[]) => {
+export const makeBinaryObject = (inputs: string[]) => {
+  const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
+    makeSymbolTable(inputs);
+  const binaryText: string[] = recordTextSection(textSeg);
+  const binaryData: string[] = recordDataSection(dataSeg);
+
+  return {
+    dataSectionSize: dataSectionSize,
+    textSectionSize: textSectionSize,
+    binaryText: binaryText,
+    binaryData: binaryData,
+  };
+};
+
+export const makeBinaryFile = (
+  dataSectionSize,
+  textSectionSize,
+  binaryText,
+  binaryData,
+) => {
   /*
    * output에 text 문장 개수를 binary로 번역해서 추가
    * output에 data 개수를 binary로 번역해서 추가
    *
    */
-  const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
-    makeSymbolTable(inputs);
   const binarySize: string[] = [
     numToBits(textSectionSize, 32),
     numToBits(dataSectionSize, 32),
   ];
-  const binaryText: string[] = recordTextSection(textSeg);
-  const binaryData: string[] = recordDataSection(dataSeg);
   let output = '';
-
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
   });
-
   return output;
 };

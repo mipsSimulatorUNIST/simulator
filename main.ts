@@ -1,6 +1,15 @@
-import {makeBinaryFile} from './src/simulator/assembler';
+import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
 
 export function assemble(assemblyFile: string[]): string {
-  const output: string = makeBinaryFile(assemblyFile);
+  const {dataSectionSize, textSectionSize, binaryText, binaryData} =
+    makeBinaryObject(assemblyFile);
+
+  const output = makeBinaryFile(
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+  );
+
   return output;
 }
