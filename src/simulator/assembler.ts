@@ -101,7 +101,7 @@ export const makeSymbolTable = (inputs: string[]) => {
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
-export const recordTextSection = (textSeg: string[]) => {
+export function recordTextSection(textSeg: string[]): string[] {
   /*
    * parameter로 textSeg를 받는다.
    * textSeg 있는 text들 한 줄 씩 체크해서 binaryText 리스트에 바이너리 문장으로 추가
@@ -215,9 +215,9 @@ export const recordTextSection = (textSeg: string[]) => {
     curAddress += BYTES_PER_WORD;
   }
   return binaryText;
-};
+}
 
-export const recordDataSection = (dataSeg: string[]) => {
+export function recordDataSection(dataSeg: string[]): string[] {
   /*
    * input값을 dataSeg를 받는다.
    * dataSeg에 있는 data들 한 줄 씩 체크해서 binaryData 리스트에 바이너리 문장으로 추가
@@ -237,28 +237,24 @@ export const recordDataSection = (dataSeg: string[]) => {
   }
   //console.log(numToBits(dataNum));
   return binaryData;
-};
+}
 
-export const makeBinaryObject = (inputs: string[]) => {
+export function makeBinaryObject(inputs: string[]) {
   const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
     makeSymbolTable(inputs);
+
   const binaryText: string[] = recordTextSection(textSeg);
   const binaryData: string[] = recordDataSection(dataSeg);
 
-  return {
-    dataSectionSize: dataSectionSize,
-    textSectionSize: textSectionSize,
-    binaryText: binaryText,
-    binaryData: binaryData,
-  };
-};
+  return {dataSectionSize, textSectionSize, binaryText, binaryData};
+}
 
-export const makeBinaryFile = (
-  dataSectionSize,
-  textSectionSize,
-  binaryText,
-  binaryData,
-) => {
+export function makeBinaryFile(
+  dataSectionSize: number,
+  textSectionSize: number,
+  binaryText: string[],
+  binaryData: string[],
+): string {
   /*
    * output에 text 문장 개수를 binary로 번역해서 추가
    * output에 data 개수를 binary로 번역해서 추가
@@ -269,8 +265,9 @@ export const makeBinaryFile = (
     numToBits(dataSectionSize, 32),
   ];
   let output = '';
+
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
   });
   return output;
-};
+}
