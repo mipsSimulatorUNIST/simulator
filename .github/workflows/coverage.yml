@@ -2,26 +2,34 @@
 name: Deploy Coverage content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  workflow_dispatch:
   push:
     branches: ['main']
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
-  # Single deploy job since we're just deploying
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci --legacy-peer-deps
+      - run: npm run pre-test
+        env:
+          CI: false
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './coverage/lcov-report'
+
   deploy:
+    needs: build
     permissions:
       pages: write
       id-token: write
@@ -32,17 +40,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/checkout@v3
-        uses: actions/configure-pages@v2
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-        run: npm ci
-        run: npm run pre-test
-        name: Setup Pages
-        name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload the coverage directory from the repository
-          path: './coverage/lcov-report'
         uses: actions/deploy-pages@v1
