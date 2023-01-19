@@ -13,7 +13,7 @@ export function assemble(assemblyFile: string[]): string {
     binaryData,
   );
 
-  const simulator: any = new MIPS(
+  const simulator: object = new MIPS(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
@@ -21,6 +21,3 @@ export function assemble(assemblyFile: string[]): string {
 
   return output;
 }
-
-const input = makeInput('sample_input', `example1.s`);
-const output = assemble(input);
