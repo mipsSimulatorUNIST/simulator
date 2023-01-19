@@ -1,4 +1,4 @@
-# MIPS Simulator v0.0.1
+# MIPS Simulator v1.0.1
 
 You can use Node.js MIPS Simulator with [**npm**](https://www.npmjs.com/package/mips-simulator-js)
 
@@ -162,6 +162,7 @@ In this library, we support below instructions
 - lui $register, upper 16bit address
   ori $register, lower 16bit address
   If the lower 16bit address is 0x0000, the ori instruction is useless.
+
   - Case1) load address is 0x1000 0000
     <br/>
     lui $2, 0x1000
