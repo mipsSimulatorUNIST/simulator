@@ -28,10 +28,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - run: yarn
-      - run: yarn coverage:combined
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
