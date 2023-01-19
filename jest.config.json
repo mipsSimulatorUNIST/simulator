@@ -1,5 +1,6 @@
 {
   "clearMocks": true,
   "verbose": true,
-  "collectCoverage": true
+  "collectCoverage": true,
+  "modulePathIgnorePatterns": ["dist"]
 }
