@@ -4,8 +4,6 @@ You can use Node.js MIPS Simulator with [**npm**](https://www.npmjs.com/package/
 
 [**_Git Repository_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator)
 
-<br/>
-
 ### Contribution
 
 We have completed building CI, and test automation is also ready.
@@ -15,8 +13,6 @@ We have completed building CI, and test automation is also ready.
 ❗️[**_ISSUE_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/issues)
 
 ✅ [**_Pull Request_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/pulls)
-
-<br/>
 
 ### support
 
@@ -78,6 +74,8 @@ export const assemble = (assemblyFile : string[]) => {
 ---
 
 ## Usage
+
+### **Assembly Language → Binary Instruction**
 
 ```js
 // import functions
