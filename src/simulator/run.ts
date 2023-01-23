@@ -186,6 +186,7 @@ export function jumpINST(TARGET: number): void {
 export function loadINST(LD: number, MASK: number): number {
   return LD & MASK;
 }
+
 /*
   Procedure: process_instruction
   Purpose: Process one instruction
@@ -201,35 +202,58 @@ export function process_instruction() {
     const shamt: number = SHAMT(info);
     const funcCode: number = FUNC(info);
 
-    // ADD ADDU
-    if (funcCode === 32 || funcCode === 33)
+    // ADD
+    if (funcCode === 32) {
       currentState.REGS[rd] = currentState.REGS[rs] + currentState.REGS[rt];
-    // SUB SUBU
-    else if (funcCode === 34 || funcCode === 34)
+    }
+    // ADDU
+    else if (funcCode === 33) {
+      currentState.REGS[rd] = currentState.REGS[rs] + currentState.REGS[rt];
+    }
+    // SUB
+    else if (funcCode === 34) {
       currentState.REGS[rd] = currentState.REGS[rs] - currentState.REGS[rt];
+    }
+    // SUBU
+    else if (funcCode === 35) {
+      currentState.REGS[rd] = currentState.REGS[rs] - currentState.REGS[rt];
+    }
     // AND
-    else if (funcCode === 36)
+    else if (funcCode === 36) {
       currentState.REGS[rd] = currentState.REGS[rs] & currentState.REGS[rt];
+    }
     // OR
-    else if (funcCode === 37)
+    else if (funcCode === 37) {
       currentState.REGS[rd] = currentState.REGS[rs] | currentState.REGS[rt];
+    }
     // NOR
-    else if (funcCode === 39)
+    else if (funcCode === 39) {
       currentState.REGS[rd] = ~(currentState.REGS[rs] | currentState.REGS[rt]);
-    // SLT SLTU
+    }
+    // SLT
     else if (funcCode === 42) {
       if (currentState.REGS[rs] < currentState.REGS[rt])
         currentState.REGS[rd] = 1;
       else currentState.REGS[rd] = 0;
     }
+    // SLTU
+    else if (funcCode === 43) {
+      if (currentState.REGS[rs] < currentState.REGS[rt])
+        currentState.REGS[rd] = 1;
+      else currentState.REGS[rd] = 0;
+    }
     // SLL
-    else if (funcCode === 0)
+    else if (funcCode === 0) {
       currentState.REGS[rd] = currentState.REGS[rt] << shamt;
+    }
     // SRL
-    else if (funcCode === 2)
+    else if (funcCode === 2) {
       currentState.REGS[rd] = currentState.REGS[rt] >> shamt;
+    }
     // JR
-    else currentState.PC = currentState.REGS[rs];
+    else if (funcCode === 8) {
+      currentState.PC = currentState.REGS[rs];
+    }
 
     if (funcCode !== 8) currentState.PC += BYTES_PER_WORD;
   }
@@ -251,12 +275,18 @@ export function process_instruction() {
     const imm: number = IMM(info);
     const opcode: number = OPCODE(info);
 
-    // ADDI ADDIU
-    if (opcode === 0x8 || opcode === 0x9)
+    // ADDI
+    if (opcode === 0x8) {
       currentState.REGS[rt] = currentState.REGS[rs] + signEX(imm);
+    }
+    // ADDIU
+    else if (opcode === 0x9) {
+      currentState.REGS[rt] = currentState.REGS[rs] + signEX(imm);
+    }
     // ANDI
-    else if (opcode === 0xc)
+    else if (opcode === 0xc) {
       currentState.REGS[rt] = currentState.REGS[rs] & zeroEX(imm);
+    }
     // BEQ
     else if (opcode === 0x4) {
       if (currentState.REGS[rs] === currentState.REGS[rt])
@@ -264,43 +294,61 @@ export function process_instruction() {
     }
     // BNE
     else if (opcode === 0x5) {
-      if (currentState.REGS[rs] !== currentState.REGS[rt])
-        currentState.PC += imm * 4;
+      if (currentState.REGS[rs] !== currentState.REGS[rt]) {
+        currentState.PC += signEX(imm) * 4;
+      }
     }
     // LHU
-    else if (opcode === 0x25)
+    else if (opcode === 0x25) {
       currentState.REGS[rt] = loadINST(
         memRead(currentState.REGS[rs] + signEX(IOFFSET(info))),
         0x0000ffff,
       );
+    }
     // LUI
-    else if (opcode === 0xf) currentState.REGS[rt] = imm << 16;
+    else if (opcode === 0xf) {
+      currentState.REGS[rt] = imm << 16;
+    }
     // LW
-    else if (opcode == 0x23)
-      currentState.REGS[rt] = currentState.REGS[rs] + signEX(IOFFSET(info));
+    else if (opcode == 0x23) {
+      currentState.REGS[rt] = memRead(
+        currentState.REGS[rs] + signEX(IOFFSET(info)),
+      );
+    }
     // ORI
-    else if (opcode === 0xd)
+    else if (opcode === 0xd) {
       currentState.REGS[rt] = currentState.REGS[rs] | zeroEX(imm);
-    // SLTI SLTIU
+    }
+    // SLTI
     else if (opcode === 0xa) {
       if (currentState.REGS[rs] < signEX(imm)) currentState.REGS[rt] = 1;
       else currentState.REGS[rt] = 0;
     }
+
+    // SLTIU
+    else if (opcode === 0xb) {
+      if (currentState.REGS[rs] < signEX(imm)) currentState.REGS[rt] = 1;
+      else currentState.REGS[rt] = 0;
+    }
     // SH
-    else if (opcode === 0x29)
+    else if (opcode === 0x29) {
       memWriteHalf(
         currentState.REGS[rs] + signEX(IOFFSET(info)),
         currentState.REGS[rt],
       );
+    }
     // SW
-    else
+    else if (opcode === 0x2b) {
       memWrite(
         currentState.REGS[rs] + signEX(IOFFSET(info)),
         currentState.REGS[rt],
       );
+    }
 
     currentState.PC += BYTES_PER_WORD;
   }
 
-  if (currentState.PC - MEM_TEXT_START === NUM_INST * 4) changeRunBit();
+  if (currentState.PC - MEM_TEXT_START === NUM_INST * 4) {
+    changeRunBit();
+  }
 }
