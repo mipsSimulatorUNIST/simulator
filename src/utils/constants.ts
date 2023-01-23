@@ -1,12 +1,4 @@
-import {
-  initMemory,
-  makeInput,
-  fromBinary,
-  initInstInfo,
-  parseInstr,
-  parseData,
-  printParseResult,
-} from './functions';
+import {initMemory, initInstInfo, parseInstr, parseData} from './functions';
 
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
@@ -25,12 +17,12 @@ export const MIPS_REGS = 32;
 export const MEM_GROW_UP = 1;
 export const MEM_GROW_DOWN = -1;
 export const MEM_NREGIONS = 3;
-export const DEBUG_SET = 1;
+export const DEBUG_SET = 0;
 export const MEM_DUMP_SET = 1;
 
-export let NUM_INST_SET = 10000; // how many cycles
-export let RUN_BIT = 0;
+export let RUN_BIT: number;
 export let INSTRUCTION_COUNT = 0;
+export const CYCLES: string[] = [];
 
 export let NUM_INST: number;
 
@@ -177,7 +169,7 @@ export function initialize(
   let size = 0;
   const instructs: InstructionType = new instruction();
 
-  const NUM_INST: number = ~~(textSize / 4); //몫
+  NUM_INST = ~~(textSize / 4); //몫
 
   // initial memory allocation of text segment
   for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
@@ -316,9 +308,13 @@ export const instAddOne = () => {
 };
 
 export const numInstSub = () => {
-  NUM_INST_SET -= 1;
+  NUM_INST -= 1;
 };
 
 export const changeRunBit = () => {
   RUN_BIT = 0;
+};
+
+export const pushCycle = (eachCycle: string) => {
+  CYCLES.push(eachCycle);
 };
