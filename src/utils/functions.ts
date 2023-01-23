@@ -483,6 +483,10 @@ export function mainProcess(INST_INFO: instruction[], cycles: number): string {
     if (MEM_DUMP_SET) {
       result += dumpMemory();
     }
+
+    let EachCycle: string = rdump();
+    if (MEM_DUMP_SET) EachCycle += dumpMemory();
+    pushCycle(EachCycle);
   }
 
   return result;
@@ -582,13 +586,13 @@ export function running(num_cycles: number): string {
   running_string = `Simulating for ${num_cycles} cycles...\n\n`;
 
   for (let i = 0; i < num_cycles; ++i) {
-    let EachCycle: string = rdump();
-    if (MEM_DUMP_SET) EachCycle += dumpMemory();
-    pushCycle(EachCycle);
     if (RUN_BIT === 0) {
       running_string += 'Simulator halted\n\n';
       break;
     }
+    let EachCycle: string = rdump();
+    if (MEM_DUMP_SET) EachCycle += dumpMemory();
+    pushCycle(EachCycle);
     cycle();
   }
 
