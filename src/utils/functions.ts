@@ -14,11 +14,12 @@ import {
   MEM_TEXT_START,
   currentState,
   instAddOne,
-  NUM_INST_SET,
   DEBUG_SET,
   MEM_DUMP_SET,
   instruction,
   InstructionType,
+  INST_INFO,
+  pushCycle,
 } from './constants';
 import * as fs from 'fs';
 import path from 'path';
@@ -336,43 +337,19 @@ export function fromBinary(bits: string): number {
 */
 
 export function memRead(address: number): number {
-  if (
-    address >= memRegions[0].start &&
-    address < memRegions[0].start + memRegions[0].size
-  ) {
-    const offset = address - memRegions[0].start;
-    return (
-      memRegions[0].mem[offset + 3] << 24 ||
-      memRegions[0].mem[offset + 2] << 16 ||
-      memRegions[0].mem[offset + 1] << 8 ||
-      memRegions[0].mem[offset + 0] << 0
-    );
-  }
-
-  if (
-    address >= memRegions[1].start &&
-    address < memRegions[1].start + memRegions[1].size
-  ) {
-    const offset = address - memRegions[1].start;
-    return (
-      memRegions[1].mem[offset + 3] << 24 ||
-      memRegions[1].mem[offset + 2] << 16 ||
-      memRegions[1].mem[offset + 1] << 8 ||
-      memRegions[1].mem[offset + 0] << 0
-    );
-  }
-
-  if (
-    address >= memRegions[2].start &&
-    address < memRegions[2].start + memRegions[2].size
-  ) {
-    const offset = address - memRegions[2].start;
-    return (
-      memRegions[2].mem[offset + 3] << 24 ||
-      memRegions[2].mem[offset + 2] << 16 ||
-      memRegions[2].mem[offset + 1] << 8 ||
-      memRegions[2].mem[offset + 0] << 0
-    );
+  for (let i = 0; i < MEM_NREGIONS; ++i) {
+    if (
+      address >= memRegions[i].start &&
+      address < memRegions[i].start + memRegions[i].size
+    ) {
+      const offset = address - memRegions[i].start;
+      const result =
+        (memRegions[i].mem[offset + 3] << 24) |
+        (memRegions[i].mem[offset + 2] << 16) |
+        (memRegions[i].mem[offset + 1] << 8) |
+        (memRegions[i].mem[offset + 0] << 0);
+      return result;
+    }
   }
 }
 
@@ -443,127 +420,17 @@ export function memWriteHalf(address: number, value: number): void {
 }
 
 /*
-  Procedure: cycle
-  Purpose: Execute a cycle
+  Procedure: initMemory
 */
-
-export function cycle(): void {
-  process_instruction();
-
-  instAddOne();
-}
-
-/*
-  Procedure: run n
-  Purpose: Simulate MIPS for n cycles
-*/
-export function running(num_cycles: number): void {
-  if (RUN_BIT === 0) {
-    console.log("Can't simulate, Simulator is halted\n");
-    return;
-  }
-  console.log('Simulating for ', num_cycles, ' cycles...\n');
-  for (let i = 0; i < num_cycles; ++i) {
-    if (RUN_BIT === 0) {
-      console.log('Simulator halted\n');
-      break;
-    }
-    cycle();
-  }
-}
-
-/*
-  Procedure: go
-  Purpose: Simulate MIPS until HALTed
-*/
-export function go(): void {
-  if (RUN_BIT === 0) {
-    console.log("Can't simulate, Simulator is halted\n");
-    return;
-  }
-  console.log('Simulating...\n');
-  while (RUN_BIT) cycle();
-  console.log('Simulator halted\n');
-}
-
-export function dumpMemory(): void {
-  if (memData.dirty) {
-    const dstart = memData.start;
-    const dstop = memData.start + memData.offBound;
-    console.log(
-      'Data section [' +
-        dstart.toString(16).padStart(8, '0') +
-        '..' +
-        dstop.toString(16).padStart(8, '0') +
-        '] :',
-    );
-    // console.log("Data section [0x%8X..0x%8x] :" % (dstart, dstop))
-    mdump(dstart, dstop);
-    console.log('');
-  }
-
-  if (memStack.dirty) {
-    const dstart = memStack.start + memStack.offBound;
-    const dstop = memStack.start + memStack.size - 4;
-    console.log(
-      'Stack section [' +
-        dstart.toString(16).padStart(8, '0') +
-        '..' +
-        dstop.toString(16).padStart(8, '0') +
-        '] :',
-    );
-    // console.log("Stack section [0x%8X..0x%8x] :" % (dstart, dstop))
-    mdump(dstart, dstop);
-    console.log('');
-  }
-}
-
-/*
-  Procedure: mdump
-  Purpose: Dump a word-aligned region of memory to the output file.
-*/
-export function mdump(start: number, stop: number): void {
-  console.log('-------------------------------------');
-  for (let i = start; i < stop + 1; i += 4) {
-    console.log(
-      i.toString(16).padStart(8, '0') + ': ',
-      memRead(i).toString(16).padStart(8, '0'),
-    );
-    // console.log("0x%08x: 0x%08x" % (i, memRead(i)))
-  }
-  console.log('');
-}
-
-/*
-  Procedure: rdump
-  Purpose:  Dump current register and bus values to the output file.
-*/
-export function rdump(): void {
-  console.log('Current register values :');
-  console.log('-------------------------------------');
-  console.log('PC:' + currentState.PC.toString(16).padStart(8, '0'));
-  console.log('Registers:');
-  for (let k = 0; k < MIPS_REGS; ++k) {
-    console.log(
-      'R',
-      k,
-      ':' + currentState.REGS[k].toString(16).padStart(8, '0'),
-    );
-  }
-  // console.log("PC: 0x%08x" % currentState.PC)
-  // console.log("Registers:")
-  // for k in range(MIPS_REGS):
-  //     console.log("R%d: 0x%08x" % (k, ctypes.c_uint(currentState.REGS[k]).value))
-  console.log('');
-}
-
 export function initMemory(): void {
   for (let i = 0; i < MEM_NREGIONS; ++i) {
     memRegions[i].mem = Array.from({length: memRegions[i].size}, () => 0);
-    // memRegions[i].mem = [0] * memRegions[i].size;
   }
 }
 
+/*
+  Procedure: initInstInfo
+*/
 export function initInstInfo(
   NUM_INST: number,
   INST_INFO: InstructionType[],
@@ -585,28 +452,145 @@ export function initInstInfo(
   Procedure: get_inst_info
   Purpose: Read instruction information
 */
-export function getInstInfo(pc: number): InstructionType {
+export function getInstInfo(pc: number): instruction {
   return INST_INFO[(pc - MEM_TEXT_START) >> 2];
 }
 
-export function mainProcess(): void {
-  if (DEBUG_SET) {
-    console.log('Simulating for ', NUM_INST_SET, ' cycles');
+/*
+  Procedure: main process
+*/
 
-    while (NUM_INST_SET > 0) {
+export function mainProcess(INST_INFO: instruction[], cycles: number): string {
+  let i = cycles;
+  let result = '';
+  if (DEBUG_SET) {
+    console.log(`Simulating for ${cycles} cycles...\n`);
+
+    while (i > 0) {
       cycle();
       rdump();
 
-      if (MEM_DUMP_SET) {
-        dumpMemory();
-      }
+      if (MEM_DUMP_SET) dumpMemory();
+
+      i -= 1;
+
+      if (RUN_BIT === 0) break;
     }
   } else {
-    running(NUM_INST_SET);
-    rdump();
+    result += running(i);
+    result += rdump();
 
     if (MEM_DUMP_SET) {
-      dumpMemory();
+      result += dumpMemory();
     }
   }
+
+  return result;
+}
+
+/*
+  Procedure: cycle
+  Purpose: Execute a cycle
+*/
+
+export function cycle(): void {
+  process_instruction();
+  instAddOne();
+}
+
+export function dumpMemory(): string {
+  let dump_string = '';
+  if (memData.dirty) {
+    const dstart = memData.start;
+    const dstop = memData.start + memData.offBound;
+    dump_string += `Data section [0x${dstart
+      .toString(16)
+      .toUpperCase()
+      .padStart(8, '0')}..0x${toHexAndPad(dstop)}] :\n`;
+    dump_string += mdump(dstart, dstop);
+    dump_string += '\n';
+  }
+
+  if (memStack.dirty) {
+    const dstart = memStack.start + memStack.offBound;
+    const dstop = memStack.start + memStack.size - 4;
+    dump_string += `Stack section [0x${dstart
+      .toString(16)
+      .toUpperCase()
+      .padStart(8, '0')}..0x${toHexAndPad(dstop)}] :\n`;
+    dump_string += mdump(dstart, dstop);
+    dump_string += '\n';
+  }
+
+  return dump_string;
+}
+
+/*
+  Procedure: mdump
+  Purpose: Dump a word-aligned region of memory to the output file.
+*/
+export function mdump(start: number, stop: number): string {
+  let mdump_string = '';
+  // console.log('-------------------------------------');
+  mdump_string += '-------------------------------------\n';
+  for (let i = start; i < stop + 1; i += 4) {
+    mdump_string += `0x${toHexAndPad(i)}: 0x${toHexAndPad(memRead(i))}\n`;
+    // mdump_string += `0x${i.toString(16).padStart(8, '0')}: 0x${memRead(i)
+    //   .toString(16)
+    //   .padStart(8, '0')}\n`;
+  }
+  console.log('');
+  mdump_string += '\n';
+
+  return mdump_string;
+}
+
+/*
+  Procedure: rdump
+  Purpose:  Dump current register and bus values to the output file.
+*/
+export function rdump(): string {
+  let rdump_string = '';
+  rdump_string += 'Current register values :\n';
+  rdump_string += '-------------------------------------\n';
+  rdump_string += `PC: 0x${toHexAndPad(currentState.PC)}\n`;
+  // rdump_string += `PC: 0x${currentState.PC.toString(16).padStart(8, '0')}\n`;
+  rdump_string += `Registers:\n`;
+  for (let k = 0; k < MIPS_REGS; ++k) {
+    rdump_string += `R${k}: 0x${toHexAndPad((currentState.REGS[k] >>>= 0))}\n`;
+    // rdump_string += `R${k}: 0x${(currentState.REGS[k] >>>= 0)
+    //   .toString(16)
+    //   .padStart(8, '0')}\n`;
+  }
+
+  rdump_string += '\n';
+
+  return rdump_string;
+}
+
+/*
+  Procedure: run n
+  Purpose: Simulate MIPS for n cycles
+*/
+export function running(num_cycles: number): string {
+  let running_string = '';
+  if (RUN_BIT === 0) {
+    running_string = "Can't simulate, Simulator is halted\n";
+    return running_string;
+  }
+
+  running_string = `Simulating for ${num_cycles} cycles...\n\n`;
+
+  for (let i = 0; i < num_cycles; ++i) {
+    let EachCycle: string = rdump();
+    if (MEM_DUMP_SET) EachCycle += dumpMemory();
+    pushCycle(EachCycle);
+    if (RUN_BIT === 0) {
+      running_string += 'Simulator halted\n\n';
+      break;
+    }
+    cycle();
+  }
+
+  return running_string;
 }
