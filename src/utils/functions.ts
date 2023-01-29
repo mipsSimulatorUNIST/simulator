@@ -233,6 +233,40 @@ export function makeInput(
   }
 }
 
+export function parseSimulatorOutput(rawOutput: string): any {
+  //input :  test simulator input
+  //ouput : object type -> { register : {PC:, R0:,...}, dataSection:{}, stackSection{}}
+
+  function splitHelper(input: string) {
+    const returnValue = input.split(/:|\n/);
+    return [returnValue[0], returnValue[1].trim()];
+  }
+
+  function setTypeParser(input: string) {
+    const returnSet = {};
+    input
+      .split(/\n/)
+      .filter(e => e !== '')
+      .map(element => {
+        const result = splitHelper(element);
+        returnSet[result[0]] = result[1];
+      });
+
+    return returnSet;
+  }
+
+  const outputList = rawOutput
+    .split(/Program Counter\n|Registers\n|Data section\n/)
+    .filter(e => e !== '');
+
+  const PC = setTypeParser(outputList[0]);
+  const registers = setTypeParser(outputList[1]);
+  const dataSection = setTypeParser(outputList[2] || '');
+  const stackSection = setTypeParser(outputList[3] || '');
+
+  return {PC, registers, dataSection, stackSection};
+}
+
 export function makeOutput(
   inputFolderName: string,
   inputFileName: string,
