@@ -1,9 +1,7 @@
-Simulating for 10000 cycles...
-
-Current register values :
--------------------------------------
+Program Counter
 PC: 0x00400020
-Registers:
+
+Registers
 R0: 0x00000000
 R1: 0x00000000
 R2: 0x00000000
