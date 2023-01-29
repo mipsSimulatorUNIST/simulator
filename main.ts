@@ -5,6 +5,7 @@ import {
   makeOutput,
   mainProcess,
   parseSimulatorOutput,
+  simulatorUnitTest,
 } from './src/utils/functions';
 
 export function assemble(assemblyFile: string[]): string {
@@ -31,4 +32,18 @@ export function simulator(assemblyFile: string[], cycles: number) {
     dataSectionSize,
   );
   mainProcess(INST_INFO, cycles);
+}
+
+// console.log('TEST');
+// console.log(testOutput);
+// console.log('CYCLES');
+//console.log(output);
+
+for (let i = 7; i <= 7; i++) {
+  simulator(makeInput('sample_input', `example${i}.s`), 10000);
+  const testOutput = parseSimulatorOutput(
+    makeOutput('simulator_sample_output', `example0${i}.o`),
+  );
+  const output = parseSimulatorOutput(CYCLES[CYCLES.length - 1]);
+  simulatorUnitTest(testOutput, output);
 }

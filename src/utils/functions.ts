@@ -20,6 +20,7 @@ import {
   InstructionType,
   INST_INFO,
   pushCycle,
+  bcolors,
 } from './constants';
 import * as fs from 'fs';
 import path from 'path';
@@ -231,6 +232,33 @@ export function makeInput(
     } else console.error(err);
     exit(1);
   }
+}
+
+export function simulatorUnitTest(testCase: object, output: object) {
+  function printResult(origin: object, compare: object) {
+    const keyList = Object.keys(origin);
+    let color = '';
+
+    keyList.map(key => {
+      if (compare[key]) {
+        if (origin[key] === compare[key]) {
+          color = bcolors.GREEN;
+        } else {
+          color = bcolors.RED;
+        }
+        console.log(
+          `${color}${key} : ${origin[key]}          ${key} : ${compare[key]}${bcolors.ENDC}`,
+        );
+      } else {
+        console.log(`${bcolors.RED}${key} : ${origin[key]}`);
+      }
+    });
+  }
+
+  ['PC', 'registers', 'dataSection', 'stackSection'].map(type => {
+    console.log(`---------------${type}---------------`);
+    printResult(testCase[type], output[type]);
+  });
 }
 
 export function parseSimulatorOutput(rawOutput: string): object {
