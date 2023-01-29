@@ -541,10 +541,7 @@ export function dumpMemory(): string {
   if (memData.dirty) {
     const dstart = memData.start;
     const dstop = memData.start + memData.offBound;
-    dump_string += `Data section [0x${dstart
-      .toString(16)
-      .toUpperCase()
-      .padStart(8, '0')}..0x${toHexAndPad(dstop)}] :\n`;
+    dump_string += `Data section\n`;
     dump_string += mdump(dstart, dstop);
     dump_string += '\n';
   }
@@ -569,8 +566,6 @@ export function dumpMemory(): string {
 */
 export function mdump(start: number, stop: number): string {
   let mdump_string = '';
-  // console.log('-------------------------------------');
-  mdump_string += '-------------------------------------\n';
   for (let i = start; i < stop + 1; i += 4) {
     mdump_string += `0x${toHexAndPad(i)}: 0x${toHexAndPad(memRead(i))}\n`;
     // mdump_string += `0x${i.toString(16).padStart(8, '0')}: 0x${memRead(i)
@@ -589,11 +584,10 @@ export function mdump(start: number, stop: number): string {
 */
 export function rdump(): string {
   let rdump_string = '';
-  rdump_string += 'Current register values :\n';
-  rdump_string += '-------------------------------------\n';
+  rdump_string += 'Program Counter\n';
   rdump_string += `PC: 0x${toHexAndPad(currentState.PC)}\n`;
   // rdump_string += `PC: 0x${currentState.PC.toString(16).padStart(8, '0')}\n`;
-  rdump_string += `Registers:\n`;
+  rdump_string += `Registers\n`;
   for (let k = 0; k < MIPS_REGS; ++k) {
     rdump_string += `R${k}: 0x${toHexAndPad((currentState.REGS[k] >>>= 0))}\n`;
     // rdump_string += `R${k}: 0x${(currentState.REGS[k] >>>= 0)
