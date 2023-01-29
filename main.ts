@@ -34,12 +34,8 @@ export function simulator(assemblyFile: string[], cycles: number) {
   mainProcess(INST_INFO, cycles);
 }
 
-// console.log('TEST');
-// console.log(testOutput);
-// console.log('CYCLES');
-//console.log(output);
-
-for (let i = 7; i <= 7; i++) {
+for (let i = 1; i <= 7; i++) {
+  console.log(`testing example ${i}`);
   simulator(makeInput('sample_input', `example${i}.s`), 10000);
   const testOutput = parseSimulatorOutput(
     makeOutput('simulator_sample_output', `example0${i}.o`),

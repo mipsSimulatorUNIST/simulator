@@ -250,7 +250,7 @@ export function simulatorUnitTest(testCase: object, output: object) {
           `${color}${key} : ${origin[key]}          ${key} : ${compare[key]}${bcolors.ENDC}`,
         );
       } else {
-        console.log(`${bcolors.RED}${key} : ${origin[key]}`);
+        console.log(`${bcolors.RED}${key} : ${origin[key]}${bcolors.ENDC}`);
       }
     });
   }
@@ -258,6 +258,7 @@ export function simulatorUnitTest(testCase: object, output: object) {
   ['PC', 'registers', 'dataSection', 'stackSection'].map(type => {
     console.log(`---------------${type}---------------`);
     printResult(testCase[type], output[type]);
+    console.log('\n');
   });
 }
 
@@ -284,7 +285,7 @@ export function parseSimulatorOutput(rawOutput: string): object {
   }
 
   const outputList = rawOutput
-    .split(/Program Counter\n|Registers\n|Data section\n/)
+    .split(/Program Counter\n|Registers\n|Data section|Stack section\n/)
     .filter(e => e !== '');
 
   const PC = setTypeParser(outputList[0]);
@@ -600,9 +601,7 @@ export function mdump(start: number, stop: number): string {
     //   .toString(16)
     //   .padStart(8, '0')}\n`;
   }
-  console.log('');
   mdump_string += '\n';
-
   return mdump_string;
 }
 
@@ -624,7 +623,6 @@ export function rdump(): string {
   }
 
   rdump_string += '\n';
-
   return rdump_string;
 }
 

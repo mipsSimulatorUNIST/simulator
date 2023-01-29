@@ -9,6 +9,6 @@ for (let i = 1; i <= 7; i++) {
     const input = makeInput('sample_input', `example${i}.s`);
     const output = assemble(input);
     const testOutput = makeOutput('sample_output', `example${i}.o`);
-    expect(output).toEqual(testOutput);
+    expect(output.toString()).toEqual(testOutput.toString());
   });
 }
