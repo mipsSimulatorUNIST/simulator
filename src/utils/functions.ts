@@ -233,16 +233,16 @@ export function makeInput(
   }
 }
 
-export function parseSimulatorOutput(rawOutput: string): any {
+export function parseSimulatorOutput(rawOutput: string): object {
   //input :  test simulator input
   //ouput : object type -> { register : {PC:, R0:,...}, dataSection:{}, stackSection{}}
 
-  function splitHelper(input: string) {
+  function splitHelper(input: string): [string, string] {
     const returnValue = input.split(/:|\n/);
     return [returnValue[0], returnValue[1].trim()];
   }
 
-  function setTypeParser(input: string) {
+  function setTypeParser(input: string): object {
     const returnSet = {};
     input
       .split(/\n/)
