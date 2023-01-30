@@ -16,7 +16,7 @@ export function assemble(assemblyFile: string[]): string {
   return output;
 }
 
-export function simulator(assemblyFile: string[], cycles: number) {
+export function simulator(assemblyFile: string[], cycle: number): string {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
     makeBinaryObject(assemblyFile);
 
@@ -25,5 +25,7 @@ export function simulator(assemblyFile: string[], cycles: number) {
     textSectionSize,
     dataSectionSize,
   );
-  mainProcess(INST_INFO, cycles);
+
+  const output: string = mainProcess(INST_INFO, cycle);
+  return output;
 }
