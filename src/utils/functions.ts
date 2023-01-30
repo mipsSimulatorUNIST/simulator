@@ -236,16 +236,10 @@ export function makeInput(
 
 export function simulatorUnitTest(testCase: object, output: object) {
   function printResult(origin: object, compare: object) {
-    const keyList = Object.keys(origin);
-    let color = '';
-
-    keyList.map(key => {
+    Object.keys(origin).map(key => {
       if (compare[key]) {
-        if (origin[key] === compare[key]) {
-          color = bcolors.GREEN;
-        } else {
-          color = bcolors.RED;
-        }
+        const color =
+          origin[key] === compare[key] ? bcolors.GREEN : bcolors.RED;
         console.log(
           `${color}${key} : ${origin[key]}          ${key} : ${compare[key]}${bcolors.ENDC}`,
         );
