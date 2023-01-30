@@ -1,5 +1,6 @@
 import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
-import {initialize} from './src/utils/constants';
+import {CYCLES, initialize} from './src/utils/constants';
+import {mainProcess, makeInput, makeOutput} from './src/utils/functions';
 
 export function assemble(assemblyFile: string[]): string {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
@@ -15,7 +16,7 @@ export function assemble(assemblyFile: string[]): string {
   return output;
 }
 
-export function simulator(assemblyFile: string[]) {
+export function simulator(assemblyFile: string[], cycle: number): string {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
     makeBinaryObject(assemblyFile);
 
@@ -25,5 +26,7 @@ export function simulator(assemblyFile: string[]) {
     dataSectionSize,
   );
 
-  return INST_INFO;
+  const output: string = mainProcess(INST_INFO, cycle);
+
+  return output;
 }
