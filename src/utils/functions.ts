@@ -578,10 +578,7 @@ export function dumpMemory(): string {
   if (memStack.dirty) {
     const dstart = memStack.start + memStack.offBound;
     const dstop = memStack.start + memStack.size - 4;
-    dump_string += `Stack section [0x${dstart
-      .toString(16)
-      .toUpperCase()
-      .padStart(8, '0')}..0x${toHexAndPad(dstop)}] :\n`;
+    dump_string += `Stack section\n`;
     dump_string += mdump(dstart, dstop);
     dump_string += '\n';
   }

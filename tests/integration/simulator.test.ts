@@ -10,10 +10,12 @@ for (let i = 1; i <= 7; i++) {
   test(`testing example ${i}`, () => {
     const input = makeInput('sample_input', `example${i}.s`);
     simulator(input, 10000);
-    const testOutput = parseSimulatorOutput(
+
+    const expectOutput = parseSimulatorOutput(
       makeOutput('simulator_sample_output', `example0${i}.o`),
     );
-    const expectOutput = parseSimulatorOutput(CYCLES[CYCLES.length - 1]);
-    expect(expectOutput).toEqual(testOutput);
+
+    const testOutput = parseSimulatorOutput(CYCLES[CYCLES.length - 1]);
+    expect(expectOutput).toBe(testOutput);
   });
 }
