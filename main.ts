@@ -1,5 +1,5 @@
 import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
-import {initialize, CYCLES} from './src/utils/constants';
+import {initialize, CYCLES, initializeMem} from './src/utils/constants';
 import {
   makeInput,
   makeOutput,
@@ -32,14 +32,4 @@ export function simulator(assemblyFile: string[], cycles: number) {
     dataSectionSize,
   );
   mainProcess(INST_INFO, cycles);
-}
-
-for (let i = 1; i <= 7; i++) {
-  console.log(`testing example ${i}`);
-  simulator(makeInput('sample_input', `example${i}.s`), 10000);
-  const testOutput = parseSimulatorOutput(
-    makeOutput('simulator_sample_output', `example0${i}.o`),
-  );
-  const output = parseSimulatorOutput(CYCLES[CYCLES.length - 1]);
-  simulatorUnitTest(testOutput, output);
 }

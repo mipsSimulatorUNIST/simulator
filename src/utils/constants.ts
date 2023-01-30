@@ -22,6 +22,12 @@ export const MEM_DUMP_SET = 1;
 
 export let RUN_BIT: number;
 export let INSTRUCTION_COUNT = 0;
+export let memText: memRegionT;
+export let memData: memRegionT;
+export let memStack: memRegionT;
+export let memRegions: memRegionT[];
+export let currentState: cpuState;
+
 export const CYCLES: string[] = [];
 
 export let NUM_INST: number;
@@ -292,15 +298,18 @@ export const resetSymbolTable = () => {
   Main memory
   memory will be dynamically allocated at initialization
 */
-export const memText = new memRegionT(MEM_TEXT_START, MEM_TEXT_SIZE);
-export const memData = new memRegionT(MEM_DATA_START, MEM_DATA_SIZE);
-export const memStack = new memRegionT(
-  MEM_STACK_START - MEM_STACK_SIZE,
-  MEM_STACK_SIZE,
-  MEM_GROW_DOWN,
-);
-export const memRegions: memRegionT[] = [memText, memData, memStack];
-export const currentState = new cpuState();
+
+export const initializeMem = () => {
+  memText = new memRegionT(MEM_TEXT_START, MEM_TEXT_SIZE);
+  memData = new memRegionT(MEM_DATA_START, MEM_DATA_SIZE);
+  memStack = new memRegionT(
+    MEM_STACK_START - MEM_STACK_SIZE,
+    MEM_STACK_SIZE,
+    MEM_GROW_DOWN,
+  );
+  memRegions = [memText, memData, memStack];
+  currentState = new cpuState();
+};
 
 /* INSTRUCTION COUNT ADD */
 export const instAddOne = () => {
