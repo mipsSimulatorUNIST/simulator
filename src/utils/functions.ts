@@ -257,7 +257,7 @@ export function simulatorUnitTest(testCase: object, output: object) {
 }
 
 export function parseSimulatorOutput(rawOutput: string): object {
-  //input :  test simulator input
+  //input : test simulator input
   //ouput : object type -> { register : {PC:, R0:,...}, dataSection:{}, stackSection{}}
 
   function splitHelper(input: string): [string, string] {

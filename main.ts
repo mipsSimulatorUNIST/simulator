@@ -1,12 +1,6 @@
 import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
-import {initialize, CYCLES, initializeMem} from './src/utils/constants';
-import {
-  makeInput,
-  makeOutput,
-  mainProcess,
-  parseSimulatorOutput,
-  simulatorUnitTest,
-} from './src/utils/functions';
+import {initialize} from './src/utils/constants';
+import {mainProcess} from './src/utils/functions';
 
 export function assemble(assemblyFile: string[]): string {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =

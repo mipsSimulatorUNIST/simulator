@@ -22,6 +22,11 @@ export const MEM_DUMP_SET = 1;
 
 export let RUN_BIT: number;
 export let INSTRUCTION_COUNT = 0;
+
+/*
+  Main memory
+  memory will be dynamically allocated at initialization
+*/
 export let memText: memRegionT;
 export let memData: memRegionT;
 export let memStack: memRegionT;
@@ -293,11 +298,6 @@ export let SYMBOL_TABLE: ISYMBOL_TABLE = {};
 export const resetSymbolTable = () => {
   SYMBOL_TABLE = {};
 };
-
-/*
-  Main memory
-  memory will be dynamically allocated at initialization
-*/
 
 export const initializeMem = () => {
   memText = new memRegionT(MEM_TEXT_START, MEM_TEXT_SIZE);
