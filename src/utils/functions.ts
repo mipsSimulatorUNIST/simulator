@@ -20,6 +20,7 @@ import {
   InstructionType,
   INST_INFO,
   pushCycle,
+  bcolors,
 } from './constants';
 import * as fs from 'fs';
 import path from 'path';
@@ -231,6 +232,62 @@ export function makeInput(
     } else console.error(err);
     exit(1);
   }
+}
+
+export function simulatorUnitTest(testCase: object, output: object) {
+  function printResult(origin: object, compare: object) {
+    Object.keys(origin).map(key => {
+      if (compare[key]) {
+        const color =
+          origin[key] === compare[key] ? bcolors.GREEN : bcolors.RED;
+        console.log(
+          `${color}${key} : ${origin[key]}          ${key} : ${compare[key]}${bcolors.ENDC}`,
+        );
+      } else {
+        console.log(`${bcolors.RED}${key} : ${origin[key]}${bcolors.ENDC}`);
+      }
+    });
+  }
+
+  ['PC', 'registers', 'dataSection', 'stackSection'].map(type => {
+    console.log(`---------------${type}---------------`);
+    printResult(testCase[type], output[type]);
+    console.log('\n');
+  });
+}
+
+export function parseSimulatorOutput(rawOutput: string): object {
+  //input : test simulator input
+  //ouput : object type -> { register : {PC:, R0:,...}, dataSection:{}, stackSection{}}
+
+  function splitHelper(input: string): [string, string] {
+    const returnValue = input.split(/:|\n/);
+    return [returnValue[0], returnValue[1].trim()];
+  }
+
+  function setTypeParser(input: string): object {
+    const returnSet = {};
+    input
+      .split(/\n/)
+      .filter(e => e !== '')
+      .map(element => {
+        const result = splitHelper(element);
+        returnSet[result[0]] = result[1];
+      });
+
+    return returnSet;
+  }
+
+  const outputList = rawOutput
+    .split(/Program Counter\n|Registers\n|Data section|Stack section\n/)
+    .filter(e => e !== '');
+
+  const PC = setTypeParser(outputList[0]);
+  const registers = setTypeParser(outputList[1]);
+  const dataSection = setTypeParser(outputList[2] || '');
+  const stackSection = setTypeParser(outputList[3] || '');
+
+  return {PC, registers, dataSection, stackSection};
 }
 
 export function makeOutput(
@@ -507,10 +564,7 @@ export function dumpMemory(): string {
   if (memData.dirty) {
     const dstart = memData.start;
     const dstop = memData.start + memData.offBound;
-    dump_string += `Data section [0x${dstart
-      .toString(16)
-      .toUpperCase()
-      .padStart(8, '0')}..0x${toHexAndPad(dstop)}] :\n`;
+    dump_string += `Data section\n`;
     dump_string += mdump(dstart, dstop);
     dump_string += '\n';
   }
@@ -518,10 +572,7 @@ export function dumpMemory(): string {
   if (memStack.dirty) {
     const dstart = memStack.start + memStack.offBound;
     const dstop = memStack.start + memStack.size - 4;
-    dump_string += `Stack section [0x${dstart
-      .toString(16)
-      .toUpperCase()
-      .padStart(8, '0')}..0x${toHexAndPad(dstop)}] :\n`;
+    dump_string += `Stack section\n`;
     dump_string += mdump(dstart, dstop);
     dump_string += '\n';
   }
@@ -535,17 +586,13 @@ export function dumpMemory(): string {
 */
 export function mdump(start: number, stop: number): string {
   let mdump_string = '';
-  // console.log('-------------------------------------');
-  mdump_string += '-------------------------------------\n';
   for (let i = start; i < stop + 1; i += 4) {
     mdump_string += `0x${toHexAndPad(i)}: 0x${toHexAndPad(memRead(i))}\n`;
     // mdump_string += `0x${i.toString(16).padStart(8, '0')}: 0x${memRead(i)
     //   .toString(16)
     //   .padStart(8, '0')}\n`;
   }
-  console.log('');
   mdump_string += '\n';
-
   return mdump_string;
 }
 
@@ -555,11 +602,10 @@ export function mdump(start: number, stop: number): string {
 */
 export function rdump(): string {
   let rdump_string = '';
-  rdump_string += 'Current register values :\n';
-  rdump_string += '-------------------------------------\n';
+  rdump_string += 'Program Counter\n';
   rdump_string += `PC: 0x${toHexAndPad(currentState.PC)}\n`;
   // rdump_string += `PC: 0x${currentState.PC.toString(16).padStart(8, '0')}\n`;
-  rdump_string += `Registers:\n`;
+  rdump_string += `Registers\n`;
   for (let k = 0; k < MIPS_REGS; ++k) {
     rdump_string += `R${k}: 0x${toHexAndPad((currentState.REGS[k] >>>= 0))}\n`;
     // rdump_string += `R${k}: 0x${(currentState.REGS[k] >>>= 0)
@@ -568,7 +614,6 @@ export function rdump(): string {
   }
 
   rdump_string += '\n';
-
   return rdump_string;
 }
 

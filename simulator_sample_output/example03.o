@@ -1,11 +1,7 @@
-Simulating for 10000 cycles...
-
-Simulator halted
-
-Current register values :
--------------------------------------
+Program Counter
 PC: 0x0040003c
-Registers:
+
+Registers
 R0: 0x00000000
 R1: 0x00000000
 R2: 0x00000000
@@ -39,8 +35,7 @@ R29: 0x80000000
 R30: 0x00000000
 R31: 0x00000000
 
-Data section [0x10000000..0x1000001a] :
--------------------------------------
+Data section
 0x10000000: 0x00000064
 0x10000004: 0x000000c8
 0x10000008: 0x12345678
