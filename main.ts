@@ -22,7 +22,11 @@ export function assemble(assemblyFile: string[]): string {
   return output;
 }
 
-export function simulator(assemblyFile: string[], cycle: number): string {
+export function simulator(
+  assemblyFile: string[],
+  cycle: number,
+  returnCycles = false,
+): string | object {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
     makeBinaryObject(assemblyFile);
   initializeMem();
@@ -32,11 +36,11 @@ export function simulator(assemblyFile: string[], cycle: number): string {
     dataSectionSize,
   );
 
-  const output: string = mainProcess(INST_INFO, cycle);
-  return output;
+  const output = mainProcess(INST_INFO, cycle);
+  return returnCycles ? {output, cycles: CYCLES} : output;
 }
 
-for (let i = 3; i <= 3; i++) {
+for (let i = 1; i <= 7; i++) {
   console.log(`testing example ${i}`);
   simulator(makeInput('sample_input', `example${i}.s`), 10000);
   const testOutput = parseSimulatorOutput(

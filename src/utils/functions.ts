@@ -519,7 +519,7 @@ export function getInstInfo(pc: number): instruction {
   Procedure: main process
 */
 
-export function mainProcess(INST_INFO: instruction[], cycles: number): string {
+export function mainProcess(INST_INFO: instruction[], cycles: number): object {
   let i = cycles;
   let result = '';
   if (DEBUG_SET) {
@@ -536,7 +536,7 @@ export function mainProcess(INST_INFO: instruction[], cycles: number): string {
       if (RUN_BIT === 0) break;
     }
   } else {
-    result += running(i);
+    running(i);
     result += rdump();
 
     if (MEM_DUMP_SET) {
@@ -547,8 +547,8 @@ export function mainProcess(INST_INFO: instruction[], cycles: number): string {
     if (MEM_DUMP_SET) EachCycle += dumpMemory();
     pushCycle(EachCycle);
   }
-
-  return result;
+  const returnObject = parseSimulatorOutput(result);
+  return returnObject;
 }
 
 /*
@@ -623,11 +623,11 @@ export function rdump(): string {
   Procedure: run n
   Purpose: Simulate MIPS for n cycles
 */
-export function running(num_cycles: number): string {
+export function running(num_cycles: number) {
   let running_string = '';
   if (RUN_BIT === 0) {
     running_string = "Can't simulate, Simulator is halted\n";
-    return running_string;
+    //console.log(running_string);
   }
 
   running_string = `Simulating for ${num_cycles} cycles...\n\n`;
@@ -643,5 +643,5 @@ export function running(num_cycles: number): string {
     cycle();
   }
 
-  return running_string;
+  console.log(running_string);
 }
