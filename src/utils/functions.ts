@@ -262,7 +262,9 @@ export function parseSimulatorOutput(rawOutput: string): object {
 
   function splitHelper(input: string): [string, string] {
     const returnValue = input.split(/:|\n/);
-    return [returnValue[0], returnValue[1].trim()];
+    return returnValue.length === 2
+      ? [returnValue[0], returnValue[1].trim()]
+      : null;
   }
 
   function setTypeParser(input: string): object {
@@ -272,7 +274,7 @@ export function parseSimulatorOutput(rawOutput: string): object {
       .filter(e => e !== '')
       .map(element => {
         const result = splitHelper(element);
-        returnSet[result[0]] = result[1];
+        result ? (returnSet[result[0]] = result[1]) : null;
       });
 
     return returnSet;
