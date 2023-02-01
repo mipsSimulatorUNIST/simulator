@@ -37,8 +37,14 @@ import {
   setTARGET,
 } from '../simulator/run';
 
+export interface simulatorOutputType {
+  PC: {[key: string]: string};
+  registers: {[key: string]: string};
+  dataSection: {[key: string]: string} | Record<string, never>;
+  stackSection: {[key: string]: string} | Record<string, never>;
+}
+
 export function parseInstr(buffer: string, index: number): instruction {
-  //[TODO] Implement this function
   const instr: instruction = new instruction();
 
   setOPCODE(instr, fromBinary(buffer.slice(0, 6)));
@@ -234,8 +240,14 @@ export function makeInput(
   }
 }
 
-export function simulatorUnitTest(testCase: object, output: object) {
-  function printResult(origin: object, compare: object) {
+export function simulatorUnitTest(
+  testCase: simulatorOutputType,
+  output: simulatorOutputType,
+) {
+  function printResult(
+    origin: {[key: string]: string} | Record<string, never>,
+    compare: {[key: string]: string} | Record<string, never>,
+  ) {
     Object.keys(origin).map(key => {
       if (compare[key]) {
         const color =
@@ -248,15 +260,17 @@ export function simulatorUnitTest(testCase: object, output: object) {
       }
     });
   }
+  type keyType = 'PC' | 'registers' | 'dataSection' | 'stackSection';
+  const keyList: keyType[] = ['PC', 'registers', 'dataSection', 'stackSection'];
 
-  ['PC', 'registers', 'dataSection', 'stackSection'].map(type => {
-    console.log(`---------------${type}---------------`);
-    printResult(testCase[type], output[type]);
+  keyList.map(key => {
+    console.log(`---------------${key}---------------`);
+    printResult(testCase[key], output[key]);
     console.log('\n');
   });
 }
 
-export function parseSimulatorOutput(rawOutput: string): object {
+export function parseSimulatorOutput(rawOutput: string): simulatorOutputType {
   //input : test simulator input
   //ouput : object type -> { register : {PC:, R0:,...}, dataSection:{}, stackSection{}}
 
@@ -267,7 +281,9 @@ export function parseSimulatorOutput(rawOutput: string): object {
       : null;
   }
 
-  function setTypeParser(input: string): object {
+  function setTypeParser(
+    input: string,
+  ): {[key: string]: string} | Record<string, never> {
     const returnSet = {};
     input
       .split(/\n/)
