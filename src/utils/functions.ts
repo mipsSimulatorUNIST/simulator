@@ -543,7 +543,10 @@ export function getInstInfo(pc: number): instruction {
   Procedure: main process
 */
 
-export function mainProcess(INST_INFO: instruction[], cycles: number): object {
+export function mainProcess(
+  INST_INFO: instruction[],
+  cycles: number,
+): simulatorOutputType {
   let i = cycles;
   let result = '';
   if (DEBUG_SET) {
