@@ -1,4 +1,11 @@
-import {initMemory, initInstInfo, parseInstr, parseData} from './functions';
+import {
+  initMemory,
+  initInstInfo,
+  parseInstr,
+  parseData,
+  parseSimulatorOutput,
+  simulatorOutputType,
+} from './functions';
 
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
@@ -33,7 +40,7 @@ export let memStack: memRegionT;
 export let memRegions: memRegionT[];
 export let currentState: cpuState;
 
-export const CYCLES: string[] = [];
+export const CYCLES: simulatorOutputType[] = [];
 
 export let NUM_INST: number;
 
@@ -325,5 +332,5 @@ export const changeRunBit = () => {
 };
 
 export const pushCycle = (eachCycle: string) => {
-  CYCLES.push(eachCycle);
+  CYCLES.push(parseSimulatorOutput(eachCycle));
 };

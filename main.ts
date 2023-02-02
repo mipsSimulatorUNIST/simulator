@@ -39,3 +39,4 @@ export function simulator(
   const output = mainProcess(INST_INFO, cycle);
   return returnCycles ? {output, cycles: CYCLES} : output;
 }
+console.log(simulator(makeInput('sample_input', 'example1.s'), 10000));
