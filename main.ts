@@ -1,12 +1,6 @@
 import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
 import {CYCLES, initialize, initializeMem} from './src/utils/constants';
-import {
-  mainProcess,
-  makeInput,
-  makeOutput,
-  parseSimulatorOutput,
-  simulatorUnitTest,
-} from './src/utils/functions';
+import {mainProcess} from './src/utils/functions';
 
 export function assemble(assemblyFile: string[]): string {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
@@ -29,6 +23,7 @@ export function simulator(
 ): object {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
     makeBinaryObject(assemblyFile);
+
   initializeMem();
   const {INST_INFO} = initialize(
     binaryText.concat(binaryData),
@@ -39,4 +34,3 @@ export function simulator(
   const output = mainProcess(INST_INFO, cycle);
   return returnCycles ? {output, cycles: CYCLES} : output;
 }
-console.log(simulator(makeInput('sample_input', 'example1.s'), 10000));

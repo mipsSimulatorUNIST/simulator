@@ -38,7 +38,7 @@ import {
 } from '../simulator/run';
 
 export interface simulatorOutputType {
-  PC: {[key: string]: string};
+  PC: string;
   registers: {[key: string]: string};
   dataSection: {[key: string]: string} | Record<string, never>;
   stackSection: {[key: string]: string} | Record<string, never>;
@@ -260,8 +260,16 @@ export function simulatorUnitTest(
       }
     });
   }
-  type keyType = 'PC' | 'registers' | 'dataSection' | 'stackSection';
-  const keyList: keyType[] = ['PC', 'registers', 'dataSection', 'stackSection'];
+
+  type keyType = 'registers' | 'dataSection' | 'stackSection';
+  const keyList: keyType[] = ['registers', 'dataSection', 'stackSection'];
+
+  console.log(`---------------PC---------------`);
+  console.log(
+    `${testCase.PC === output.PC ? bcolors.GREEN : bcolors.RED}PC : ${
+      testCase.PC
+    }          PC : ${output.PC}${bcolors.ENDC}\n`,
+  );
 
   keyList.map(key => {
     console.log(`---------------${key}---------------`);
@@ -305,7 +313,7 @@ export function parseSimulatorOutput(rawOutput: string): simulatorOutputType {
   const dataSection = setTypeParser(outputList[2] || '');
   const stackSection = setTypeParser(outputList[3] || '');
 
-  return {PC, registers, dataSection, stackSection};
+  return {PC: PC.PC, registers, dataSection, stackSection};
 }
 
 export function makeOutput(
