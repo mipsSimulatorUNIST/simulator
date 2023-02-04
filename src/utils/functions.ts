@@ -37,8 +37,14 @@ import {
   setTARGET,
 } from '../simulator/run';
 
+export interface simulatorOutputType {
+  PC: string;
+  registers: {[key: string]: string};
+  dataSection: {[key: string]: string} | Record<string, never>;
+  stackSection: {[key: string]: string} | Record<string, never>;
+}
+
 export function parseInstr(buffer: string, index: number): instruction {
-  //[TODO] Implement this function
   const instr: instruction = new instruction();
 
   setOPCODE(instr, fromBinary(buffer.slice(0, 6)));
@@ -234,8 +240,14 @@ export function makeInput(
   }
 }
 
-export function simulatorUnitTest(testCase: object, output: object) {
-  function printResult(origin: object, compare: object) {
+export function simulatorUnitTest(
+  testCase: simulatorOutputType,
+  output: simulatorOutputType,
+) {
+  function printResult(
+    origin: {[key: string]: string} | Record<string, never>,
+    compare: {[key: string]: string} | Record<string, never>,
+  ) {
     Object.keys(origin).map(key => {
       if (compare[key]) {
         const color =
@@ -249,30 +261,44 @@ export function simulatorUnitTest(testCase: object, output: object) {
     });
   }
 
-  ['PC', 'registers', 'dataSection', 'stackSection'].map(type => {
-    console.log(`---------------${type}---------------`);
-    printResult(testCase[type], output[type]);
+  type keyType = 'registers' | 'dataSection' | 'stackSection';
+  const keyList: keyType[] = ['registers', 'dataSection', 'stackSection'];
+
+  console.log(`---------------PC---------------`);
+  console.log(
+    `${testCase.PC === output.PC ? bcolors.GREEN : bcolors.RED}PC : ${
+      testCase.PC
+    }          PC : ${output.PC}${bcolors.ENDC}\n`,
+  );
+
+  keyList.map(key => {
+    console.log(`---------------${key}---------------`);
+    printResult(testCase[key], output[key]);
     console.log('\n');
   });
 }
 
-export function parseSimulatorOutput(rawOutput: string): object {
+export function parseSimulatorOutput(rawOutput: string): simulatorOutputType {
   //input : test simulator input
   //ouput : object type -> { register : {PC:, R0:,...}, dataSection:{}, stackSection{}}
 
   function splitHelper(input: string): [string, string] {
     const returnValue = input.split(/:|\n/);
-    return [returnValue[0], returnValue[1].trim()];
+    return returnValue.length === 2
+      ? [returnValue[0], returnValue[1].trim()]
+      : null;
   }
 
-  function setTypeParser(input: string): object {
+  function setTypeParser(
+    input: string,
+  ): {[key: string]: string} | Record<string, never> {
     const returnSet = {};
     input
       .split(/\n/)
       .filter(e => e !== '')
       .map(element => {
         const result = splitHelper(element);
-        returnSet[result[0]] = result[1];
+        result ? (returnSet[result[0]] = result[1]) : null;
       });
 
     return returnSet;
@@ -287,7 +313,7 @@ export function parseSimulatorOutput(rawOutput: string): object {
   const dataSection = setTypeParser(outputList[2] || '');
   const stackSection = setTypeParser(outputList[3] || '');
 
-  return {PC, registers, dataSection, stackSection};
+  return {PC: PC.PC, registers, dataSection, stackSection};
 }
 
 export function makeOutput(
@@ -517,7 +543,10 @@ export function getInstInfo(pc: number): instruction {
   Procedure: main process
 */
 
-export function mainProcess(INST_INFO: instruction[], cycles: number): string {
+export function mainProcess(
+  INST_INFO: instruction[],
+  cycles: number,
+): simulatorOutputType {
   let i = cycles;
   let result = '';
   if (DEBUG_SET) {
@@ -534,7 +563,7 @@ export function mainProcess(INST_INFO: instruction[], cycles: number): string {
       if (RUN_BIT === 0) break;
     }
   } else {
-    result += running(i);
+    running(i);
     result += rdump();
 
     if (MEM_DUMP_SET) {
@@ -545,8 +574,8 @@ export function mainProcess(INST_INFO: instruction[], cycles: number): string {
     if (MEM_DUMP_SET) EachCycle += dumpMemory();
     pushCycle(EachCycle);
   }
-
-  return result;
+  const returnObject = parseSimulatorOutput(result);
+  return returnObject;
 }
 
 /*
@@ -621,11 +650,11 @@ export function rdump(): string {
   Procedure: run n
   Purpose: Simulate MIPS for n cycles
 */
-export function running(num_cycles: number): string {
+export function running(num_cycles: number) {
   let running_string = '';
   if (RUN_BIT === 0) {
     running_string = "Can't simulate, Simulator is halted\n";
-    return running_string;
+    //console.log(running_string);
   }
 
   running_string = `Simulating for ${num_cycles} cycles...\n\n`;
@@ -641,5 +670,5 @@ export function running(num_cycles: number): string {
     cycle();
   }
 
-  return running_string;
+  console.log(running_string);
 }

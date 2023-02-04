@@ -1,5 +1,5 @@
 import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
-import {initialize} from './src/utils/constants';
+import {CYCLES, initialize, initializeMem} from './src/utils/constants';
 import {mainProcess} from './src/utils/functions';
 
 export function assemble(assemblyFile: string[]): string {
@@ -16,16 +16,21 @@ export function assemble(assemblyFile: string[]): string {
   return output;
 }
 
-export function simulator(assemblyFile: string[], cycle: number): string {
+export function simulator(
+  assemblyFile: string[],
+  cycle: number,
+  returnCycles = false,
+): object {
   const {dataSectionSize, textSectionSize, binaryText, binaryData} =
     makeBinaryObject(assemblyFile);
 
+  initializeMem();
   const {INST_INFO} = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
   );
 
-  const output: string = mainProcess(INST_INFO, cycle);
-  return output;
+  const output = mainProcess(INST_INFO, cycle);
+  return returnCycles ? {output, cycles: CYCLES} : output;
 }
