@@ -41,7 +41,7 @@ Currently, we support a function to convert an assembly file to a binary file. I
 
 ## Install
 
-    npm install --save mips-simulator
+    npm install --save mips-simulator-js
 
 ---
 
@@ -116,6 +116,64 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 <img src="https://user-images.githubusercontent.com/44657722/211183736-c79836ed-8922-4a80-aacd-2aef353098dd.png" width="48%"/> 
 <img src="https://user-images.githubusercontent.com/44657722/211183724-1fccb82f-bc03-4598-8d19-af0a5fc0e77e.png" width="45%"/> 
 </p>
+
+### Use for React/Next
+
+If you use this npm package in your `react` or `next` project, problems will occur in the 'fs', 'path', and 'process' parts that load files.
+<img width="1315" alt="reactError" src="https://user-images.githubusercontent.com/64965613/216809659-1dde2240-5461-45b2-948a-bff631e5c528.png">
+
+This problem is caused by the webpack version. For details, refer to the [**webpack official documentation**](https://webpack.kr/migrate/5/#upgrade-webpack-4-and-its-pluginsloaders).
+
+The solution is to change the webpack configuration to `false` as shown below and import the file using `fetch`.
+
+1. Change webpack config and package settings
+
+```js
+// node_modules/react-scripts/config/webpack.config.json
+module.exports = function (webpackEnv) {
+  // ...
+  return {
+   // ...
+		resolve: {
+			// ...
+			// Add This!👇
+			fallback: {
+        "fs": false,
+        "path": false,
+        "process": false,
+		  },
+			// ...
+}
+
+// package.json
+{
+	// ...
+  "dependencies": {},
+  "devDependencies": {},
+
+  // Add This👇️
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
+  }
+}
+```
+
+2. Creating a file calling function using fetch
+
+```js
+const fetchFile = async (filePath: string) => {
+  await fetch(filePath)
+    .then(response => response.text())
+    .then(text => {
+      // Create a function to use and put it here!
+    });
+};
+```
+
+\*_⚠️caution_
+In the browser, unlike in the local environment, only files or documents in the public path can be used, and the default path is automatically designated as public. Therefore, the assembly file to be converted into an object file using assembler must be stored in the public folder.
 
 ---
 
