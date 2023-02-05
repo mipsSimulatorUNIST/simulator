@@ -119,10 +119,15 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 
 ### Use for React/Next
 
+#### Problem
+
 If you use this npm package in your `react` or `next` project, problems will occur in the 'fs', 'path', and 'process' parts that load files.
+
 <img width="1315" alt="reactError" src="https://user-images.githubusercontent.com/64965613/216809659-1dde2240-5461-45b2-948a-bff631e5c528.png">
 
 This problem is caused by the webpack version. For details, refer to the [**webpack official documentation**](https://webpack.kr/migrate/5/#upgrade-webpack-4-and-its-pluginsloaders).
+
+#### Solution
 
 The solution is to change the webpack configuration to `false` as shown below and import the file using `fetch`.
 
@@ -172,8 +177,9 @@ const fetchFile = async (filePath: string) => {
 };
 ```
 
-\*_⚠️caution_
-In the browser, unlike in the local environment, only files or documents in the public path can be used, and the default path is automatically designated as public. Therefore, the assembly file to be converted into an object file using assembler must be stored in the public folder.
+#### ⚠️caution
+
+In the browser, unlike in the local environment, only files or documents in the public path can be used, and the default path is automatically designated as public. Therefore, the assembly file to be converted into an object file using assembler must be stored in the `public` folder.
 
 ---
 
