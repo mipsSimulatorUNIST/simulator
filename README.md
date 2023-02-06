@@ -138,16 +138,16 @@ The solution is to change the webpack configuration to `false` as shown below an
 module.exports = function (webpackEnv) {
   // ...
   return {
-   // ...
-		resolve: {
-			// ...
-			// Add This!👇
-			fallback: {
+    // ...
+    resolve: {
+      // ...
+      // Add This!👇
+      fallback: {
         "fs": false,
         "path": false,
         "process": false,
-		  },
-			// ...
+      },
+      // ...
     }
   }
 }
