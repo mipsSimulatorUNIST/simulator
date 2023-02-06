@@ -1,6 +1,6 @@
 {
   "name": "mips-simulator-js",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "MIPS Simulator npm package",
   "main": "./dist/src/main.js",
   "scripts": {

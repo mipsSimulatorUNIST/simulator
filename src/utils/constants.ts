@@ -178,7 +178,7 @@ export function initialize(
   binary: string[],
   textSize: number,
   dataSize: number,
-) {
+): InstructionType[] {
   initMemory();
 
   // Load program and service routines into mem
@@ -207,7 +207,7 @@ export function initialize(
   currentState.PC = MEM_TEXT_START;
 
   RUN_BIT = 1;
-  return {INST_INFO};
+  return INST_INFO;
 }
 /*
   All simulated memory will be managed by this class

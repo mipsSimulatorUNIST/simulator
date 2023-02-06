@@ -97,7 +97,7 @@ export function simulator(
     makeBinaryObject(assemblyFile);
 
   initializeMem();
-  const {INST_INFO} = initialize(
+  const INST_INFO = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
