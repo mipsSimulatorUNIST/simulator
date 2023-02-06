@@ -1,10 +1,64 @@
-export const DEBUG = 0;
+import {
+  initMemory,
+  initInstInfo,
+  parseInstr,
+  parseData,
+  parseSimulatorOutput,
+  simulatorOutputType,
+} from './functions';
 
+export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
+
 export const MEM_TEXT_START = 0x00400000;
+export const MEM_TEXT_SIZE = 0x00100000;
 export const MEM_DATA_START = 0x10000000;
+export const MEM_DATA_SIZE = 0x00100000;
+export const MEM_STACK_START = 0x80000000;
+export const MEM_STACK_SIZE = 0x00100000;
+
 export const BYTES_PER_WORD = 4;
 export const INST_LIST_LEN = 27;
+
+export const MIPS_REGS = 32;
+export const MEM_GROW_UP = 1;
+export const MEM_GROW_DOWN = -1;
+export const MEM_NREGIONS = 3;
+export const DEBUG_SET = 0;
+export const MEM_DUMP_SET = 1;
+
+export let RUN_BIT: number;
+export let INSTRUCTION_COUNT = 0;
+
+/*
+  Main memory
+  memory will be dynamically allocated at initialization
+*/
+export let memText: memRegionT;
+export let memData: memRegionT;
+export let memStack: memRegionT;
+export let memRegions: memRegionT[];
+export let currentState: cpuState;
+
+export const CYCLES: simulatorOutputType[] = [];
+
+export let NUM_INST: number;
+
+export const INST_INFO: InstructionType[] = [];
+
+export type InstructionType = {
+  opcode: number;
+  funcCode: number;
+  value: number;
+  target: number;
+  rs: number;
+  rt: number;
+  imm: number;
+  rd: number;
+  shamt: number;
+  encoding: number;
+  expr: number;
+};
 
 type BcolorsType = {
   BLUE: string;
@@ -46,7 +100,6 @@ const error = `[${bcolors.RED}ERROR${bcolors.ENDC}]  `;
 
 export const pType: string[] = [start, done, success, error];
 // Structure Declaration
-
 export class instT {
   name: string;
   type: string;
@@ -80,6 +133,101 @@ export class laStruct {
     this.op = op;
     this.rt = rt;
     this.imm = imm;
+  }
+}
+
+export class cpuState {
+  PC: number;
+  REGS: number[];
+  constructor() {
+    this.PC = 0;
+    this.REGS = Array.from({length: 32}, () => 0);
+    this.REGS[29] = MEM_STACK_START;
+  }
+}
+
+export class instruction {
+  opcode: number;
+  funcCode: number;
+  value: number;
+  target: number;
+  rs: number;
+  rt: number;
+  imm: number;
+  rd: number;
+  shamt: number;
+  encoding: number;
+  expr: number;
+
+  constructor() {
+    this.opcode = 0;
+    this.funcCode = 0;
+    this.value = 0;
+    this.target = 0;
+    this.rs = 0;
+    this.rt = 0;
+    this.imm = 0;
+    this.rd = 0;
+    this.shamt = 0;
+    this.encoding = 0;
+    this.expr = 0;
+  }
+}
+
+export function initialize(
+  binary: string[],
+  textSize: number,
+  dataSize: number,
+) {
+  initMemory();
+
+  // Load program and service routines into mem
+  let textIndex = 0;
+  let buffer: string;
+  let size = 0;
+  const instructs: InstructionType = new instruction();
+
+  NUM_INST = ~~(textSize / 4); //몫
+
+  // initial memory allocation of text segment
+  for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
+  initInstInfo(NUM_INST, INST_INFO);
+
+  for (let i = 0; i < binary.length; i++) {
+    buffer = binary[i];
+    if (size < textSize) {
+      INST_INFO[textIndex] = parseInstr(buffer, size);
+      textIndex += 1;
+    } else if (size < textSize + dataSize) {
+      parseData(buffer, size - textSize);
+    }
+    size += 4;
+  }
+  //printParseResult(INST_INFO, textSize, dataSize);
+  currentState.PC = MEM_TEXT_START;
+
+  RUN_BIT = 1;
+  return {INST_INFO};
+}
+/*
+  All simulated memory will be managed by this class
+  use the mem_write and mem_read functions to
+  access/modify the simulated memory
+*/
+export class memRegionT {
+  start: number;
+  size: number;
+  mem: number[]; ////////////////////////////////////
+  offBound: number;
+  type: number;
+  dirty: boolean;
+  constructor(start: number, size: number, type: number = MEM_GROW_UP) {
+    this.start = start;
+    this.size = size;
+    this.mem = [];
+    this.offBound = -(size - 4) * type;
+    this.type = type;
+    this.dirty = false;
   }
 }
 
@@ -156,4 +304,33 @@ export let SYMBOL_TABLE: ISYMBOL_TABLE = {};
 
 export const resetSymbolTable = () => {
   SYMBOL_TABLE = {};
+};
+
+export const initializeMem = () => {
+  memText = new memRegionT(MEM_TEXT_START, MEM_TEXT_SIZE);
+  memData = new memRegionT(MEM_DATA_START, MEM_DATA_SIZE);
+  memStack = new memRegionT(
+    MEM_STACK_START - MEM_STACK_SIZE,
+    MEM_STACK_SIZE,
+    MEM_GROW_DOWN,
+  );
+  memRegions = [memText, memData, memStack];
+  currentState = new cpuState();
+};
+
+/* INSTRUCTION COUNT ADD */
+export const instAddOne = () => {
+  INSTRUCTION_COUNT += 1;
+};
+
+export const numInstSub = () => {
+  NUM_INST -= 1;
+};
+
+export const changeRunBit = () => {
+  RUN_BIT = 0;
+};
+
+export const pushCycle = (eachCycle: string) => {
+  CYCLES.push(parseSimulatorOutput(eachCycle));
 };
