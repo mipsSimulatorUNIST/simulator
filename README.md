@@ -166,7 +166,7 @@ module.exports = function (webpackEnv) {
 }
 ```
 
-2. Creating a file calling function using fetch
+2. Creating a file calling function using fetch (This function is a replacement for 'makeInput' provided by the library for use in `React` / `Next`.)
 
 ```js
 const fetchFile = async (filePath: string) => {
@@ -176,9 +176,34 @@ const fetchFile = async (filePath: string) => {
       // Create a function to use and put it here!
     });
 };
+
+// Example
+
+const [fileContent, setFileContent] = useState('');
+const [binaryInstruction, setBinaryInstruction] = useState<string[] | null>(
+    null
+  );
+
+useEffect(() => {
+  const fetchFile = async (filePath: string) => {
+    await fetch(filePath)
+      .then(response => response.text())
+      .then(text => {
+        setFileContent(text.split('\n'));
+      });
+  };
+  const filePath = `sample_input/example01.s`;
+  fetchFile(filePath);
+}, [setFileContent]);
+
+useEffect(() => {
+  if (fileContent)
+    setBinaryInstruction(assemble(fileContent).split("\n"));
+}, [fileContent]);
+
 ```
 
-### ⚠️Caution
+### ⚠️ Caution
 
 In the browser, unlike in the local environment, only files or documents in the public path can be used, and the default path is automatically designated as public. Therefore, the assembly file to be converted into an object file using assembler must be stored in the `public` folder.
 
