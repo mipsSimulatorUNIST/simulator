@@ -2,7 +2,9 @@
   "name": "mips-simulator-js",
   "version": "2.0.2",
   "description": "MIPS Simulator npm package",
-  "main": "./dist/src/main.js",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.js",
+  "types": "./dist/src/index.d.js",
   "scripts": {
     "build": "rm -rf ./dist/ && tsc",
     "lint": "./node_modules/.bin/eslint .",
