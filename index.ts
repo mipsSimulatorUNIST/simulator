@@ -31,8 +31,19 @@ export function assemble(assemblyFile: string[]): string {
     ...
   */
 
-  const {dataSectionSize, textSectionSize, binaryText, binaryData} =
-    makeBinaryObject(assemblyFile);
+  const {
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+    mappingTable,
+  } = makeBinaryObject(assemblyFile);
+
+  console.log('dataSectionSize:', dataSectionSize);
+  console.log('textSectionSize: ', textSectionSize);
+  console.log('binaryText: ', binaryText);
+  console.log('binaryData: ', binaryData);
+  console.log('mappingTable: ', mappingTable);
 
   const output = makeBinaryFile(
     dataSectionSize,
@@ -93,8 +104,13 @@ export function simulator(
     } 
     ]
   */
-  const {dataSectionSize, textSectionSize, binaryText, binaryData} =
-    makeBinaryObject(assemblyFile);
+  const {
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+    mappingTable,
+  } = makeBinaryObject(assemblyFile);
 
   initializeMem();
   const INST_INFO = initialize(
