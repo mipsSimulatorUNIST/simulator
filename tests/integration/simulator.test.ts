@@ -1,4 +1,4 @@
-import {simulator} from '../../main';
+import {simulator} from '../../index';
 import {CYCLES, initializeMem} from '../../src/utils/constants';
 import {
   makeInput,

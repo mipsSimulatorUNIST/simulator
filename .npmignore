@@ -9,6 +9,6 @@ tests/
 .prettierrc.json
 babel.config.json
 COMMIT_README.md
-main.ts
+index.ts
 tsconfig.json
 typescript.eslintrc.json

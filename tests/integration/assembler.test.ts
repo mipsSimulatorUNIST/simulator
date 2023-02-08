@@ -1,4 +1,4 @@
-import {assemble} from '../../main';
+import {assemble} from '../../index';
 import {resetSymbolTable} from '../../src/utils/constants';
 import {makeInput, makeOutput} from '../../src/utils/functions';
 
