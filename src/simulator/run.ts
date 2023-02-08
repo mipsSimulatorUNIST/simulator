@@ -1,10 +1,10 @@
 import {
-  instruction,
-  currentState,
   BYTES_PER_WORD,
+  currentState,
+  changeRunBit,
+  instruction,
   MEM_TEXT_START,
   NUM_INST,
-  changeRunBit,
 } from '../utils/constants';
 import {getInstInfo, memRead, memWrite, memWriteHalf} from '../utils/functions';
 
