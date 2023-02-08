@@ -1,8 +1,15 @@
-import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
+import {
+  makeBinaryString,
+  makeBinaryObject,
+  makeBinaryArray,
+} from './src/simulator/assembler';
 import {CYCLES, initialize, initializeMem} from './src/utils/constants';
 import {mainProcess} from './src/utils/functions';
 
-export function assemble(assemblyFile: string[]): string {
+export function assemble(
+  assemblyFile: string[],
+  arrayOutputType = true,
+): string[] | string {
   /*  
    * input : assemblyFile: string[]
    * Enter the path where the assembly file is located.
@@ -45,14 +52,23 @@ export function assemble(assemblyFile: string[]): string {
   console.log('binaryData: ', binaryData);
   console.log('mappingTable: ', mappingTable);
 
-  const output = makeBinaryFile(
+  const arrayOutput = makeBinaryArray(
     dataSectionSize,
     textSectionSize,
     binaryText,
     binaryData,
   );
 
-  return output;
+  if (arrayOutputType) return arrayOutput;
+
+  const stringOutput = makeBinaryString(
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+  );
+
+  return stringOutput;
 }
 
 export function simulator(

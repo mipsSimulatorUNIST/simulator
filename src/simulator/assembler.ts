@@ -270,7 +270,23 @@ export function makeBinaryObject(inputs: string[]) {
   };
 }
 
-export function makeBinaryFile(
+export function makeBinaryArray(
+  dataSectionSize: number,
+  textSectionSize: number,
+  binaryText: string[],
+  binaryData: string[],
+): string[] {
+  const output: string[] = [
+    numToBits(textSectionSize, 32),
+    numToBits(dataSectionSize, 32),
+    ...binaryText,
+    ...binaryData,
+  ];
+
+  return output;
+}
+
+export function makeBinaryString(
   dataSectionSize: number,
   textSectionSize: number,
   binaryText: string[],
