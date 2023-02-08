@@ -267,6 +267,7 @@ export function makeBinaryObject(inputs: string[]) {
     binaryText,
     binaryData,
     mappingTable,
+    textSeg,
   };
 }
 

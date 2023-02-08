@@ -4,12 +4,22 @@ import {
   makeBinaryArray,
 } from './src/simulator/assembler';
 import {CYCLES, initialize, initializeMem} from './src/utils/constants';
-import {mainProcess} from './src/utils/functions';
+import {
+  IMappingDetail,
+  mainProcess,
+  makeMappingDetail,
+} from './src/utils/functions';
+
+interface IAssemble {
+  output: string[] | string;
+  mappingDetail: IMappingDetail | null;
+}
 
 export function assemble(
   assemblyFile: string[],
   arrayOutputType = true,
-): string[] | string {
+  mappingDetailRequest = false,
+): IAssemble {
   /*  
    * input : assemblyFile: string[]
    * Enter the path where the assembly file is located.
@@ -44,31 +54,44 @@ export function assemble(
     binaryText,
     binaryData,
     mappingTable,
+    textSeg,
   } = makeBinaryObject(assemblyFile);
 
-  console.log('dataSectionSize:', dataSectionSize);
-  console.log('textSectionSize: ', textSectionSize);
-  console.log('binaryText: ', binaryText);
-  console.log('binaryData: ', binaryData);
-  console.log('mappingTable: ', mappingTable);
+  let mappingDetail: IMappingDetail | null = null;
+  // console.log('assemblyFile:', assemblyFile);
+  // console.log('textSeg:', textSeg);
+  // console.log('dataSectionSize:', dataSectionSize);
+  // console.log('textSectionSize: ', textSectionSize);
+  // console.log('binaryText: ', binaryText);
+  // console.log('binaryData: ', binaryData);
+  // console.log('mappingTable: ', mappingTable);
 
-  const arrayOutput = makeBinaryArray(
+  let output: string[] | string = makeBinaryArray(
     dataSectionSize,
     textSectionSize,
     binaryText,
     binaryData,
   );
 
-  if (arrayOutputType) return arrayOutput;
+  if (mappingDetailRequest) {
+    mappingDetail = makeMappingDetail(
+      assemblyFile,
+      textSeg,
+      mappingTable,
+      output,
+    );
+  }
 
-  const stringOutput = makeBinaryString(
+  if (arrayOutputType) return {output, mappingDetail};
+
+  output = makeBinaryString(
     dataSectionSize,
     textSectionSize,
     binaryText,
     binaryData,
   );
 
-  return stringOutput;
+  return {output, mappingDetail};
 }
 
 export function simulator(
