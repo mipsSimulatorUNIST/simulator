@@ -77,6 +77,19 @@ export const assemble = (assemblyFile : string[]) => {
 };
 ```
 
+### simulator
+
+```js
+export const simulator = (
+  assemblyFile: string[],
+  cycle: number,
+  returnCycles = false,
+):=> {
+  ...
+  return output : object //output : The object of Register File.
+};
+```
+
 ---
 
 ## Usage
@@ -112,6 +125,46 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 
 ### Input/Output
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/44657722/211183736-c79836ed-8922-4a80-aacd-2aef353098dd.png" width="48%"/> 
+<img src="https://user-images.githubusercontent.com/44657722/211183724-1fccb82f-bc03-4598-8d19-af0a5fc0e77e.png" width="45%"/> 
+</p>
+
+### **Simulaotr**
+```js
+// import functions
+const inputFolderName = 'sample_input/sample';
+const inputFileName = 'example1.s';
+
+/*
+   * input : assemblyFile: string[], cycle: number, returnCycles: boolean
+   
+   * assemblyFile is same as assemblyFile in assemble function above.
+   
+   * cycle is the number of cycles you want to execute.
+   * Executing one cycle means that executing one instruction.
+   
+   * returnCycles determines the type of return.
+   * If returnCycles = false (default), Returns only the final form of the result.
+   * If returnCycles = true, Returns an object containing information of all cycles.
+   
+    ex) returnCycles = false, you can use this function as below form.
+    const result = simulator(makeInput('sample_input', 'example1.s'), 10000, false)
+
+    ex) returnCycles = true, you can use this function as below form.
+    interface SimulatorResult {
+      output: simulatorOutputType;
+      cycles: simulatorOutputType[];
+    }
+*/
+
+const assemblyFile = makeInput(inputFolderName, inputFileName);
+const simulatorOutput = simulator(assemblyFile, cycles = 1000, returnCycles = true);
+
+```
+
+
+### Input/Output
 <p align="center">
 <img src="https://user-images.githubusercontent.com/44657722/211183736-c79836ed-8922-4a80-aacd-2aef353098dd.png" width="48%"/> 
 <img src="https://user-images.githubusercontent.com/44657722/211183724-1fccb82f-bc03-4598-8d19-af0a5fc0e77e.png" width="45%"/> 
