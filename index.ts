@@ -5,14 +5,14 @@ import {
 } from './src/simulator/assembler';
 import {CYCLES, initialize, initializeMem} from './src/utils/constants';
 import {
-  IMappingDetail,
+  IMapDetail,
   mainProcess,
   makeMappingDetail,
 } from './src/utils/functions';
 
 interface IAssemble {
   output: string[] | string;
-  mappingDetail: IMappingDetail | null;
+  mappingDetail: IMapDetail[] | null;
 }
 
 export function assemble(
@@ -57,7 +57,7 @@ export function assemble(
     textSeg,
   } = makeBinaryObject(assemblyFile);
 
-  let mappingDetail: IMappingDetail | null = null;
+  let mappingDetail: IMapDetail[] | null = null;
   // console.log('assemblyFile:', assemblyFile);
   // console.log('textSeg:', textSeg);
   // console.log('dataSectionSize:', dataSectionSize);

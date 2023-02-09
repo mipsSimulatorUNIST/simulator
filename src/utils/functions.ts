@@ -401,13 +401,16 @@ export function makeObjectFile(
   }
 }
 
+export interface IBinaryData {
+  lineNumber: number;
+  data: string;
+}
+
 export interface IMapDetail {
   key: number;
   assembly: string;
-  binary: {lineNumber: number[]; data: string[]}[];
+  binary: IBinaryData[];
 }
-
-export interface IMappingDetail extends Array<IMapDetail> {}
 
 export function makeMappingDetail(
   assemblyFile: string[],
@@ -415,17 +418,15 @@ export function makeMappingDetail(
   mappingTable: number[][],
   output: string[],
 ) {
-  const mappingDetail: IMappingDetail | null = [] as IMappingDetail;
+  const mappingDetail: IMapDetail[] | null = [] as IMapDetail[];
   let textCounter = 0;
 
   for (let i = 0; i < assemblyFile.length; i++) {
     const assemblyLine = assemblyFile[i];
     const binaryInstructionNumbers: number[] = [];
     let binaryInstructions: string[] = [];
-    let assemblyInstruction = '';
-    if (assemblyLine === textSeg[textCounter]) {
-      assemblyInstruction = textSeg[textCounter];
 
+    if (assemblyLine === textSeg[textCounter]) {
       const binaryIndexes = mappingTable[textCounter];
       binaryInstructions = binaryIndexes.map(index => {
         binaryInstructionNumbers.push(index + 2);
@@ -433,10 +434,11 @@ export function makeMappingDetail(
       });
       textCounter++;
     }
-    const binaryData = [];
+
+    const binaryData: IBinaryData[] = [];
     binaryInstructions.forEach((inst, j) => {
       const binaryInstructionIndex = binaryInstructionNumbers[j];
-      const temp = {
+      const temp: IBinaryData = {
         lineNumber: binaryInstructionIndex,
         data: inst,
       };

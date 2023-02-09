@@ -1,8 +1,8 @@
 import {assemble} from '../../index';
 import {resetSymbolTable} from '../../src/utils/constants';
-import {makeInput, makeOutput} from '../../src/utils/functions';
+import {makeInput, makeOutput, IMapDetail} from '../../src/utils/functions';
 
-const mappingDetailOutput = [
+const mappingDetailOutput: IMapDetail[] = [
   {key: 0, assembly: '\t.data', binary: []},
   {key: 1, assembly: 'data1:\t.word\t100', binary: []},
   {key: 2, assembly: 'data2:\t.word\t200', binary: []},
