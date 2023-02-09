@@ -130,7 +130,7 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 <img src="https://user-images.githubusercontent.com/44657722/211183724-1fccb82f-bc03-4598-8d19-af0a5fc0e77e.png" width="45%"/> 
 </p>
 
-### **Simulaotr**
+### **Simulator**
 ```js
 // import functions
 const inputFolderName = 'sample_input/sample';
@@ -166,8 +166,8 @@ const simulatorOutput = simulator(assemblyFile, cycles = 1000, returnCycles = tr
 
 ### Input/Output
 <p align="center">
-<img src="https://user-images.githubusercontent.com/44657722/211183736-c79836ed-8922-4a80-aacd-2aef353098dd.png" width="48%"/> 
-<img src="https://user-images.githubusercontent.com/44657722/211183724-1fccb82f-bc03-4598-8d19-af0a5fc0e77e.png" width="45%"/> 
+<img src="https://user-images.githubusercontent.com/38162871/217744454-41d88eed-b9d3-4924-9e96-c821b967e43a.png" width="48%"/> 
+<img src="https://user-images.githubusercontent.com/38162871/217744658-bb1b3f46-54c3-4bc7-abfe-dafb71e89bdf.png" width="45%"/> 
 </p>
 
 ## Usage for React/Next
