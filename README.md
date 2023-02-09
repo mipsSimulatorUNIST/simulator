@@ -35,7 +35,7 @@ We have completed building CI, and test automation is also ready.
 
 This open source provides functions to implement MIPS simulation in node.js environment.
 
-Currently, we support a function to convert an assembly file to a binary file. In the future, we plan to add the function of simulating with actual assembly files.
+We currently support functions that **convert an assembly file to a binary file** and **simulate actual assembly files**.
 
 ---
 
