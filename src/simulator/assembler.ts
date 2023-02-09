@@ -1,15 +1,15 @@
 import {
-  section,
+  BYTES_PER_WORD,
+  instT,
+  instList,
   MEM_DATA_START,
   MEM_TEXT_START,
+  section,
   symbolT,
-  BYTES_PER_WORD,
   SYMBOL_TABLE,
-  instList,
-  instT,
   resetSymbolTable,
 } from '../utils/constants';
-import {symbolTableAddEntry, toHexAndPad, numToBits} from '../utils/functions';
+import {numToBits, symbolTableAddEntry, toHexAndPad} from '../utils/functions';
 
 export const makeSymbolTable = (inputs: string[]) => {
   /*
