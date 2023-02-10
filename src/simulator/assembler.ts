@@ -101,7 +101,7 @@ export const makeSymbolTable = (inputs: string[]) => {
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
-export function recordTextSection(textSeg: string[]): string[] {
+export function recordTextSection(textSeg: string[]): [string[], number[][]] {
   /*
    * parameter로 textSeg를 받는다.
    * textSeg 있는 text들 한 줄 씩 체크해서 binaryText 리스트에 바이너리 문장으로 추가
@@ -122,8 +122,15 @@ export function recordTextSection(textSeg: string[]): string[] {
   let shamt: string;
   let immReg: string;
   const binaryText: string[] = [];
+  const mappingTable: number[][] = [];
 
-  for (const text of textSeg) {
+  let binaryInstructionCounter = 0;
+
+  for (let i = 0; i < textSeg.length; i++) {
+    const text = textSeg[i];
+
+    mappingTable.push([]);
+
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName: string = instruct[0];
     //console.log('instruct', instruct);
@@ -140,6 +147,10 @@ export function recordTextSection(textSeg: string[]): string[] {
         binaryText.push('001101' + rt + rt + imm);
         //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
         curAddress += BYTES_PER_WORD;
+
+        // if two binary instructions are made by la instruction, then it should map 'current assembly instruction' to 'two binary instructions'
+        mappingTable[i].push(binaryInstructionCounter);
+        binaryInstructionCounter++;
       }
     } else if (opName === 'move') {
       //op = ADD op "000000"
@@ -213,8 +224,11 @@ export function recordTextSection(textSeg: string[]): string[] {
       }
     }
     curAddress += BYTES_PER_WORD;
+
+    mappingTable[i].push(binaryInstructionCounter);
+    binaryInstructionCounter++;
   }
-  return binaryText;
+  return [binaryText, mappingTable];
 }
 
 export function recordDataSection(dataSeg: string[]): string[] {
@@ -243,13 +257,37 @@ export function makeBinaryObject(inputs: string[]) {
   const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
     makeSymbolTable(inputs);
 
-  const binaryText: string[] = recordTextSection(textSeg);
+  const [binaryText, mappingTable]: [string[], number[][]] =
+    recordTextSection(textSeg);
   const binaryData: string[] = recordDataSection(dataSeg);
 
-  return {dataSectionSize, textSectionSize, binaryText, binaryData};
+  return {
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+    mappingTable,
+    textSeg,
+  };
 }
 
-export function makeBinaryFile(
+export function makeBinaryArray(
+  dataSectionSize: number,
+  textSectionSize: number,
+  binaryText: string[],
+  binaryData: string[],
+): string[] {
+  const output: string[] = [
+    numToBits(textSectionSize, 32),
+    numToBits(dataSectionSize, 32),
+    ...binaryText,
+    ...binaryData,
+  ];
+
+  return output;
+}
+
+export function makeBinaryString(
   dataSectionSize: number,
   textSectionSize: number,
   binaryText: string[],

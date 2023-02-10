@@ -403,6 +403,58 @@ export function makeObjectFile(
   }
 }
 
+export interface IBinaryData {
+  lineNumber: number;
+  data: string;
+}
+
+export interface IMapDetail {
+  key: number;
+  assembly: string;
+  binary: IBinaryData[];
+}
+
+export function makeMappingDetail(
+  assemblyFile: string[],
+  textSeg: string[],
+  mappingTable: number[][],
+  output: string[],
+) {
+  const mappingDetail: IMapDetail[] | null = [] as IMapDetail[];
+  let textCounter = 0;
+
+  for (let i = 0; i < assemblyFile.length; i++) {
+    const assemblyLine = assemblyFile[i];
+    const binaryInstructionNumbers: number[] = [];
+    let binaryInstructions: string[] = [];
+
+    if (assemblyLine === textSeg[textCounter]) {
+      const binaryIndexes = mappingTable[textCounter];
+      binaryInstructions = binaryIndexes.map(index => {
+        binaryInstructionNumbers.push(index + 2);
+        return output[index + 2];
+      });
+      textCounter++;
+    }
+
+    const binaryData: IBinaryData[] = [];
+    binaryInstructions.forEach((inst, j) => {
+      const binaryInstructionIndex = binaryInstructionNumbers[j];
+      const temp: IBinaryData = {
+        lineNumber: binaryInstructionIndex,
+        data: inst,
+      };
+      binaryData.push(temp);
+    });
+    mappingDetail.push({
+      key: i,
+      assembly: assemblyLine,
+      binary: binaryData,
+    });
+  }
+  return mappingDetail;
+}
+
 /*
 assignment2 util
 */

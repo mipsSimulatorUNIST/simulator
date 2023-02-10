@@ -1,8 +1,25 @@
-import {makeBinaryFile, makeBinaryObject} from './src/simulator/assembler';
+import {
+  makeBinaryString,
+  makeBinaryObject,
+  makeBinaryArray,
+} from './src/simulator/assembler';
 import {CYCLES, initialize, initializeMem} from './src/utils/constants';
-import {mainProcess} from './src/utils/functions';
+import {
+  IMapDetail,
+  mainProcess,
+  makeMappingDetail,
+} from './src/utils/functions';
 
-export function assemble(assemblyFile: string[]): string {
+interface IAssemble {
+  output: string[] | string;
+  mappingDetail: IMapDetail[] | null;
+}
+
+export function assemble(
+  assemblyFile: string[],
+  arrayOutputType = true,
+  mappingDetailRequest = false,
+): IAssemble {
   /*  
    * input : assemblyFile: string[]
    * Enter the path where the assembly file is located.
@@ -31,17 +48,50 @@ export function assemble(assemblyFile: string[]): string {
     ...
   */
 
-  const {dataSectionSize, textSectionSize, binaryText, binaryData} =
-    makeBinaryObject(assemblyFile);
+  const {
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+    mappingTable,
+    textSeg,
+  } = makeBinaryObject(assemblyFile);
 
-  const output = makeBinaryFile(
+  let mappingDetail: IMapDetail[] | null = null;
+  // console.log('assemblyFile:', assemblyFile);
+  // console.log('textSeg:', textSeg);
+  // console.log('dataSectionSize:', dataSectionSize);
+  // console.log('textSectionSize: ', textSectionSize);
+  // console.log('binaryText: ', binaryText);
+  // console.log('binaryData: ', binaryData);
+  // console.log('mappingTable: ', mappingTable);
+
+  let output: string[] | string = makeBinaryArray(
     dataSectionSize,
     textSectionSize,
     binaryText,
     binaryData,
   );
 
-  return output;
+  if (mappingDetailRequest) {
+    mappingDetail = makeMappingDetail(
+      assemblyFile,
+      textSeg,
+      mappingTable,
+      output,
+    );
+  }
+
+  if (arrayOutputType) return {output, mappingDetail};
+
+  output = makeBinaryString(
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+  );
+
+  return {output, mappingDetail};
 }
 
 export function simulator(
@@ -93,8 +143,13 @@ export function simulator(
     } 
     ]
   */
-  const {dataSectionSize, textSectionSize, binaryText, binaryData} =
-    makeBinaryObject(assemblyFile);
+  const {
+    dataSectionSize,
+    textSectionSize,
+    binaryText,
+    binaryData,
+    mappingTable,
+  } = makeBinaryObject(assemblyFile);
 
   initializeMem();
   const INST_INFO = initialize(
