@@ -4,30 +4,14 @@
 ![Weekly Downloads](https://img.shields.io/npm/dw/mips-simulator-js?style=plastic)
 ![version](https://img.shields.io/npm/v/mips-simulator-js?style=plastic)
 
-You can use Node.js MIPS Simulator with [**npm**](https://www.npmjs.com/package/mips-simulator-js)
-
-[**_Git Repository_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator)
-
-[**_Coverage Status_ &rarr;**](https://mipssimulatorunist.github.io/simulator/)
-
-### Contribution
-
-We have completed building CI, and test automation is also ready.
-
-**_Always opening_** to join this project for developing this library.
-
-❗️[**_ISSUE_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/issues)
-
-✅ [**_Pull Request_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/pulls)
-
-### support
-
 ![JavaScript](https://img.shields.io/badge/-JavaScript-black?style=flat-square&logo=javascript)
 ![TypeScript](https://img.shields.io/badge/-TypeScript-black?style=flat-square&logo=typescript)
 
-### Demo GUI
+You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips-simulator-js)
 
-[Not Yet]()
+[_Git Repository_ &rarr;](https://github.com/mipsSimulatorUNIST/simulator)
+
+[_Coverage Status_ &rarr;](https://mipssimulatorunist.github.io/simulator/)
 
 ---
 
@@ -35,19 +19,28 @@ We have completed building CI, and test automation is also ready.
 
 This open source provides functions to implement MIPS simulation in node.js environment.
 
-We currently support functions that **convert an assembly file to a binary file** and **simulate actual assembly files**.
+We currently support functions that
+[assemble - convert an assembly file to a binary file](#assemble)
+and
+[simulate actual assembly files](#simulator).
 
 ---
 
-## Install
+## Installation
 
-    npm install --save mips-simulator-js
+```bash
+$ npm install --save mips-simulator-js
+```
 
 ---
 
-## Format
+## assemble
+
+> assemble provides some functions for making binary file to assembly file.
 
 ### makeInput
+
+function for parsing `binary file` to `string array`.
 
 ```js
 export function makeInput(inputFolderName: string, inputFileName : string) {
@@ -56,6 +49,8 @@ export function makeInput(inputFolderName: string, inputFileName : string) {
 ```
 
 ### makeObjectFile
+
+function for making file from `string array` to `binary file`.
 
 ```js
 export function makeObjectFile(
@@ -70,14 +65,35 @@ export function makeObjectFile(
 
 ### assemble
 
-```js
-export const assemble = (assemblyFile : string[]) => {
+function for convert `assembly instructions` to `binary instructions`.
+
+`arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
+
+`mappingDetailRequest`: if you want to get mapping data (which assembly instruction map into specific binary instruction), it should be true (default : false)
+
+```typescript
+interface IAssemble {
+  output: string[] | string;
+  mappingDetail: IMapDetail[] | null;
+}
+
+export function assemble = (
+  assemblyFile: string[],
+  arrayOutputType = true,
+  mappingDetailRequest = false,
+) {
   ...
-  return output : string[]
+  return {output, mappingDetail} : IAssemble
 };
 ```
 
 ### simulator
+
+function for getting `simulating data` as result or process
+
+`cycle`: the number of step requested by user for instructions \
+
+`returnCycles`: if user want to get process data, returnCycles should be True. (default : false)
 
 ```js
 export const simulator = (
@@ -131,6 +147,7 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 </p>
 
 ### **Simulator**
+
 ```js
 // import functions
 const inputFolderName = 'sample_input/sample';
@@ -159,12 +176,15 @@ const inputFileName = 'example1.s';
 */
 
 const assemblyFile = makeInput(inputFolderName, inputFileName);
-const simulatorOutput = simulator(assemblyFile, cycles = 1000, returnCycles = true);
-
+const simulatorOutput = simulator(
+  assemblyFile,
+  (cycles = 1000),
+  (returnCycles = true),
+);
 ```
 
-
 ### Input/Output
+
 <p align="center">
 <img src="https://user-images.githubusercontent.com/38162871/217744454-41d88eed-b9d3-4924-9e96-c821b967e43a.png" width="48%"/> 
 <img src="https://user-images.githubusercontent.com/38162871/217744658-bb1b3f46-54c3-4bc7-abfe-dafb71e89bdf.png" width="45%"/> 
@@ -299,6 +319,8 @@ In this library, we support below instructions
 |      J      |   J    | 000010 |  null  |
 |     JAL     |   J    | 000011 |  null  |
 
+---
+
 ## pseudo Instruction
 
 #### **la (load address)**
@@ -338,9 +360,9 @@ We are using testing library with `jest`
 
 **_Always opening_** to join this project for developing this library.
 
-❗️[**_ISSUE_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/issues)
+❗️[_ISSUE_ &rarr;](https://github.com/mipsSimulatorUNIST/simulator/issues)
 
-✅ [**_Pull Request_ &rarr;**](https://github.com/mipsSimulatorUNIST/simulator/pulls)
+✅ [_Pull Request_ &rarr;](https://github.com/mipsSimulatorUNIST/simulator/pulls)
 
 ### required environment (global)
 
