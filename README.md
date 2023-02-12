@@ -3,9 +3,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/mipsSimulatorUNIST/simulator/ci.yml?style=plastic)
 ![Weekly Downloads](https://img.shields.io/npm/dw/mips-simulator-js?style=plastic)
 ![version](https://img.shields.io/npm/v/mips-simulator-js?style=plastic)
-
-![JavaScript](https://img.shields.io/badge/-JavaScript-black?style=flat-square&logo=javascript)
-![TypeScript](https://img.shields.io/badge/-TypeScript-black?style=flat-square&logo=typescript)
+![types](https://img.shields.io/npm/types/mips-simulator-js?style=plastic)
 
 You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips-simulator-js)
 
@@ -127,7 +125,9 @@ export function assemble = (
 > ];
 > ```
 
-### simulator
+---
+
+## simulator
 
 function for getting `simulating data` as result or process
 
