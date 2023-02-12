@@ -8,6 +8,7 @@ import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
+  simulatorOutputType,
 } from './src/utils/functions';
 
 interface IAssemble {
@@ -94,11 +95,16 @@ export function assemble(
   return {output, mappingDetail};
 }
 
+export interface ISimulatorOutput {
+  output: simulatorOutputType;
+  cycles: simulatorOutputType[];
+}
+
 export function simulator(
   assemblyFile: string[],
   cycle: number,
   returnCycles = false,
-): object {
+): ISimulatorOutput | simulatorOutputType {
   /*
    * input : assemblyFile: string[], cycle: number, returnCycles: boolean
    * assemblyFile is same as assemblyFile in assemble function above.

@@ -42,7 +42,7 @@ $ npm install --save mips-simulator-js
 
 function for parsing `binary file` to `string array`.
 
-```js
+```typescript
 export function makeInput(inputFolderName: string, inputFileName : string) {
     return assemblyInput : string[]
 }
@@ -52,7 +52,7 @@ export function makeInput(inputFolderName: string, inputFileName : string) {
 
 function for making file from `string array` to `binary file`.
 
-```js
+```typescript
 export function makeObjectFile(
   outputFolderPath: string,
   outputFileName: string,
@@ -89,7 +89,7 @@ export function assemble = (
 
 > **Mapping Detail Sample**
 >
-> ```js
+> ```typescript
 > const mappingDetailOutput: IMapDetail[] = [
 >   {key: 0, assembly: '\t.data', binary: []},
 >   {key: 1, assembly: 'data1:\t.word\t100', binary: []},
@@ -133,14 +133,27 @@ function for getting `simulating data` as result or process
 
 `returnCycles`: if user want to get process data, returnCycles should be True. (default : false)
 
-```js
+```typescript
+
+export interface simulatorOutputType {
+  PC: string;
+  registers: {[key: string]: string};
+  dataSection: {[key: string]: string} | Record<string, never>;
+  stackSection: {[key: string]: string} | Record<string, never>;
+}
+
+export interface ISimulatorOutput {
+  output: simulatorOutputType;
+  cycles: simulatorOutputType[];
+}
+
 export const simulator = (
   assemblyFile: string[],
   cycle: number,
   returnCycles = false,
 ):=> {
   ...
-  return output : object //output : The object of Register File.
+  return ISimulatorOutput | simulatorOutputType //output : The object of Register File.
 };
 ```
 
@@ -238,7 +251,7 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 
 ### **Simulator**
 
-```js
+```typescript
 // import functions
 const inputFolderName = 'sample_input/sample';
 const inputFileName = 'example1.s';
