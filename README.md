@@ -87,11 +87,49 @@ export function assemble = (
 };
 ```
 
+> **Mapping Detail Sample**
+>
+> ```js
+> const mappingDetailOutput: IMapDetail[] = [
+>   {key: 0, assembly: '\t.data', binary: []},
+>   {key: 1, assembly: 'data1:\t.word\t100', binary: []},
+>   ...{
+>     key: 6,
+>     assembly: '\tand\t$17, $17, $0',
+>     binary: [{lineNumber: 2, data: '00000010001000001000100000100100'}],
+>   },
+>   {
+>     key: 7,
+>     assembly: '\tand\t$18, $18, $0',
+>     binary: [{lineNumber: 3, data: '00000010010000001001000000100100'}],
+>   },
+>   ...{
+>     key: 9,
+>     assembly: '\tla\t$9, data2',
+>     binary: [
+>       {lineNumber: 5, data: '00111100000010010001000000000000'},
+>       {lineNumber: 6, data: '00110101001010010000000000000100'},
+>     ],
+>   },
+>   ...{
+>     key: 29,
+>     assembly: '\tj\tlab1',
+>     binary: [{lineNumber: 22, data: '00001000000100000000000000000110'}],
+>   },
+>   {key: 30, assembly: 'lab5:', binary: []},
+>   {
+>     key: 31,
+>     assembly: '\tori\t$16, $16, 0xf0f0',
+>     binary: [{lineNumber: 23, data: '00110110000100001111000011110000'}],
+>   },
+> ];
+> ```
+
 ### simulator
 
 function for getting `simulating data` as result or process
 
-`cycle`: the number of step requested by user for instructions \
+`cycle`: the number of step requested by user for instructions
 
 `returnCycles`: if user want to get process data, returnCycles should be True. (default : false)
 
@@ -105,6 +143,58 @@ export const simulator = (
   return output : object //output : The object of Register File.
 };
 ```
+
+> **output (after number of cycle)**
+>
+> ```js
+> {
+>      PC: '0x00400058',
+>      registers: {
+>        R0: '0x00000000',
+>        R1: '0x00000000',
+>        R2: '0x00000000',
+>        R3: '0x0000000a',
+>        R4: '0x10000000',
+>        R5: '0x00000000',
+>        R6: '0x00000000',
+>        R7: '0x00000000',
+>        R8: '0x00000000',
+>        R9: '0x00000000',
+>        R10: '0x00000000',
+>        R11: '0x00000000',
+>        R12: '0x00000000',
+>        R13: '0x00000000',
+>        R14: '0x00000000',
+>        R15: '0x00000000',
+>        R16: '0x00000000',
+>        R17: '0x00000000',
+>        R18: '0x00000000',
+>        R19: '0x00000000',
+>        R20: '0x00000000',
+>        R21: '0x00000000',
+>        R22: '0x00000000',
+>        R23: '0x00000000',
+>        R24: '0x00000000',
+>        R25: '0x00000000',
+>        R26: '0x00000000',
+>        R27: '0x00000000',
+>        R28: '0x00000000',
+>        R29: '0x80000000',
+>        R30: '0x00000000',
+>        R31: '0x00000000'
+>      },
+>      dataSection: {
+>        '0x10000000': '0x00000001',
+>        '0x10000004': '0x0000000a',
+>        '0x10000008': '0x00000000'
+>      },
+>      stackSection: {
+>        '0x7ffffff4': '0x0000000a',
+>        '0x7ffffff8': '0x00000000',
+>        '0x7ffffffc': '0x00000000'
+>      }
+>    }
+> ```
 
 ---
 
