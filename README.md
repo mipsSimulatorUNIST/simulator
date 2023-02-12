@@ -11,8 +11,6 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 
 [_Coverage Status_ &rarr;](https://mipssimulatorunist.github.io/simulator/)
 
----
-
 ## Introduction
 
 This open source provides functions to implement MIPS simulation in node.js environment.
@@ -22,15 +20,11 @@ We currently support functions that
 and
 [simulate actual assembly files](#simulator).
 
----
-
 ## Installation
 
 ```bash
 $ npm install --save mips-simulator-js
 ```
-
----
 
 ## assemble
 
@@ -125,11 +119,9 @@ export function assemble = (
 > ];
 > ```
 
----
-
 ## simulator
 
-function for getting `simulating data` as result or process
+> function for getting `simulating data` as result or process
 
 `cycle`: the number of step requested by user for instructions
 
@@ -210,8 +202,6 @@ export const simulator = (
 >      }
 >    }
 > ```
-
----
 
 ## Usage
 
@@ -385,8 +375,6 @@ useEffect(() => {
 
 In the browser, unlike in the local environment, only files or documents in the public path can be used, and the default path is automatically designated as public. Therefore, the assembly file to be converted into an object file using assembler must be stored in the `public` folder.
 
----
-
 ## Supported Instruction
 
 you can check
@@ -424,8 +412,6 @@ In this library, we support below instructions
 |      J      |   J    | 000010 |  null  |
 |     JAL     |   J    | 000011 |  null  |
 
----
-
 ## pseudo Instruction
 
 #### **la (load address)**
@@ -453,8 +439,6 @@ In this library, we support below instructions
 
 It should be converted to add instruction with $0 as a target register(rt).
 
----
-
 ## Contribution
 
 If you want to contribute to [**mips-simulator-js**](https://www.npmjs.com/package/mips-simulator-js), please come in [**_Git Repository_**](https://github.com/mipsSimulatorUNIST/simulator) and clone!
@@ -474,8 +458,6 @@ We are using testing library with `jest`
 ```bash
 $ npm install typescript -g
 ```
-
----
 
 ## License
 
