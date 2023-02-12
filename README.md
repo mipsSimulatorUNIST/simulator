@@ -67,9 +67,11 @@ export function makeObjectFile(
 
 function for convert `assembly instructions` to `binary instructions`.
 
-`arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
-
-`mappingDetailRequest`: if you want to get mapping data (which assembly instruction map into specific binary instruction), it should be true (default : false)
+> #### >= version 2.0.3
+>
+> `arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
+>
+> `mappingDetailRequest`: if you want to get mapping data (which assembly instruction map into specific binary instruction), it should be true (default : false)
 
 ```typescript
 interface IAssemble {
