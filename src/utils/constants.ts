@@ -1,8 +1,8 @@
 import {
   initMemory,
   initInstInfo,
-  parseInstr,
   parseData,
+  parseInstr,
   parseSimulatorOutput,
   simulatorOutputType,
 } from './functions';

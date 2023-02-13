@@ -1,30 +1,7 @@
-import {
-  DEBUG,
-  pType,
-  SYMBOL_TABLE,
-  SymbolTableType,
-  MEM_NREGIONS,
-  memRegions,
-  MEM_GROW_UP,
-  RUN_BIT,
-  MIPS_REGS,
-  memData,
-  memStack,
-  MEM_DATA_START,
-  MEM_TEXT_START,
-  currentState,
-  instAddOne,
-  DEBUG_SET,
-  MEM_DUMP_SET,
-  instruction,
-  InstructionType,
-  INST_INFO,
-  pushCycle,
-  bcolors,
-} from './constants';
-import * as fs from 'fs';
 import path from 'path';
+import * as fs from 'fs';
 import {exit} from 'process';
+
 import {
   process_instruction,
   setFUNC,
@@ -36,6 +13,31 @@ import {
   setSHAMT,
   setTARGET,
 } from '../simulator/run';
+
+import {
+  bcolors,
+  currentState,
+  DEBUG,
+  DEBUG_SET,
+  INST_INFO,
+  instAddOne,
+  instruction,
+  InstructionType,
+  memData,
+  memStack,
+  memRegions,
+  MIPS_REGS,
+  MEM_GROW_UP,
+  MEM_DUMP_SET,
+  MEM_NREGIONS,
+  MEM_DATA_START,
+  MEM_TEXT_START,
+  pType,
+  pushCycle,
+  RUN_BIT,
+  SYMBOL_TABLE,
+  SymbolTableType,
+} from './constants';
 
 export interface simulatorOutputType {
   PC: string;
@@ -399,6 +401,58 @@ export function makeObjectFile(
     } else console.error(err);
     exit(1);
   }
+}
+
+export interface IBinaryData {
+  lineNumber: number;
+  data: string;
+}
+
+export interface IMapDetail {
+  key: number;
+  assembly: string;
+  binary: IBinaryData[];
+}
+
+export function makeMappingDetail(
+  assemblyFile: string[],
+  textSeg: string[],
+  mappingTable: number[][],
+  output: string[],
+) {
+  const mappingDetail: IMapDetail[] | null = [] as IMapDetail[];
+  let textCounter = 0;
+
+  for (let i = 0; i < assemblyFile.length; i++) {
+    const assemblyLine = assemblyFile[i];
+    const binaryInstructionNumbers: number[] = [];
+    let binaryInstructions: string[] = [];
+
+    if (assemblyLine === textSeg[textCounter]) {
+      const binaryIndexes = mappingTable[textCounter];
+      binaryInstructions = binaryIndexes.map(index => {
+        binaryInstructionNumbers.push(index + 2);
+        return output[index + 2];
+      });
+      textCounter++;
+    }
+
+    const binaryData: IBinaryData[] = [];
+    binaryInstructions.forEach((inst, j) => {
+      const binaryInstructionIndex = binaryInstructionNumbers[j];
+      const temp: IBinaryData = {
+        lineNumber: binaryInstructionIndex,
+        data: inst,
+      };
+      binaryData.push(temp);
+    });
+    mappingDetail.push({
+      key: i,
+      assembly: assemblyLine,
+      binary: binaryData,
+    });
+  }
+  return mappingDetail;
 }
 
 /*
