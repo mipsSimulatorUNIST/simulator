@@ -277,7 +277,7 @@ const inputFileName = 'example1.s';
 */
 
 const assemblyInstructions = makeInput(inputFolderName, inputFileName);
-const simulatorOutput = simulator(
+const {result, history} = simulator(
   assemblyInstructions,
   (cycles = 1000),
   (returnCycles = true),
