@@ -16,9 +16,9 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 This open source provides functions to implement MIPS simulation in node.js environment.
 
 We currently support functions that
-[assemble - convert an assembly file to a binary file](#assemble)
+[assembler - convert an assembly file to a binary file](#assembler)
 and
-[simulate actual assembly files](#simulator).
+[simulator - simulate actual assembly files](#simulator).
 
 ## Installation
 
@@ -26,7 +26,7 @@ and
 $ npm install --save mips-simulator-js
 ```
 
-## assemble
+## assembler
 
 > assemble provides some functions for making binary file to assembly file.
 
