@@ -104,7 +104,7 @@ export function simulator(
   assemblyInstructions: string[],
   cycleNum: number,
   returnHistory = false,
-): ISimulatorOutput | simulatorOutputType {
+): ISimulatorOutput {
   /*
    * input : assemblyInstructions: string[], cycle: number, returnCycles: boolean
    * assemblyInstructions is same as assemblyInstructions in assemble function above.

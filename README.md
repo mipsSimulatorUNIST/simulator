@@ -11,6 +11,12 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 
 [_Coverage Status_ &rarr;](https://mipssimulatorunist.github.io/simulator/)
 
+> ⚠️ [Changes](#changes)
+>
+> Example code in this document is working in `>= version 2.1.0`
+>
+> if you are using previous version, please read ⚠️ [Changes](#changes)
+
 ## Introduction
 
 This open source provides functions to implement MIPS simulation in node.js environment.
@@ -59,7 +65,7 @@ export function makeObjectFile(
 
 function for convert `assembly instructions` to `binary instructions`.
 
-> #### >= version 2.0.3
+> #### >= version 2.1.0
 >
 > `arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
 >
@@ -72,7 +78,7 @@ interface IAssemble {
 }
 
 export function assemble = (
-  assemblyFile: string[],
+  assemblyInstructions: string[],
   arrayOutputType = true,
   mappingDetailRequest = false,
 ) {
@@ -137,18 +143,17 @@ export interface simulatorOutputType {
 }
 
 export interface ISimulatorOutput {
-  output: simulatorOutputType;
-  cycles: simulatorOutputType[];
+  result: simulatorOutputType;
+  history: simulatorOutputType[] | null;
 }
 
 export function simulator(
-  assemblyFile: string[],
-  cycle: number,
-  returnCycles = false,
-): ISimulatorOutput | simulatorOutputType {
+  assemblyInstructions: string[],
+  cycleNum: number,
+  returnHistory = false,
+): ISimulatorOutput {
   ...
-  return  returnCycles ? {output, cycles} : output;
-  //output : The object of Register File.
+  return  returnHistory ? {result, history: CYCLES} : {result, history: null};
 };
 ```
 
@@ -229,8 +234,8 @@ const inputFileName = 'example1.s';
 const outputFolderPath = 'sample_input/sample';
 const outputFileName = 'example1.o';
 
-const assemblyFile = makeInput(inputFolderName, inputFileName);
-const binary = assemble(assemblyFile);
+const assemblyInstructions = makeInput(inputFolderName, inputFileName);
+const binary = assemble(assemblyInstructions);
 
 makeObjectFile(outputFolderPath, outputFileName, binary);
 ```
@@ -250,9 +255,9 @@ const inputFolderName = 'sample_input/sample';
 const inputFileName = 'example1.s';
 
 /*
-   * input : assemblyFile: string[], cycle: number, returnCycles: boolean
+   * input : assemblyInstructions: string[], cycle: number, returnCycles: boolean
    
-   * assemblyFile is same as assemblyFile in assemble function above.
+   * assemblyInstructions is same as assemblyInstructions in assemble function above.
    
    * cycle is the number of cycles you want to execute.
    * Executing one cycle means that executing one instruction.
@@ -271,9 +276,9 @@ const inputFileName = 'example1.s';
     }
 */
 
-const assemblyFile = makeInput(inputFolderName, inputFileName);
+const assemblyInstructions = makeInput(inputFolderName, inputFileName);
 const simulatorOutput = simulator(
-  assemblyFile,
+  assemblyInstructions,
   (cycles = 1000),
   (returnCycles = true),
 );
@@ -375,6 +380,59 @@ useEffect(() => {
 ### ⚠️ Caution
 
 In the browser, unlike in the local environment, only files or documents in the public path can be used, and the default path is automatically designated as public. Therefore, the assembly file to be converted into an object file using assembler must be stored in the `public` folder.
+
+## Changes
+
+### >= version 2.1.0
+
+#### parameter naming changes:
+
+- `assemblerFile` => `assemblyInstructions` (in `assemble`, `simulator`)
+- `cycle` => `cycleNum` (in `simulator`)
+- `returnCycles` => `returnHistory` (in `simulator`)
+
+#### return type changes:
+
+- `ISimulatorOutput | simulatorOutputType` => `ISimulatorOutput` (in `simulator`)
+
+```typescript
+interface IAssemble {
+  output: string[] | string;
+  mappingDetail: IMapDetail[] | null;
+}
+
+export function assemble = (
+  assemblyInstructions: string[],
+  arrayOutputType = true,
+  mappingDetailRequest = false,
+) {
+  ...
+  return {output, mappingDetail} : IAssemble
+};
+```
+
+```typescript
+export interface simulatorOutputType {
+  PC: string;
+  registers: {[key: string]: string};
+  dataSection: {[key: string]: string} | Record<string, never>;
+  stackSection: {[key: string]: string} | Record<string, never>;
+}
+
+export interface ISimulatorOutput {
+  result: simulatorOutputType;
+  history: simulatorOutputType[] | null;
+}
+
+export function simulator(
+  assemblyInstructions: string[],
+  cycleNum: number,
+  returnHistory = false,
+): ISimulatorOutput {
+  ...
+  return  returnHistory ? {result, history: CYCLES} : {result, history: null};
+};
+```
 
 ## Supported Instruction
 
