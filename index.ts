@@ -96,14 +96,14 @@ export function assemble(
 }
 
 export interface ISimulatorOutput {
-  output: simulatorOutputType;
-  cycles: simulatorOutputType[];
+  result: simulatorOutputType;
+  history: simulatorOutputType[] | null;
 }
 
 export function simulator(
-  assemblyFile: string[],
-  cycle: number,
-  returnCycles = false,
+  assemblyInstructions: string[],
+  cycleNum: number,
+  returnHistory = false,
 ): ISimulatorOutput | simulatorOutputType {
   /*
    * input : assemblyFile: string[], cycle: number, returnCycles: boolean
@@ -155,7 +155,7 @@ export function simulator(
     binaryText,
     binaryData,
     mappingTable,
-  } = makeBinaryObject(assemblyFile);
+  } = makeBinaryObject(assemblyInstructions);
 
   initializeMem();
   const INST_INFO = initialize(
@@ -164,6 +164,6 @@ export function simulator(
     dataSectionSize,
   );
 
-  const output = mainProcess(INST_INFO, cycle);
-  return returnCycles ? {output, cycles: CYCLES} : output;
+  const result = mainProcess(INST_INFO, cycleNum);
+  return returnHistory ? {result, history: CYCLES} : {result, history: null};
 }
