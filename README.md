@@ -141,13 +141,14 @@ export interface ISimulatorOutput {
   cycles: simulatorOutputType[];
 }
 
-export const simulator = (
+export function simulator(
   assemblyFile: string[],
   cycle: number,
   returnCycles = false,
-):=> {
+): ISimulatorOutput | simulatorOutputType {
   ...
-  return ISimulatorOutput | simulatorOutputType //output : The object of Register File.
+  return  returnCycles ? {output, cycles} : output;
+  //output : The object of Register File.
 };
 ```
 
