@@ -385,6 +385,11 @@ In the browser, unlike in the local environment, only files or documents in the 
 
 ### >= version 2.1.0
 
+#### new parameter for assemble
+`arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
+
+`mappingDetailRequest`: if you want to get mapping data (which assembly instruction map into specific binary instruction), it should be true (default : false)
+
 #### parameter naming changes:
 
 - `assemblerFile` => `assemblyInstructions` (in `assemble`, `simulator`)
@@ -393,6 +398,7 @@ In the browser, unlike in the local environment, only files or documents in the 
 
 #### return type changes:
 
+- `output` => `{output, mappingDetail}` (in `assemble`)
 - `ISimulatorOutput | simulatorOutputType` => `ISimulatorOutput` (in `simulator`)
 
 ```typescript
