@@ -8,6 +8,7 @@ import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
+  simulatorOutputType,
 } from './src/utils/functions';
 
 interface IAssemble {
@@ -16,19 +17,19 @@ interface IAssemble {
 }
 
 export function assemble(
-  assemblyFile: string[],
+  assemblyInstructions: string[],
   arrayOutputType = true,
   mappingDetailRequest = false,
 ): IAssemble {
   /*  
-   * input : assemblyFile: string[]
+   * input : assemblyInstructions: string[]
    * Enter the path where the assembly file is located.
    
    * If the assemlbyFile path is /Users/junghaejune/simulator/sample_input/example1.s
-   * you can enter path /Users/junghaejune/simulator/sample_input/example1.s into assemblyFile.
+   * you can enter path /Users/junghaejune/simulator/sample_input/example1.s into assemblyInstructions.
    * If you don't know the path exactly, you can use makeInput function in functions.ts
    * Let your current directory is simulator (/Users/junghaejune/simulator).
-   * Then you only put makeInput("sample_input", "example1.s") into assemblyFile
+   * Then you only put makeInput("sample_input", "example1.s") into assemblyInstructions
 
    * output : output: string
    * The assembly file is converted to a string in binary form.
@@ -55,10 +56,10 @@ export function assemble(
     binaryData,
     mappingTable,
     textSeg,
-  } = makeBinaryObject(assemblyFile);
+  } = makeBinaryObject(assemblyInstructions);
 
   let mappingDetail: IMapDetail[] | null = null;
-  // console.log('assemblyFile:', assemblyFile);
+  // console.log('assemblyInstructions:', assemblyInstructions);
   // console.log('textSeg:', textSeg);
   // console.log('dataSectionSize:', dataSectionSize);
   // console.log('textSectionSize: ', textSectionSize);
@@ -75,7 +76,7 @@ export function assemble(
 
   if (mappingDetailRequest) {
     mappingDetail = makeMappingDetail(
-      assemblyFile,
+      assemblyInstructions,
       textSeg,
       mappingTable,
       output,
@@ -94,14 +95,19 @@ export function assemble(
   return {output, mappingDetail};
 }
 
+export interface ISimulatorOutput {
+  result: simulatorOutputType;
+  history: simulatorOutputType[] | null;
+}
+
 export function simulator(
-  assemblyFile: string[],
-  cycle: number,
-  returnCycles = false,
-): object {
+  assemblyInstructions: string[],
+  cycleNum: number,
+  returnHistory = false,
+): ISimulatorOutput {
   /*
-   * input : assemblyFile: string[], cycle: number, returnCycles: boolean
-   * assemblyFile is same as assemblyFile in assemble function above.
+   * input : assemblyInstructions: string[], cycle: number, returnCycles: boolean
+   * assemblyInstructions is same as assemblyInstructions in assemble function above.
    * cycle is the number of cycles you want to execute.
    * Executing one cycle means that executing one instruction.
    * returnCycles determines the type of return.
@@ -149,7 +155,7 @@ export function simulator(
     binaryText,
     binaryData,
     mappingTable,
-  } = makeBinaryObject(assemblyFile);
+  } = makeBinaryObject(assemblyInstructions);
 
   initializeMem();
   const INST_INFO = initialize(
@@ -158,6 +164,6 @@ export function simulator(
     dataSectionSize,
   );
 
-  const output = mainProcess(INST_INFO, cycle);
-  return returnCycles ? {output, cycles: CYCLES} : output;
+  const result = mainProcess(INST_INFO, cycleNum);
+  return returnHistory ? {result, history: CYCLES} : {result, history: null};
 }
