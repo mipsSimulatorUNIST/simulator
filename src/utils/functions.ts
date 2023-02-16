@@ -33,7 +33,6 @@ import {
   MEM_DATA_START,
   MEM_TEXT_START,
   pType,
-  pushCycle,
   RUN_BIT,
   SYMBOL_TABLE,
   SymbolTableType,
@@ -600,14 +599,15 @@ export function getInstInfo(pc: number): instruction {
 export async function mainProcess(
   INST_INFO: instruction[],
   cycles: number,
+  CYCLES: simulatorOutputType[],
 ): Promise<simulatorOutputType> {
   let i = cycles;
   let result = '';
 
   return new Promise<simulatorOutputType>((resolve, reject) => {
     if (DEBUG_SET) {
-      console.log(`Simulating for ${cycles} cycles...\n`);
-
+      console.log(`Simulating for ${cycles} cycles...!!\n`);
+      console.log('MAIN PROCESS', CYCLES);
       while (i > 0) {
         cycle();
         rdump();
@@ -619,7 +619,7 @@ export async function mainProcess(
         if (RUN_BIT === 0) break;
       }
     } else {
-      running(i);
+      running(i, CYCLES);
       result += rdump();
 
       if (MEM_DUMP_SET) {
@@ -628,7 +628,7 @@ export async function mainProcess(
 
       let EachCycle: string = rdump();
       if (MEM_DUMP_SET) EachCycle += dumpMemory();
-      pushCycle(EachCycle);
+      CYCLES.push(parseSimulatorOutput(EachCycle));
     }
     const returnObject = parseSimulatorOutput(result);
     resolve(returnObject);
@@ -707,7 +707,7 @@ export function rdump(): string {
   Procedure: run n
   Purpose: Simulate MIPS for n cycles
 */
-export function running(num_cycles: number) {
+export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
   let running_string = '';
   if (RUN_BIT === 0) {
     running_string = "Can't simulate, Simulator is halted\n";
@@ -723,7 +723,7 @@ export function running(num_cycles: number) {
     }
     let EachCycle: string = rdump();
     if (MEM_DUMP_SET) EachCycle += dumpMemory();
-    pushCycle(EachCycle);
+    CYCLES.push(parseSimulatorOutput(EachCycle));
     cycle();
   }
 

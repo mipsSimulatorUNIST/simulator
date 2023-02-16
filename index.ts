@@ -3,16 +3,12 @@ import {
   makeBinaryObject,
   makeBinaryArray,
 } from './src/simulator/assembler';
-import {
-  CYCLES,
-  initialize,
-  initializeMem,
-  resetCYCLES,
-} from './src/utils/constants';
+import {initialize, initializeMem} from './src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
+  parseSimulatorOutput,
   simulatorOutputType,
 } from './src/utils/functions';
 
@@ -109,6 +105,7 @@ export async function simulator(
   assemblyInstructions: string[],
   cycleNum: number,
   returnHistory = false,
+  print = console.log,
 ): Promise<ISimulatorOutput> {
   /*
    * input : assemblyInstructions: string[], cycle: number, returnCycles: boolean
@@ -163,25 +160,15 @@ export async function simulator(
   } = makeBinaryObject(assemblyInstructions);
 
   initializeMem();
-  resetCYCLES();
+  const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
+  print('NPM: ', CYCLES);
   const INST_INFO = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
   );
-
+  const result = await mainProcess(INST_INFO, cycleNum, CYCLES);
   return new Promise<ISimulatorOutput>((resolve, reject) => {
-    let result: simulatorOutputType | null = null;
-    mainProcess(INST_INFO, cycleNum)
-      .then((simulatorOutput: simulatorOutputType) => {
-        // handle the simulator output here
-        console.log(simulatorOutput);
-        result = simulatorOutput;
-      })
-      .catch((error: any) => {
-        // handle any errors that occurred during the simulation
-        console.error(error);
-      });
     const output: ISimulatorOutput = {result, history: null};
     if (returnHistory) output.history = CYCLES;
     resolve(output);
