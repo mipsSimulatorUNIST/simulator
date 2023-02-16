@@ -105,7 +105,6 @@ export async function simulator(
   assemblyInstructions: string[],
   cycleNum: number,
   returnHistory = false,
-  print = console.log,
 ): Promise<ISimulatorOutput> {
   /*
    * input : assemblyInstructions: string[], cycle: number, returnCycles: boolean
@@ -161,7 +160,7 @@ export async function simulator(
 
   initializeMem();
   const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
-  print('NPM: ', CYCLES);
+
   const INST_INFO = initialize(
     binaryText.concat(binaryData),
     textSectionSize,

@@ -13,7 +13,7 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 
 > ⚠️ [Changes](#changes)
 >
-> Example code in this document is working in `>= version 2.1.0`
+> Example code in this document is working in `>= version 2.1.3`
 >
 > if you are using previous version, please read ⚠️ [Changes](#changes)
 
@@ -151,7 +151,7 @@ export function simulator(
   assemblyInstructions: string[],
   cycleNum: number,
   returnHistory = false,
-): ISimulatorOutput {
+): Promise<ISimulatorOutput> {
   ...
   return  returnHistory ? {result, history: CYCLES} : {result, history: null};
 };
@@ -277,11 +277,13 @@ const inputFileName = 'example1.s';
 */
 
 const assemblyInstructions = makeInput(inputFolderName, inputFileName);
-const {result, history} = simulator(
-  assemblyInstructions,
-  (cycles = 1000),
-  (returnCycles = true),
-);
+
+const fetchSimulator = async (fileContent: string[] | null) => {
+  const output = await simulator(fileContent, 1000, true);
+  return output;
+};
+
+const {result, history} = fetchSimulator(assemblyInstructions);
 ```
 
 ### Input/Output
@@ -383,20 +385,27 @@ In the browser, unlike in the local environment, only files or documents in the 
 
 ## Changes
 
-### >= version 2.1.0
+### >= version 2.1.3
 
-#### new parameter for assemble
+#### new parameter for assemble `>= version 2.1.1`
+
 `arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
 
 `mappingDetailRequest`: if you want to get mapping data (which assembly instruction map into specific binary instruction), it should be true (default : false)
 
-#### parameter naming changes:
+#### parameter naming changes: `>= version 2.1.1`
 
 - `assemblerFile` => `assemblyInstructions` (in `assemble`, `simulator`)
 - `cycle` => `cycleNum` (in `simulator`)
 - `returnCycles` => `returnHistory` (in `simulator`)
 
 #### return type changes:
+
+`>= version 2.1.3`
+
+- `ISimulatorOutput` => `Promise<ISimulatorOutput>` (in `simulator`)
+
+`>= version 2.1.1`
 
 - `output` => `{output, mappingDetail}` (in `assemble`)
 - `ISimulatorOutput | simulatorOutputType` => `ISimulatorOutput` (in `simulator`)
@@ -434,7 +443,7 @@ export function simulator(
   assemblyInstructions: string[],
   cycleNum: number,
   returnHistory = false,
-): ISimulatorOutput {
+): Promise<ISimulatorOutput> {
   ...
   return  returnHistory ? {result, history: CYCLES} : {result, history: null};
 };
