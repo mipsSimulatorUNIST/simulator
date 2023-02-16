@@ -1,11 +1,4 @@
-import {
-  initMemory,
-  initInstInfo,
-  parseData,
-  parseInstr,
-  parseSimulatorOutput,
-  simulatorOutputType,
-} from './functions';
+import {initMemory, initInstInfo, parseData, parseInstr} from './functions';
 
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;

@@ -605,33 +605,37 @@ export async function mainProcess(
   let result = '';
 
   return new Promise<simulatorOutputType>((resolve, reject) => {
-    if (DEBUG_SET) {
-      console.log(`Simulating for ${cycles} cycles...!!\n`);
-      console.log('MAIN PROCESS', CYCLES);
-      while (i > 0) {
-        cycle();
-        rdump();
+    try {
+      if (DEBUG_SET) {
+        console.log(`Simulating for ${cycles} cycles...!!\n`);
+        console.log('MAIN PROCESS', CYCLES);
+        while (i > 0) {
+          cycle();
+          rdump();
 
-        if (MEM_DUMP_SET) dumpMemory();
+          if (MEM_DUMP_SET) dumpMemory();
 
-        i -= 1;
+          i -= 1;
 
-        if (RUN_BIT === 0) break;
+          if (RUN_BIT === 0) break;
+        }
+      } else {
+        running(i, CYCLES);
+        result += rdump();
+
+        if (MEM_DUMP_SET) {
+          result += dumpMemory();
+        }
+
+        let EachCycle: string = rdump();
+        if (MEM_DUMP_SET) EachCycle += dumpMemory();
+        CYCLES.push(parseSimulatorOutput(EachCycle));
       }
-    } else {
-      running(i, CYCLES);
-      result += rdump();
-
-      if (MEM_DUMP_SET) {
-        result += dumpMemory();
-      }
-
-      let EachCycle: string = rdump();
-      if (MEM_DUMP_SET) EachCycle += dumpMemory();
-      CYCLES.push(parseSimulatorOutput(EachCycle));
+      const returnObject = parseSimulatorOutput(result);
+      resolve(returnObject);
+    } catch (error) {
+      reject(error);
     }
-    const returnObject = parseSimulatorOutput(result);
-    resolve(returnObject);
   });
 }
 
