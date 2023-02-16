@@ -437,11 +437,15 @@ export function makeMappingDetail(
       });
       textCounter++;
     } else if (assemblyLine.includes('.data')) {
+      binaryInstructionNumbers.push(0);
       binaryInstructions = [output[0]];
     } else if (assemblyLine.includes('.word')) {
-      const dataIndex = dataSeg.indexOf(assemblyLine.split('\t')[2]);
-      binaryInstructions = [output[output.length - dataSeg.length + dataIndex]];
+      const dataSegIndex = dataSeg.indexOf(assemblyLine.split('\t')[2]);
+      const dataIndex = output.length - dataSeg.length + dataSegIndex;
+      binaryInstructionNumbers.push(dataIndex);
+      binaryInstructions = [output[dataIndex]];
     } else if (assemblyLine.includes('.text')) {
+      binaryInstructionNumbers.push(1);
       binaryInstructions = [output[1]];
     }
     const binaryData: IBinaryData[] = [];
