@@ -33,7 +33,6 @@ import {
   MEM_DATA_START,
   MEM_TEXT_START,
   pType,
-  pushCycle,
   RUN_BIT,
   SYMBOL_TABLE,
   SymbolTableType,
@@ -597,39 +596,43 @@ export function getInstInfo(pc: number): instruction {
   Procedure: main process
 */
 
-export function mainProcess(
+export async function mainProcess(
   INST_INFO: instruction[],
   cycles: number,
-): simulatorOutputType {
+  CYCLES: simulatorOutputType[],
+): Promise<simulatorOutputType> {
   let i = cycles;
   let result = '';
-  if (DEBUG_SET) {
-    console.log(`Simulating for ${cycles} cycles...\n`);
 
-    while (i > 0) {
-      cycle();
-      rdump();
+  return new Promise<simulatorOutputType>((resolve, reject) => {
+    if (DEBUG_SET) {
+      console.log(`Simulating for ${cycles} cycles...!!\n`);
+      console.log('MAIN PROCESS', CYCLES);
+      while (i > 0) {
+        cycle();
+        rdump();
 
-      if (MEM_DUMP_SET) dumpMemory();
+        if (MEM_DUMP_SET) dumpMemory();
 
-      i -= 1;
+        i -= 1;
 
-      if (RUN_BIT === 0) break;
+        if (RUN_BIT === 0) break;
+      }
+    } else {
+      running(i, CYCLES);
+      result += rdump();
+
+      if (MEM_DUMP_SET) {
+        result += dumpMemory();
+      }
+
+      let EachCycle: string = rdump();
+      if (MEM_DUMP_SET) EachCycle += dumpMemory();
+      CYCLES.push(parseSimulatorOutput(EachCycle));
     }
-  } else {
-    running(i);
-    result += rdump();
-
-    if (MEM_DUMP_SET) {
-      result += dumpMemory();
-    }
-
-    let EachCycle: string = rdump();
-    if (MEM_DUMP_SET) EachCycle += dumpMemory();
-    pushCycle(EachCycle);
-  }
-  const returnObject = parseSimulatorOutput(result);
-  return returnObject;
+    const returnObject = parseSimulatorOutput(result);
+    resolve(returnObject);
+  });
 }
 
 /*
@@ -704,7 +707,7 @@ export function rdump(): string {
   Procedure: run n
   Purpose: Simulate MIPS for n cycles
 */
-export function running(num_cycles: number) {
+export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
   let running_string = '';
   if (RUN_BIT === 0) {
     running_string = "Can't simulate, Simulator is halted\n";
@@ -720,7 +723,7 @@ export function running(num_cycles: number) {
     }
     let EachCycle: string = rdump();
     if (MEM_DUMP_SET) EachCycle += dumpMemory();
-    pushCycle(EachCycle);
+    CYCLES.push(parseSimulatorOutput(EachCycle));
     cycle();
   }
 

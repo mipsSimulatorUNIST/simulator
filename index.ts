@@ -3,11 +3,12 @@ import {
   makeBinaryObject,
   makeBinaryArray,
 } from './src/simulator/assembler';
-import {CYCLES, initialize, initializeMem} from './src/utils/constants';
+import {initialize, initializeMem} from './src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
+  parseSimulatorOutput,
   simulatorOutputType,
 } from './src/utils/functions';
 
@@ -100,11 +101,12 @@ export interface ISimulatorOutput {
   history: simulatorOutputType[] | null;
 }
 
-export function simulator(
+export async function simulator(
   assemblyInstructions: string[],
   cycleNum: number,
   returnHistory = false,
-): ISimulatorOutput {
+  print = console.log,
+): Promise<ISimulatorOutput> {
   /*
    * input : assemblyInstructions: string[], cycle: number, returnCycles: boolean
    * assemblyInstructions is same as assemblyInstructions in assemble function above.
@@ -158,12 +160,17 @@ export function simulator(
   } = makeBinaryObject(assemblyInstructions);
 
   initializeMem();
+  const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
+  print('NPM: ', CYCLES);
   const INST_INFO = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
   );
-
-  const result = mainProcess(INST_INFO, cycleNum);
-  return returnHistory ? {result, history: CYCLES} : {result, history: null};
+  const result = await mainProcess(INST_INFO, cycleNum, CYCLES);
+  return new Promise<ISimulatorOutput>((resolve, reject) => {
+    const output: ISimulatorOutput = {result, history: null};
+    if (returnHistory) output.history = CYCLES;
+    resolve(output);
+  });
 }

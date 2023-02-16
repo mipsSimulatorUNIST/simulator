@@ -1,6 +1,6 @@
 {
   "name": "mips-simulator-js",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "MIPS Simulator npm package",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -44,5 +44,10 @@
   },
   "dependencies": {
     "ts-node": "^10.9.1"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "process": false
   }
 }
