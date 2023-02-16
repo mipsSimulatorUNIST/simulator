@@ -464,11 +464,6 @@ export function makeMappingDetail(
       assembly: assemblyLine,
       binary: binaryData,
     });
-    console.log({
-      key: i,
-      assembly: assemblyLine,
-      binary: binaryData,
-    });
   }
 
   return mappingDetail;

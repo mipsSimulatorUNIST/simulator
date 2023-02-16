@@ -170,4 +170,3 @@ export function simulator(
   const result = mainProcess(INST_INFO, cycleNum);
   return returnHistory ? {result, history: CYCLES} : {result, history: null};
 }
-console.log(assemble(makeInput('sample_input', 'example1.s'), true, true));
