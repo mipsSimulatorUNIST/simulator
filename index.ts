@@ -8,7 +8,6 @@ import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
-  parseSimulatorOutput,
   simulatorOutputType,
 } from './src/utils/functions';
 
@@ -150,13 +149,8 @@ export async function simulator(
     } 
     ]
   */
-  const {
-    dataSectionSize,
-    textSectionSize,
-    binaryText,
-    binaryData,
-    mappingTable,
-  } = makeBinaryObject(assemblyInstructions);
+  const {dataSectionSize, textSectionSize, binaryText, binaryData} =
+    makeBinaryObject(assemblyInstructions);
 
   initializeMem();
   const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
@@ -168,8 +162,12 @@ export async function simulator(
   );
   const result = await mainProcess(INST_INFO, cycleNum, CYCLES);
   return new Promise<ISimulatorOutput>((resolve, reject) => {
-    const output: ISimulatorOutput = {result, history: null};
-    if (returnHistory) output.history = CYCLES;
-    resolve(output);
+    try {
+      const output: ISimulatorOutput = {result, history: null};
+      if (returnHistory) output.history = CYCLES;
+      resolve(output);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
