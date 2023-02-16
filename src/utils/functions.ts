@@ -429,14 +429,7 @@ export function makeMappingDetail(
     const binaryInstructionNumbers: number[] = [];
     let binaryInstructions: string[] = [];
 
-    if (assemblyLine === textSeg[textCounter]) {
-      const binaryIndexes = mappingTable[textCounter];
-      binaryInstructions = binaryIndexes.map(index => {
-        binaryInstructionNumbers.push(index + 2);
-        return output[index + 2];
-      });
-      textCounter++;
-    } else if (assemblyLine.includes('.data')) {
+    if (assemblyLine.includes('.data')) {
       binaryInstructionNumbers.push(0);
       binaryInstructions = [output[0]];
     } else if (assemblyLine.includes('.word')) {
@@ -447,7 +440,15 @@ export function makeMappingDetail(
     } else if (assemblyLine.includes('.text')) {
       binaryInstructionNumbers.push(1);
       binaryInstructions = [output[1]];
+    } else {
+      const binaryIndexes = mappingTable[textCounter];
+      binaryInstructions = binaryIndexes.map(index => {
+        binaryInstructionNumbers.push(index + 2);
+        return output[index + 2];
+      });
+      assemblyLine === textSeg[textCounter] && textCounter++;
     }
+
     const binaryData: IBinaryData[] = [];
     binaryInstructions.forEach((inst, j) => {
       const binaryInstructionIndex = binaryInstructionNumbers[j];
