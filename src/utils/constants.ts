@@ -40,7 +40,11 @@ export let memStack: memRegionT;
 export let memRegions: memRegionT[];
 export let currentState: cpuState;
 
-export const CYCLES: simulatorOutputType[] = [];
+export let CYCLES: simulatorOutputType[] = [];
+
+export const resetCYCLES = () => {
+  CYCLES = [];
+};
 
 export let NUM_INST: number;
 

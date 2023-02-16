@@ -8,9 +8,9 @@ import {
 
 for (let i = 1; i <= 7; i++) {
   initializeMem();
-  test(`testing example ${i}`, () => {
+  test(`testing example ${i}`, async () => {
     const input = makeInput('sample_input', `example${i}.s`);
-    simulator(input, 10000);
+    await simulator(input, 10000);
     const expectOutput = parseSimulatorOutput(
       makeOutput('simulator_sample_output', `example0${i}.o`),
     );

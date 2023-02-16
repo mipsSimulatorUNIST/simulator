@@ -597,39 +597,42 @@ export function getInstInfo(pc: number): instruction {
   Procedure: main process
 */
 
-export function mainProcess(
+export async function mainProcess(
   INST_INFO: instruction[],
   cycles: number,
-): simulatorOutputType {
+): Promise<simulatorOutputType> {
   let i = cycles;
   let result = '';
-  if (DEBUG_SET) {
-    console.log(`Simulating for ${cycles} cycles...\n`);
 
-    while (i > 0) {
-      cycle();
-      rdump();
+  return new Promise<simulatorOutputType>((resolve, reject) => {
+    if (DEBUG_SET) {
+      console.log(`Simulating for ${cycles} cycles...\n`);
 
-      if (MEM_DUMP_SET) dumpMemory();
+      while (i > 0) {
+        cycle();
+        rdump();
 
-      i -= 1;
+        if (MEM_DUMP_SET) dumpMemory();
 
-      if (RUN_BIT === 0) break;
+        i -= 1;
+
+        if (RUN_BIT === 0) break;
+      }
+    } else {
+      running(i);
+      result += rdump();
+
+      if (MEM_DUMP_SET) {
+        result += dumpMemory();
+      }
+
+      let EachCycle: string = rdump();
+      if (MEM_DUMP_SET) EachCycle += dumpMemory();
+      pushCycle(EachCycle);
     }
-  } else {
-    running(i);
-    result += rdump();
-
-    if (MEM_DUMP_SET) {
-      result += dumpMemory();
-    }
-
-    let EachCycle: string = rdump();
-    if (MEM_DUMP_SET) EachCycle += dumpMemory();
-    pushCycle(EachCycle);
-  }
-  const returnObject = parseSimulatorOutput(result);
-  return returnObject;
+    const returnObject = parseSimulatorOutput(result);
+    resolve(returnObject);
+  });
 }
 
 /*
