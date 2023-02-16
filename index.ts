@@ -7,6 +7,7 @@ import {CYCLES, initialize, initializeMem} from './src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
+  makeInput,
   makeMappingDetail,
   simulatorOutputType,
 } from './src/utils/functions';
@@ -55,6 +56,7 @@ export function assemble(
     binaryText,
     binaryData,
     mappingTable,
+    dataSeg,
     textSeg,
   } = makeBinaryObject(assemblyInstructions);
 
@@ -77,6 +79,7 @@ export function assemble(
   if (mappingDetailRequest) {
     mappingDetail = makeMappingDetail(
       assemblyInstructions,
+      dataSeg,
       textSeg,
       mappingTable,
       output,
@@ -167,3 +170,4 @@ export function simulator(
   const result = mainProcess(INST_INFO, cycleNum);
   return returnHistory ? {result, history: CYCLES} : {result, history: null};
 }
+console.log(assemble(makeInput('sample_input', 'example1.s'), true, true));

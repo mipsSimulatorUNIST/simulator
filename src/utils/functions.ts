@@ -416,6 +416,7 @@ export interface IMapDetail {
 
 export function makeMappingDetail(
   assemblyFile: string[],
+  dataSeg: string[],
   textSeg: string[],
   mappingTable: number[][],
   output: string[],
@@ -435,8 +436,14 @@ export function makeMappingDetail(
         return output[index + 2];
       });
       textCounter++;
+    } else if (assemblyLine.includes('.data')) {
+      binaryInstructions = [output[0]];
+    } else if (assemblyLine.includes('.word')) {
+      const dataIndex = dataSeg.indexOf(assemblyLine.split('\t')[2]);
+      binaryInstructions = [output[output.length - dataSeg.length + dataIndex]];
+    } else if (assemblyLine.includes('.text')) {
+      binaryInstructions = [output[1]];
     }
-
     const binaryData: IBinaryData[] = [];
     binaryInstructions.forEach((inst, j) => {
       const binaryInstructionIndex = binaryInstructionNumbers[j];
@@ -446,12 +453,19 @@ export function makeMappingDetail(
       };
       binaryData.push(temp);
     });
+
     mappingDetail.push({
       key: i,
       assembly: assemblyLine,
       binary: binaryData,
     });
+    console.log({
+      key: i,
+      assembly: assemblyLine,
+      binary: binaryData,
+    });
   }
+
   return mappingDetail;
 }
 

@@ -130,7 +130,6 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
     const text = textSeg[i];
 
     mappingTable.push([]);
-
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName: string = instruct[0];
     //console.log('instruct', instruct);
@@ -267,6 +266,7 @@ export function makeBinaryObject(inputs: string[]) {
     binaryText,
     binaryData,
     mappingTable,
+    dataSeg,
     textSeg,
   };
 }
