@@ -3,12 +3,36 @@ import {resetSymbolTable} from '../../src/utils/constants';
 import {makeInput, makeOutput, IMapDetail} from '../../src/utils/functions';
 
 const mappingDetailOutput: IMapDetail[] = [
-  {key: 0, assembly: '\t.data', binary: []},
-  {key: 1, assembly: 'data1:\t.word\t100', binary: []},
-  {key: 2, assembly: 'data2:\t.word\t200', binary: []},
-  {key: 3, assembly: 'data3:\t.word\t0x12345678', binary: []},
-  {key: 4, assembly: '\t.text', binary: []},
-  {key: 5, assembly: 'main:', binary: []},
+  {
+    key: 0,
+    assembly: '\t.data',
+    binary: [{lineNumber: 0, data: '00000000000000000000000001011000'}],
+  },
+  {
+    key: 1,
+    assembly: 'data1:\t.word\t100',
+    binary: [{lineNumber: 24, data: '00000000000000000000000001100100'}],
+  },
+  {
+    key: 2,
+    assembly: 'data2:\t.word\t200',
+    binary: [{lineNumber: 25, data: '00000000000000000000000011001000'}],
+  },
+  {
+    key: 3,
+    assembly: 'data3:\t.word\t0x12345678',
+    binary: [{lineNumber: 26, data: '00010010001101000101011001111000'}],
+  },
+  {
+    key: 4,
+    assembly: '\t.text',
+    binary: [{lineNumber: 1, data: '00000000000000000000000000001100'}],
+  },
+  {
+    key: 5,
+    assembly: 'main:',
+    binary: [{lineNumber: 2, data: '00000010001000001000100000100100'}],
+  },
   {
     key: 6,
     assembly: '\tand\t$17, $17, $0',
@@ -37,13 +61,21 @@ const mappingDetailOutput: IMapDetail[] = [
     assembly: '\tand\t$10, $10, $0',
     binary: [{lineNumber: 7, data: '00000001010000000101000000100100'}],
   },
-  {key: 11, assembly: 'lab1:', binary: []},
+  {
+    key: 11,
+    assembly: 'lab1:',
+    binary: [{lineNumber: 8, data: '00000001011000000101100000100100'}],
+  },
   {
     key: 12,
     assembly: '\tand\t$11, $11, $0',
     binary: [{lineNumber: 8, data: '00000001011000000101100000100100'}],
   },
-  {key: 13, assembly: 'lab2:', binary: []},
+  {
+    key: 13,
+    assembly: 'lab2:',
+    binary: [{lineNumber: 9, data: '00100010001100010000000000000001'}],
+  },
   {
     key: 14,
     assembly: '\taddi\t$17, $17, 0x1',
@@ -64,7 +96,11 @@ const mappingDetailOutput: IMapDetail[] = [
     assembly: '\tbne\t$11, $8, lab2',
     binary: [{lineNumber: 12, data: '00010101011010001111111111111100'}],
   },
-  {key: 18, assembly: 'lab3:', binary: []},
+  {
+    key: 18,
+    assembly: 'lab3:',
+    binary: [{lineNumber: 13, data: '00100010010100100000000000000010'}],
+  },
   {
     key: 19,
     assembly: '\taddi\t$18, $18, 0x2',
@@ -95,7 +131,11 @@ const mappingDetailOutput: IMapDetail[] = [
     assembly: '\tbne\t$11, $9, lab3',
     binary: [{lineNumber: 18, data: '00010101011010011111111111111010'}],
   },
-  {key: 25, assembly: 'lab4:', binary: []},
+  {
+    key: 25,
+    assembly: 'lab4:',
+    binary: [{lineNumber: 19, data: '00000000101111110010100000100000'}],
+  },
   {
     key: 26,
     assembly: '\tadd\t$5, $5, $31',
@@ -116,7 +156,11 @@ const mappingDetailOutput: IMapDetail[] = [
     assembly: '\tj\tlab1',
     binary: [{lineNumber: 22, data: '00001000000100000000000000000110'}],
   },
-  {key: 30, assembly: 'lab5:', binary: []},
+  {
+    key: 30,
+    assembly: 'lab5:',
+    binary: [{lineNumber: 23, data: '00110110000100001111000011110000'}],
+  },
   {
     key: 31,
     assembly: '\tori\t$16, $16, 0xf0f0',
