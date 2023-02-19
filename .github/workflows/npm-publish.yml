@@ -12,13 +12,16 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm test
+      - name: Delete node_modules and package-lock.json
+        run: rm -rf node_modules package-lock.json
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Install yocto-queue as a direct dependency
+        run: npm install yocto-queue --save
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
 
   publish-npm:
     needs: build
@@ -29,12 +32,15 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm publish
+      - name: Delete node_modules and package-lock.json
+        run: rm -rf node_modules package-lock.json
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Install yocto-queue as a direct dependency
+        run: npm install yocto-queue --save
+      - name: Install dependencies
+        run: npm install
+      - name: Publish package to npm
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.mips_token}}
