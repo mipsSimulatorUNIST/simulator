@@ -65,6 +65,10 @@ export function makeObjectFile(
 
 function for convert `assembly instructions` to `binary instructions`.
 
+> #### >= version 2.1.5
+>
+> `arrayOutputType` has deleted, assemble function only return string[] as output.
+
 > #### >= version 2.1.0
 >
 > `arrayOutputType` : if you want to get output with string, it should be false (default : true (string array))
@@ -73,14 +77,13 @@ function for convert `assembly instructions` to `binary instructions`.
 
 ```typescript
 interface IAssemble {
-  output: string[] | string;
+  output: string[];
   mappingDetail: IMapDetail[] | null;
 }
 
 export function assemble = (
   assemblyInstructions: string[],
-  arrayOutputType = true,
-  mappingDetailRequest = false,
+  mappingDetailRequest = false
 ) {
   ...
   return {output, mappingDetail} : IAssemble
@@ -385,6 +388,10 @@ In the browser, unlike in the local environment, only files or documents in the 
 
 ## Changes
 
+### >= version 2.1.5
+
+`arrayOutputType` has deleted, `assemble` function only return string[] as output.
+
 ### >= version 2.1.3
 
 #### new parameter for assemble `>= version 2.1.1`
@@ -410,50 +417,11 @@ In the browser, unlike in the local environment, only files or documents in the 
 - `output` => `{output, mappingDetail}` (in `assemble`)
 - `ISimulatorOutput | simulatorOutputType` => `ISimulatorOutput` (in `simulator`)
 
-```typescript
-interface IAssemble {
-  output: string[] | string;
-  mappingDetail: IMapDetail[] | null;
-}
-
-export function assemble = (
-  assemblyInstructions: string[],
-  arrayOutputType = true,
-  mappingDetailRequest = false,
-) {
-  ...
-  return {output, mappingDetail} : IAssemble
-};
-```
-
-```typescript
-export interface simulatorOutputType {
-  PC: string;
-  registers: {[key: string]: string};
-  dataSection: {[key: string]: string} | Record<string, never>;
-  stackSection: {[key: string]: string} | Record<string, never>;
-}
-
-export interface ISimulatorOutput {
-  result: simulatorOutputType;
-  history: simulatorOutputType[] | null;
-}
-
-export function simulator(
-  assemblyInstructions: string[],
-  cycleNum: number,
-  returnHistory = false,
-): Promise<ISimulatorOutput> {
-  ...
-  return  returnHistory ? {result, history: CYCLES} : {result, history: null};
-};
-```
-
 ## Supported Instruction
 
 you can check
 [**MIPS Reference**](https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_Green_Sheet.pdf)
-
+å
 In this library, we support below instructions
 
 | Instruction | Format | opcode | funct  |
