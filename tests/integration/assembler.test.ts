@@ -172,7 +172,7 @@ test(`testing example 1 for [mapping detail]`, () => {
   resetSymbolTable();
 
   const input = makeInput('sample_input', `example1.s`);
-  const {output, mappingDetail} = assemble(input, true, true);
+  const {mappingDetail} = assemble(input, true);
 
   expect(mappingDetail).toEqual(mappingDetailOutput);
 });
@@ -187,17 +187,6 @@ for (let i = 1; i <= 7; i++) {
       .split('\n') // 문자 -> 문자열 전환
       .filter(ele => ele); // "" 제거, ""는 false와 동일
 
-    expect(output).toEqual(testOutput);
-  });
-}
-
-for (let i = 1; i <= 7; i++) {
-  test(`testing example ${i} for [string output]`, () => {
-    resetSymbolTable();
-
-    const input = makeInput('sample_input', `example${i}.s`);
-    const {output} = assemble(input, false);
-    const testOutput = makeOutput('sample_output', `example${i}.o`);
     expect(output).toEqual(testOutput);
   });
 }
