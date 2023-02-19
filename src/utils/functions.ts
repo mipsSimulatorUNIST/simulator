@@ -415,6 +415,7 @@ export interface IMapDetail {
 
 export function makeMappingDetail(
   assemblyFile: string[],
+  dataSeg: string[],
   textSeg: string[],
   mappingTable: number[][],
   output: string[],
@@ -427,13 +428,24 @@ export function makeMappingDetail(
     const binaryInstructionNumbers: number[] = [];
     let binaryInstructions: string[] = [];
 
-    if (assemblyLine === textSeg[textCounter]) {
+    if (assemblyLine.includes('.data')) {
+      binaryInstructionNumbers.push(0);
+      binaryInstructions = [output[0]];
+    } else if (assemblyLine.includes('.word')) {
+      const dataSegIndex = dataSeg.indexOf(assemblyLine.split('\t')[2]);
+      const dataIndex = output.length - dataSeg.length + dataSegIndex;
+      binaryInstructionNumbers.push(dataIndex);
+      binaryInstructions = [output[dataIndex]];
+    } else if (assemblyLine.includes('.text')) {
+      binaryInstructionNumbers.push(1);
+      binaryInstructions = [output[1]];
+    } else {
       const binaryIndexes = mappingTable[textCounter];
       binaryInstructions = binaryIndexes.map(index => {
         binaryInstructionNumbers.push(index + 2);
         return output[index + 2];
       });
-      textCounter++;
+      assemblyLine === textSeg[textCounter] && textCounter++;
     }
 
     const binaryData: IBinaryData[] = [];
@@ -445,12 +457,14 @@ export function makeMappingDetail(
       };
       binaryData.push(temp);
     });
+
     mappingDetail.push({
       key: i,
       assembly: assemblyLine,
       binary: binaryData,
     });
   }
+
   return mappingDetail;
 }
 

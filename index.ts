@@ -7,6 +7,7 @@ import {initialize, initializeMem} from './src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
+  makeInput,
   makeMappingDetail,
   simulatorOutputType,
 } from './src/utils/functions';
@@ -55,6 +56,7 @@ export function assemble(
     binaryText,
     binaryData,
     mappingTable,
+    dataSeg,
     textSeg,
   } = makeBinaryObject(assemblyInstructions);
 
@@ -77,6 +79,7 @@ export function assemble(
   if (mappingDetailRequest) {
     mappingDetail = makeMappingDetail(
       assemblyInstructions,
+      dataSeg,
       textSeg,
       mappingTable,
       output,
