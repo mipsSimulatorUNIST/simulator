@@ -1,11 +1,4 @@
-import {
-  initMemory,
-  initInstInfo,
-  parseData,
-  parseInstr,
-  parseSimulatorOutput,
-  simulatorOutputType,
-} from './functions';
+import {initMemory, initInstInfo, parseData, parseInstr} from './functions';
 
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
@@ -27,7 +20,7 @@ export const MEM_NREGIONS = 3;
 export const DEBUG_SET = 0;
 export const MEM_DUMP_SET = 1;
 
-export let RUN_BIT: number;
+export let RUN_BIT = 1;
 export let INSTRUCTION_COUNT = 0;
 
 /*
@@ -39,9 +32,6 @@ export let memData: memRegionT;
 export let memStack: memRegionT;
 export let memRegions: memRegionT[];
 export let currentState: cpuState;
-
-export const CYCLES: simulatorOutputType[] = [];
-
 export let NUM_INST: number;
 
 export const INST_INFO: InstructionType[] = [];
@@ -307,6 +297,8 @@ export const resetSymbolTable = () => {
 };
 
 export const initializeMem = () => {
+  INSTRUCTION_COUNT = 0;
+  RUN_BIT = 1;
   memText = new memRegionT(MEM_TEXT_START, MEM_TEXT_SIZE);
   memData = new memRegionT(MEM_DATA_START, MEM_DATA_SIZE);
   memStack = new memRegionT(
@@ -329,8 +321,4 @@ export const numInstSub = () => {
 
 export const changeRunBit = () => {
   RUN_BIT = 0;
-};
-
-export const pushCycle = (eachCycle: string) => {
-  CYCLES.push(parseSimulatorOutput(eachCycle));
 };
