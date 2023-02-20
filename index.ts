@@ -1,8 +1,4 @@
-import {
-  makeBinaryString,
-  makeBinaryObject,
-  makeBinaryArray,
-} from './src/simulator/assembler';
+import {makeBinaryObject, makeBinaryArray} from './src/simulator/assembler';
 import {initialize, initializeMem} from './src/utils/constants';
 import {
   IMapDetail,
@@ -12,13 +8,12 @@ import {
 } from './src/utils/functions';
 
 interface IAssemble {
-  output: string[] | string;
+  output: string[];
   mappingDetail: IMapDetail[] | null;
 }
 
 export function assemble(
   assemblyInstructions: string[],
-  arrayOutputType = true,
   mappingDetailRequest = false,
 ): IAssemble {
   /*  
@@ -31,7 +26,7 @@ export function assemble(
    * Let your current directory is simulator (/Users/junghaejune/simulator).
    * Then you only put makeInput("sample_input", "example1.s") into assemblyInstructions
 
-   * output : output: string
+   * output: string[]
    * The assembly file is converted to a string in binary form.
     
     ex) 
@@ -43,10 +38,10 @@ export function assemble(
     ...
     
     output:
-    ...
-    00000010001000001000100000100100
-    00000010010000001001000000100100
-    ...
+    [00000010001000001000100000100100,
+      ...
+    00000010010000001001000000100100]
+
   */
 
   const {
@@ -61,7 +56,7 @@ export function assemble(
 
   let mappingDetail: IMapDetail[] | null = null;
 
-  let output: string[] | string = makeBinaryArray(
+  const output: string[] = makeBinaryArray(
     dataSectionSize,
     textSectionSize,
     binaryText,
@@ -77,15 +72,6 @@ export function assemble(
       output,
     );
   }
-
-  if (arrayOutputType) return {output, mappingDetail};
-
-  output = makeBinaryString(
-    dataSectionSize,
-    textSectionSize,
-    binaryText,
-    binaryData,
-  );
 
   return {output, mappingDetail};
 }
