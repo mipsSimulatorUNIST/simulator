@@ -19,7 +19,15 @@
   },
   "root": true,
   "rules": {
-    "semi": [2, "always"]
+    "semi": [2, "always"],
+    "@typescript-eslint/no-unused-vars": [
+      "warn", // or "error"
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
   },
   "ignorePatterns": ["dist/", "node_modules/", "coverage/"]
 }

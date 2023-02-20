@@ -172,7 +172,7 @@ test(`testing example 1 for [mapping detail]`, () => {
   resetSymbolTable();
 
   const input = makeInput('sample_input', `example1.s`);
-  const {output, mappingDetail} = assemble(input, true, true);
+  const {mappingDetail} = assemble(input, true, true);
 
   expect(mappingDetail).toEqual(mappingDetailOutput);
 });

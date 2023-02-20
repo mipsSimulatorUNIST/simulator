@@ -116,7 +116,7 @@ test('testing recordTextSection [binary Text]', () => {
   resetSymbolTable();
   makeSymbolTable(testInput);
 
-  const [binaryText, mappingTable] = recordTextSection(recordTextCase);
+  const [binaryText, _] = recordTextSection(recordTextCase);
   expect(binaryText).toEqual(recordTextOutput);
 });
 
@@ -124,6 +124,6 @@ test('testing recordTextSection [mapping Table]', () => {
   resetSymbolTable();
   makeSymbolTable(testInput);
 
-  const [binaryText, mappingTable] = recordTextSection(recordTextCase);
+  const [_, mappingTable] = recordTextSection(recordTextCase);
   expect(mappingTable).toEqual(mappingTableOutput);
 });

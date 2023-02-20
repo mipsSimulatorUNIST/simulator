@@ -7,7 +7,6 @@ import {initialize, initializeMem} from './src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
-  makeInput,
   makeMappingDetail,
   simulatorOutputType,
 } from './src/utils/functions';
