@@ -15,26 +15,26 @@ export interface Iinstruction {
 }
 
 interface IBcolors {
-  BLUE: string;
-  YELLOW: string;
-  GREEN: string;
-  RED: string;
-  ENDC: string;
+  readonly BLUE: string;
+  readonly YELLOW: string;
+  readonly GREEN: string;
+  readonly RED: string;
+  readonly ENDC: string;
 }
 
 interface ISection {
-  DATA: number;
-  TEXT: number;
-  MAX_SIZE: number;
+  readonly DATA: number;
+  readonly TEXT: number;
+  readonly MAX_SIZE: number;
 }
 
 export interface SymbolTableType {
-  name: string;
-  address: number;
+  readonly name: string;
+  readonly address: number;
 }
 
 export interface IinstList {
-  [key: string]: instT;
+  readonly [key: string]: instT;
 }
 
 export interface ISYMBOL_TABLE {

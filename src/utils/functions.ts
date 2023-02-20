@@ -39,21 +39,21 @@ import {
 } from './constants';
 
 export interface simulatorOutputType {
-  PC: string;
-  registers: {[key: string]: string};
-  dataSection: {[key: string]: string} | Record<string, never>;
-  stackSection: {[key: string]: string} | Record<string, never>;
+  readonly PC: string;
+  readonly registers: {[key: string]: string};
+  readonly dataSection: {[key: string]: string} | Record<string, never>;
+  readonly stackSection: {[key: string]: string} | Record<string, never>;
 }
 
 export interface IBinaryData {
-  lineNumber: number;
-  data: string;
+  readonly lineNumber: number;
+  readonly data: string;
 }
 
 export interface IMapDetail {
-  key: number;
-  assembly: string;
-  binary: IBinaryData[];
+  readonly key: number;
+  readonly assembly: string;
+  readonly binary: IBinaryData[];
 }
 
 export function parseInstr(buffer: string, index: number): instruction {

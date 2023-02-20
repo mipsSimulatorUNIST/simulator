@@ -8,12 +8,12 @@ import {
 } from './src/utils/functions';
 
 export interface IAssemble {
-  output: string[];
-  mappingDetail: IMapDetail[] | null;
+  readonly output: string[];
+  readonly mappingDetail: IMapDetail[] | null;
 }
 
 export interface ISimulatorOutput {
-  result: simulatorOutputType;
+  readonly result: simulatorOutputType;
   history: simulatorOutputType[] | null;
 }
 
