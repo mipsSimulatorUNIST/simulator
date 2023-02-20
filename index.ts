@@ -61,13 +61,6 @@ export function assemble(
   } = makeBinaryObject(assemblyInstructions);
 
   let mappingDetail: IMapDetail[] | null = null;
-  // console.log('assemblyInstructions:', assemblyInstructions);
-  // console.log('textSeg:', textSeg);
-  // console.log('dataSectionSize:', dataSectionSize);
-  // console.log('textSectionSize: ', textSectionSize);
-  // console.log('binaryText: ', binaryText);
-  // console.log('binaryData: ', binaryData);
-  // console.log('mappingTable: ', mappingTable);
 
   let output: string[] | string = makeBinaryArray(
     dataSectionSize,

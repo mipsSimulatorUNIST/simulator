@@ -14,7 +14,6 @@ for (let i = 1; i <= 7; i++) {
     const expectOutput = parseSimulatorOutput(
       makeOutput('simulator_sample_output', `example0${i}.o`),
     );
-    console.log(expectOutput);
     const testOutput = history[history.length - 1];
     expect(expectOutput.toString()).toBe(testOutput.toString());
   });

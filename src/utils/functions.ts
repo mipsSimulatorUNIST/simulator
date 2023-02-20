@@ -621,7 +621,7 @@ export async function mainProcess(
   return new Promise<simulatorOutputType>((resolve, reject) => {
     try {
       if (DEBUG_SET) {
-        console.log(`Simulating for ${cycles} cycles...!!\n`);
+        console.log(`Simulating for ${cycles} cycles...!\n`);
         console.log('MAIN PROCESS', CYCLES);
         while (i > 0) {
           cycle();
@@ -729,10 +729,9 @@ export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
   let running_string = '';
   if (RUN_BIT === 0) {
     running_string = "Can't simulate, Simulator is halted\n";
-    //console.log(running_string);
   }
 
-  running_string = `Simulating for ${num_cycles} cycles...\n\n`;
+  running_string = `Simulating for ${num_cycles} cycles...!\n\n`;
 
   for (let i = 0; i < num_cycles; ++i) {
     if (RUN_BIT === 0) {
@@ -744,6 +743,4 @@ export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
     CYCLES.push(parseSimulatorOutput(EachCycle));
     cycle();
   }
-
-  console.log(running_string);
 }
