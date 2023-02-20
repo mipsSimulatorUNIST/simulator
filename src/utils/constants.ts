@@ -137,6 +137,7 @@ export class laStruct {
 export class cpuState {
   PC: number;
   REGS: number[];
+
   constructor() {
     this.PC = 0;
     this.REGS = Array.from({length: 32}, () => 0);
@@ -181,18 +182,15 @@ export function initialize(
 
   // Load program and service routines into mem
   let textIndex = 0;
-  let buffer: string;
   let size = 0;
-  const instructs: Iinstruction = new instruction();
 
   NUM_INST = ~~(textSize / 4);
 
   // initial memory allocation of text segment
-  for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
+  for (let i = 0; i < NUM_INST; i++) INST_INFO.push(new instruction());
   initInstInfo(NUM_INST, INST_INFO);
 
-  for (let i = 0; i < binary.length; i++) {
-    buffer = binary[i];
+  binary.forEach(buffer => {
     if (size < textSize) {
       INST_INFO[textIndex] = parseInstr(buffer, size);
       textIndex += 1;
@@ -200,7 +198,7 @@ export function initialize(
       parseData(buffer, size - textSize);
     }
     size += 4;
-  }
+  });
 
   currentState.PC = MEM_TEXT_START;
 

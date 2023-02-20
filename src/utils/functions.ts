@@ -399,9 +399,9 @@ export function makeObjectFile(
     } else throw 'OUTPUT_NOT_EXISTS';
     const fd: number = fs.openSync(outputFilePath, 'a');
 
-    for (const item of content) {
+    content.forEach(item => {
       fs.appendFileSync(fd, item + '\n', 'utf-8');
-    }
+    });
 
     fs.closeSync(fd);
   } catch (err) {
@@ -422,8 +422,7 @@ export function makeMappingDetail(
   const mappingDetail: IMapDetail[] | null = [] as IMapDetail[];
   let textCounter = 0;
 
-  for (let i = 0; i < assemblyFile.length; i++) {
-    const assemblyLine = assemblyFile[i];
+  assemblyFile.forEach((assemblyLine, i) => {
     const binaryInstructionNumbers: number[] = [];
     let binaryInstructions: string[] = [];
 
@@ -448,12 +447,14 @@ export function makeMappingDetail(
     }
 
     const binaryData: IBinaryData[] = [];
+
     binaryInstructions.forEach((inst, j) => {
       const binaryInstructionIndex = binaryInstructionNumbers[j];
       const temp: IBinaryData = {
         lineNumber: binaryInstructionIndex,
         data: inst,
       };
+
       binaryData.push(temp);
     });
 
@@ -462,7 +463,7 @@ export function makeMappingDetail(
       assembly: assemblyLine,
       binary: binaryData,
     });
-  }
+  });
 
   return mappingDetail;
 }
@@ -508,32 +509,28 @@ export function memRead(address: number): number {
 */
 
 export function memWrite(address: number, value: number): void {
-  for (let i = 0; i < MEM_NREGIONS; ++i) {
+  memRegions.forEach(memRegion => {
     if (
-      address >= memRegions[i].start &&
-      address < memRegions[i].start + memRegions[i].size
+      address >= memRegion.start &&
+      address < memRegion.start + memRegion.size
     ) {
-      const offset = address - memRegions[i].start;
+      const offset = address - memRegion.start;
 
-      memRegions[i].mem[offset + 3] = (value >> 24) & 0xff;
-      memRegions[i].mem[offset + 2] = (value >> 16) & 0xff;
-      memRegions[i].mem[offset + 1] = (value >> 8) & 0xff;
-      memRegions[i].mem[offset + 0] = (value >> 0) & 0xff;
+      memRegion.mem[offset + 3] = (value >> 24) & 0xff;
+      memRegion.mem[offset + 2] = (value >> 16) & 0xff;
+      memRegion.mem[offset + 1] = (value >> 8) & 0xff;
+      memRegion.mem[offset + 0] = (value >> 0) & 0xff;
 
       /* set_offBound */
-      memRegions[i].dirty = true;
-      if (memRegions[i].type === MEM_GROW_UP) {
-        memRegions[i].offBound =
-          offset + 4 > memRegions[i].offBound
-            ? offset + 4
-            : memRegions[i].offBound;
+      memRegion.dirty = true;
+      if (memRegion.type === MEM_GROW_UP) {
+        memRegion.offBound =
+          offset + 4 > memRegion.offBound ? offset + 4 : memRegion.offBound;
       } else
-        memRegions[i].offBound =
-          offset + 4 < memRegions[i].offBound
-            ? offset + 4
-            : memRegions[i].offBound;
+        memRegion.offBound =
+          offset + 4 < memRegion.offBound ? offset + 4 : memRegion.offBound;
     }
-  }
+  });
 }
 
 /*
@@ -542,30 +539,26 @@ export function memWrite(address: number, value: number): void {
 */
 
 export function memWriteHalf(address: number, value: number): void {
-  for (let i = 0; i < MEM_NREGIONS; ++i) {
+  memRegions.forEach(memRegion => {
     if (
-      address >= memRegions[i].start &&
-      address < memRegions[i].start + memRegions[i].size
+      address >= memRegion.start &&
+      address < memRegion.start + memRegion.size
     ) {
-      const offset = address - memRegions[i].start;
+      const offset = address - memRegion.start;
 
-      memRegions[i].mem[offset + 1] = (value >> 8) & 0xff;
-      memRegions[i].mem[offset + 0] = (value >> 0) & 0xff;
+      memRegion.mem[offset + 1] = (value >> 8) & 0xff;
+      memRegion.mem[offset + 0] = (value >> 0) & 0xff;
 
       /* set_offBound */
-      memRegions[i].dirty = true;
-      if (memRegions[i].type === MEM_GROW_UP)
-        memRegions[i].offBound =
-          offset + 2 > memRegions[i].offBound
-            ? offset + 2
-            : memRegions[i].offBound;
+      memRegion.dirty = true;
+      if (memRegion.type === MEM_GROW_UP)
+        memRegion.offBound =
+          offset + 2 > memRegion.offBound ? offset + 2 : memRegion.offBound;
       else
-        memRegions[i].offBound =
-          offset + 2 < memRegions[i].offBound
-            ? offset + 2
-            : memRegions[i].offBound;
+        memRegion.offBound =
+          offset + 2 < memRegion.offBound ? offset + 2 : memRegion.offBound;
     }
-  }
+  });
 }
 
 /*

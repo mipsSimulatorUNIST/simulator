@@ -47,6 +47,7 @@ export const makeSymbolTable = (inputs: string[]) => {
 
   const dataSeg: string[] = [];
   const textSeg: string[] = [];
+
   inputs.forEach((input: string) => {
     const splited: string[] = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol: symbolT = new symbolT();
@@ -127,9 +128,7 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
 
   let binaryInstructionCounter = 0;
 
-  for (let i = 0; i < textSeg.length; i++) {
-    const text = textSeg[i];
-
+  textSeg.forEach((text, i) => {
     mappingTable.push([]);
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName: string = instruct[0];
@@ -220,7 +219,7 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
 
     mappingTable[i].push(binaryInstructionCounter);
     binaryInstructionCounter++;
-  }
+  });
 
   return [binaryText, mappingTable];
 }
