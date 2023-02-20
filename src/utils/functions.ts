@@ -22,7 +22,7 @@ import {
   INST_INFO,
   instAddOne,
   instruction,
-  InstructionType,
+  Iinstruction,
   memData,
   memStack,
   memRegions,
@@ -43,6 +43,17 @@ export interface simulatorOutputType {
   registers: {[key: string]: string};
   dataSection: {[key: string]: string} | Record<string, never>;
   stackSection: {[key: string]: string} | Record<string, never>;
+}
+
+export interface IBinaryData {
+  lineNumber: number;
+  data: string;
+}
+
+export interface IMapDetail {
+  key: number;
+  assembly: string;
+  binary: IBinaryData[];
 }
 
 export function parseInstr(buffer: string, index: number): instruction {
@@ -82,7 +93,7 @@ export function parseData(buffer: string, index: number) {
 }
 
 export function printParseResult(
-  INST_INFO: InstructionType[],
+  INST_INFO: Iinstruction[],
   textSize: number,
   dataSize: number,
 ) {
@@ -401,17 +412,6 @@ export function makeObjectFile(
   }
 }
 
-export interface IBinaryData {
-  lineNumber: number;
-  data: string;
-}
-
-export interface IMapDetail {
-  key: number;
-  assembly: string;
-  binary: IBinaryData[];
-}
-
 export function makeMappingDetail(
   assemblyFile: string[],
   dataSeg: string[],
@@ -582,7 +582,7 @@ export function initMemory(): void {
 */
 export function initInstInfo(
   NUM_INST: number,
-  INST_INFO: InstructionType[],
+  INST_INFO: Iinstruction[],
 ): void {
   for (let i = 0; i < NUM_INST; ++i) {
     INST_INFO[i].value = 0;

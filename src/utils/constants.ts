@@ -1,5 +1,46 @@
 import {initMemory, initInstInfo, parseData, parseInstr} from './functions';
 
+export interface Iinstruction {
+  opcode: number;
+  funcCode: number;
+  value: number;
+  target: number;
+  rs: number;
+  rt: number;
+  imm: number;
+  rd: number;
+  shamt: number;
+  encoding: number;
+  expr: number;
+}
+
+interface IBcolors {
+  BLUE: string;
+  YELLOW: string;
+  GREEN: string;
+  RED: string;
+  ENDC: string;
+}
+
+interface ISection {
+  DATA: number;
+  TEXT: number;
+  MAX_SIZE: number;
+}
+
+export interface SymbolTableType {
+  name: string;
+  address: number;
+}
+
+export interface IinstList {
+  [key: string]: instT;
+}
+
+export interface ISYMBOL_TABLE {
+  [key: string]: number;
+}
+
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
 
@@ -34,48 +75,15 @@ export let memRegions: memRegionT[];
 export let currentState: cpuState;
 export let NUM_INST: number;
 
-export const INST_INFO: InstructionType[] = [];
+export const INST_INFO: Iinstruction[] = [];
 
-export type InstructionType = {
-  opcode: number;
-  funcCode: number;
-  value: number;
-  target: number;
-  rs: number;
-  rt: number;
-  imm: number;
-  rd: number;
-  shamt: number;
-  encoding: number;
-  expr: number;
-};
-
-type BcolorsType = {
-  BLUE: string;
-  YELLOW: string;
-  GREEN: string;
-  RED: string;
-  ENDC: string;
-};
-
-type SectionType = {
-  DATA: number;
-  TEXT: number;
-  MAX_SIZE: number;
-};
-
-export interface SymbolTableType {
-  name: string;
-  address: number;
-}
-
-export const section: SectionType = {
+export const section: ISection = {
   DATA: 0,
   TEXT: 1,
   MAX_SIZE: 2,
 };
 
-export const bcolors: BcolorsType = {
+export const bcolors: IBcolors = {
   BLUE: '\x1B[34m',
   YELLOW: '\x1B[33m',
   GREEN: '\x1B[32m',
@@ -168,14 +176,14 @@ export function initialize(
   binary: string[],
   textSize: number,
   dataSize: number,
-): InstructionType[] {
+): Iinstruction[] {
   initMemory();
 
   // Load program and service routines into mem
   let textIndex = 0;
   let buffer: string;
   let size = 0;
-  const instructs: InstructionType = new instruction();
+  const instructs: Iinstruction = new instruction();
 
   NUM_INST = ~~(textSize / 4);
 
@@ -250,10 +258,6 @@ const SLTIU = new instT('sltiu', '001011', 'I', '');
 const J = new instT('j', '000010', 'J', '');
 const JAL = new instT('jal', '000011', 'J', '');
 
-export interface IinstList {
-  [key: string]: instT;
-}
-
 export const instList: IinstList = {
   add: ADD,
   addi: ADDI,
@@ -287,9 +291,6 @@ export const instList: IinstList = {
 // Global symbol table
 export const symbolStruct = new symbolT();
 
-export interface ISYMBOL_TABLE {
-  [key: string]: number;
-}
 export let SYMBOL_TABLE: ISYMBOL_TABLE = {};
 
 export const resetSymbolTable = () => {

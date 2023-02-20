@@ -7,9 +7,14 @@ import {
   simulatorOutputType,
 } from './src/utils/functions';
 
-interface IAssemble {
+export interface IAssemble {
   output: string[];
   mappingDetail: IMapDetail[] | null;
+}
+
+export interface ISimulatorOutput {
+  result: simulatorOutputType;
+  history: simulatorOutputType[] | null;
 }
 
 export function assemble(
@@ -74,11 +79,6 @@ export function assemble(
   }
 
   return {output, mappingDetail};
-}
-
-export interface ISimulatorOutput {
-  result: simulatorOutputType;
-  history: simulatorOutputType[] | null;
 }
 
 export async function simulator(
