@@ -8,7 +8,6 @@ import {
 } from '../utils/constants';
 import {getInstInfo, memRead, memWrite, memWriteHalf} from '../utils/functions';
 
-/* assignment2 run*/
 export function OPCODE(INST: instruction): number {
   return INST.opcode;
 }
@@ -154,15 +153,6 @@ export function setEXPR(INST: instruction, VAL: number): void {
   INST.expr = VAL;
 }
 
-// export function SOURCE(INST: instruction) {
-//   return INST.source_line;
-// }
-
-// export function setSOURCE(INST: instruction, VAL) {
-//   INST.source_line = VAL;
-// }
-
-/* Sign Extension */
 export function signEX(X: number): number {
   if (X & 0x8000) return X | 0xffff0000;
   else return X;
@@ -187,11 +177,11 @@ export function loadINST(LD: number, MASK: number): number {
   return LD & MASK;
 }
 
-/*
-  Procedure: process_instruction
-  Purpose: Process one instruction
-*/
 export function process_instruction() {
+  /*
+   * Procedure: process_instruction
+   * Purpose: Process one instruction
+   */
   const info: instruction = getInstInfo(currentState.PC);
 
   // R type
@@ -324,7 +314,6 @@ export function process_instruction() {
       if (currentState.REGS[rs] < signEX(imm)) currentState.REGS[rt] = 1;
       else currentState.REGS[rt] = 0;
     }
-
     // SLTIU
     else if (opcode === 0xb) {
       if (currentState.REGS[rs] < signEX(imm)) currentState.REGS[rt] = 1;

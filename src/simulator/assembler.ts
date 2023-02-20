@@ -98,6 +98,7 @@ export const makeSymbolTable = (inputs: string[]) => {
 
     address += BYTES_PER_WORD;
   });
+
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
@@ -220,6 +221,7 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
     mappingTable[i].push(binaryInstructionCounter);
     binaryInstructionCounter++;
   }
+
   return [binaryText, mappingTable];
 }
 
@@ -247,7 +249,6 @@ export function recordDataSection(dataSeg: string[]): string[] {
 export function makeBinaryObject(inputs: string[]) {
   const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
     makeSymbolTable(inputs);
-
   const [binaryText, mappingTable]: [string[], number[][]] =
     recordTextSection(textSeg);
   const binaryData: string[] = recordDataSection(dataSeg);

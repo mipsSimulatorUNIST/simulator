@@ -735,7 +735,7 @@ export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
 
   for (let i = 0; i < num_cycles; ++i) {
     if (RUN_BIT === 0) {
-      running_string += 'Simulator halted\n\n';
+      running_string += `Simulator halted ${i}th cycle.\n\n`;
       break;
     }
     let EachCycle: string = rdump();
@@ -743,4 +743,5 @@ export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
     CYCLES.push(parseSimulatorOutput(EachCycle));
     cycle();
   }
+  console.log(running_string);
 }

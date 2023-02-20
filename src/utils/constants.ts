@@ -177,7 +177,7 @@ export function initialize(
   let size = 0;
   const instructs: InstructionType = new instruction();
 
-  NUM_INST = ~~(textSize / 4); //몫
+  NUM_INST = ~~(textSize / 4);
 
   // initial memory allocation of text segment
   for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
@@ -193,7 +193,7 @@ export function initialize(
     }
     size += 4;
   }
-  //printParseResult(INST_INFO, textSize, dataSize);
+
   currentState.PC = MEM_TEXT_START;
 
   RUN_BIT = 1;
@@ -207,7 +207,7 @@ export function initialize(
 export class memRegionT {
   start: number;
   size: number;
-  mem: number[]; ////////////////////////////////////
+  mem: number[];
   offBound: number;
   type: number;
   dirty: boolean;
