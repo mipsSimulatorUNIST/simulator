@@ -1,0 +1,46 @@
+name: npm publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Delete node_modules and package-lock.json
+        run: rm -rf node_modules package-lock.json
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Install yocto-queue as a direct dependency
+        run: npm install yocto-queue --save
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - name: Delete node_modules and package-lock.json
+        run: rm -rf node_modules package-lock.json
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Install yocto-queue as a direct dependency
+        run: npm install yocto-queue --save
+      - name: Install dependencies
+        run: npm install
+      - name: Publish package to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.mips_token}}
