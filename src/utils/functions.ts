@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import * as fs from 'fs';
 import {exit} from 'process';
 
@@ -12,7 +12,7 @@ import {
   setRT,
   setSHAMT,
   setTARGET,
-} from '../simulator/run';
+} from '@simulator/run';
 
 import {
   bcolors,
@@ -36,7 +36,7 @@ import {
   RUN_BIT,
   SYMBOL_TABLE,
   SymbolTableType,
-} from './constants';
+} from '@utils/constants';
 
 export interface simulatorOutputType {
   readonly PC: string;

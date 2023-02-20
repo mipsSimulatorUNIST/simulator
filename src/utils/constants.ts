@@ -1,4 +1,9 @@
-import {initMemory, initInstInfo, parseData, parseInstr} from './functions';
+import {
+  initMemory,
+  initInstInfo,
+  parseData,
+  parseInstr,
+} from '@utils/functions';
 
 export interface Iinstruction {
   opcode: number;

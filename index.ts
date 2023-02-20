@@ -1,11 +1,11 @@
-import {makeBinaryObject, makeBinaryArray} from './src/simulator/assembler';
-import {initialize, initializeMem} from './src/utils/constants';
+import {makeBinaryObject, makeBinaryArray} from '@src/simulator/assembler';
+import {initialize, initializeMem} from '@src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
   simulatorOutputType,
-} from './src/utils/functions';
+} from '@src/utils/functions';
 
 export interface IAssemble {
   readonly output: string[];

@@ -8,8 +8,8 @@ import {
   symbolT,
   SYMBOL_TABLE,
   resetSymbolTable,
-} from '../utils/constants';
-import {numToBits, symbolTableAddEntry, toHexAndPad} from '../utils/functions';
+} from '@utils/constants';
+import {numToBits, symbolTableAddEntry, toHexAndPad} from '@utils/functions';
 
 export const makeSymbolTable = (inputs: string[]) => {
   /*

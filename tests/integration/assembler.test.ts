@@ -1,6 +1,6 @@
-import {assemble} from '../../index';
-import {resetSymbolTable} from '../../src/utils/constants';
-import {makeInput, makeOutput, IMapDetail} from '../../src/utils/functions';
+import {assemble} from '@root/index';
+import {resetSymbolTable} from '@utils/constants';
+import {makeInput, makeOutput, IMapDetail} from '@utils/functions';
 
 const mappingDetailOutput: IMapDetail[] = [
   {

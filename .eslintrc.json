@@ -11,7 +11,7 @@
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "import"],
   "parserOptions": {
     "project": "./tsconfig.json",
     "ecmaVersion": "latest",
@@ -29,5 +29,10 @@
       }
     ]
   },
-  "ignorePatterns": ["dist/", "node_modules/", "coverage/"]
+  "ignorePatterns": ["dist/", "node_modules/", "coverage/"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  }
 }

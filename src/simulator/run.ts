@@ -5,8 +5,8 @@ import {
   instruction,
   MEM_TEXT_START,
   NUM_INST,
-} from '../utils/constants';
-import {getInstInfo, memRead, memWrite, memWriteHalf} from '../utils/functions';
+} from '@utils/constants';
+import {getInstInfo, memRead, memWrite, memWriteHalf} from '@utils/functions';
 
 export function OPCODE(INST: instruction): number {
   return INST.opcode;

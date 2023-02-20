@@ -1,10 +1,6 @@
-import {simulator} from '../../index';
-import {initializeMem} from '../../src/utils/constants';
-import {
-  makeInput,
-  makeOutput,
-  parseSimulatorOutput,
-} from '../../src/utils/functions';
+import {simulator} from '@root/index';
+import {initializeMem} from '@utils/constants';
+import {makeInput, makeOutput, parseSimulatorOutput} from '@utils/functions';
 
 for (let i = 1; i <= 7; i++) {
   initializeMem();
