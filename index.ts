@@ -134,14 +134,16 @@ export async function simulator(
     makeBinaryObject(assemblyInstructions);
 
   initializeMem();
-  const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
 
+  const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
   const INST_INFO = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
   );
+
   const result = await mainProcess(INST_INFO, cycleNum, CYCLES);
+
   return new Promise<ISimulatorOutput>((resolve, reject) => {
     try {
       const output: ISimulatorOutput = {result, history: null};

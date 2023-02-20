@@ -300,5 +300,6 @@ export function makeBinaryString(
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
   });
+
   return output;
 }

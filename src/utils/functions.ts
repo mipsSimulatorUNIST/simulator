@@ -181,7 +181,6 @@ export function log(printType: number, content: string) {
   console.log(pType[printType] + content);
 }
 
-// Check the value is empty or not
 export function isEmpty(value: string | null | undefined | object) {
   const emptyArray: string[] = [''];
   if (
@@ -692,9 +691,6 @@ export function mdump(start: number, stop: number): string {
   let mdump_string = '';
   for (let i = start; i < stop + 1; i += 4) {
     mdump_string += `0x${toHexAndPad(i)}: 0x${toHexAndPad(memRead(i))}\n`;
-    // mdump_string += `0x${i.toString(16).padStart(8, '0')}: 0x${memRead(i)
-    //   .toString(16)
-    //   .padStart(8, '0')}\n`;
   }
   mdump_string += '\n';
   return mdump_string;
@@ -708,13 +704,10 @@ export function rdump(): string {
   let rdump_string = '';
   rdump_string += 'Program Counter\n';
   rdump_string += `PC: 0x${toHexAndPad(currentState.PC)}\n`;
-  // rdump_string += `PC: 0x${currentState.PC.toString(16).padStart(8, '0')}\n`;
   rdump_string += `Registers\n`;
+
   for (let k = 0; k < MIPS_REGS; ++k) {
     rdump_string += `R${k}: 0x${toHexAndPad((currentState.REGS[k] >>>= 0))}\n`;
-    // rdump_string += `R${k}: 0x${(currentState.REGS[k] >>>= 0)
-    //   .toString(16)
-    //   .padStart(8, '0')}\n`;
   }
 
   rdump_string += '\n';
