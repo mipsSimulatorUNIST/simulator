@@ -19,6 +19,7 @@ jobs:
       - name: Install yocto-queue as a direct dependency
         run: npm install yocto-queue --save
       - name: Install dependencies
+        run: npm install
       - name: Run tests
         run: npm run pre-test
 
