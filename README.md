@@ -94,8 +94,16 @@ export function assemble = (
 >
 > ```typescript
 > const mappingDetailOutput: IMapDetail[] = [
->   {key: 0, assembly: '\t.data', binary: []},
->   {key: 1, assembly: 'data1:\t.word\t100', binary: []},
+>  {
+>     key: 0,
+>     assembly: "\t.data",
+>     binary: [{ lineNumber: 0, data: "00000000000000000000000001011000" }],
+>   },
+>     {
+>     key: 1,
+>     assembly: "data1:\t.word\t100",
+>     binary: [{ lineNumber: 24, data: "00000000000000000000000001100100" }],
+>   },
 >   ...{
 >     key: 6,
 >     assembly: '\tand\t$17, $17, $0',
@@ -218,6 +226,7 @@ export function simulator(
 
 ```js
 // import functions
+import { assemble } from "mips-simulator-js";
 
 /*
  *   if the inputFilePath is '/Users/user/simulator/sample_input/sample/example1.s',
@@ -254,6 +263,8 @@ makeObjectFile(outputFolderPath, outputFileName, binary);
 
 ```typescript
 // import functions
+import { simulator } from "mips-simulator-js";
+
 const inputFolderName = 'sample_input/sample';
 const inputFileName = 'example1.s';
 
@@ -391,6 +402,8 @@ In the browser, unlike in the local environment, only files or documents in the 
 ### >= version 2.1.5
 
 `arrayOutputType` has deleted, `assemble` function only return string[] as output.
+
+Add data section, text section size, binary value of data segment and PC to the `mapping table`.
 
 ### >= version 2.1.3
 
