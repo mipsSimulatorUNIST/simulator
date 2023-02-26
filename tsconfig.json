@@ -9,7 +9,15 @@
     "rootDir": "./",
     "moduleResolution": "Node",
     "lib": ["ES2015", "DOM", "DOM.Iterable"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@root/*": ["./*"],
+      "@src/*": ["src/*"],
+      "@utils/*": ["src/utils/*"],
+      "@simulator/*": ["src/simulator/*"]
+    }
   },
   "include": ["./src/**/*.ts", "./tests/**/*.ts"],
   "files": ["index.ts"],

@@ -1,4 +1,50 @@
-import {initMemory, initInstInfo, parseData, parseInstr} from './functions';
+import {
+  initMemory,
+  initInstInfo,
+  parseData,
+  parseInstr,
+} from '@utils/functions';
+
+export interface Iinstruction {
+  opcode: number;
+  funcCode: number;
+  value: number;
+  target: number;
+  rs: number;
+  rt: number;
+  imm: number;
+  rd: number;
+  shamt: number;
+  encoding: number;
+  expr: number;
+}
+
+interface IBcolors {
+  readonly BLUE: string;
+  readonly YELLOW: string;
+  readonly GREEN: string;
+  readonly RED: string;
+  readonly ENDC: string;
+}
+
+interface ISection {
+  readonly DATA: number;
+  readonly TEXT: number;
+  readonly MAX_SIZE: number;
+}
+
+export interface SymbolTableType {
+  readonly name: string;
+  readonly address: number;
+}
+
+export interface IinstList {
+  readonly [key: string]: instT;
+}
+
+export interface ISYMBOL_TABLE {
+  [key: string]: number;
+}
 
 export const DEBUG = 0;
 export const MAX_SYMBOL_TABLE_SIZE = 1024;
@@ -34,48 +80,15 @@ export let memRegions: memRegionT[];
 export let currentState: cpuState;
 export let NUM_INST: number;
 
-export const INST_INFO: InstructionType[] = [];
+export const INST_INFO: Iinstruction[] = [];
 
-export type InstructionType = {
-  opcode: number;
-  funcCode: number;
-  value: number;
-  target: number;
-  rs: number;
-  rt: number;
-  imm: number;
-  rd: number;
-  shamt: number;
-  encoding: number;
-  expr: number;
-};
-
-type BcolorsType = {
-  BLUE: string;
-  YELLOW: string;
-  GREEN: string;
-  RED: string;
-  ENDC: string;
-};
-
-type SectionType = {
-  DATA: number;
-  TEXT: number;
-  MAX_SIZE: number;
-};
-
-export interface SymbolTableType {
-  name: string;
-  address: number;
-}
-
-export const section: SectionType = {
+export const section: ISection = {
   DATA: 0,
   TEXT: 1,
   MAX_SIZE: 2,
 };
 
-export const bcolors: BcolorsType = {
+export const bcolors: IBcolors = {
   BLUE: '\x1B[34m',
   YELLOW: '\x1B[33m',
   GREEN: '\x1B[32m',
@@ -129,6 +142,7 @@ export class laStruct {
 export class cpuState {
   PC: number;
   REGS: number[];
+
   constructor() {
     this.PC = 0;
     this.REGS = Array.from({length: 32}, () => 0);
@@ -168,23 +182,20 @@ export function initialize(
   binary: string[],
   textSize: number,
   dataSize: number,
-): InstructionType[] {
+): Iinstruction[] {
   initMemory();
 
   // Load program and service routines into mem
   let textIndex = 0;
-  let buffer: string;
   let size = 0;
-  const instructs: InstructionType = new instruction();
 
-  NUM_INST = ~~(textSize / 4); //몫
+  NUM_INST = ~~(textSize / 4);
 
   // initial memory allocation of text segment
-  for (let i = 0; i < NUM_INST; i++) INST_INFO.push(instructs);
+  for (let i = 0; i < NUM_INST; i++) INST_INFO.push(new instruction());
   initInstInfo(NUM_INST, INST_INFO);
 
-  for (let i = 0; i < binary.length; i++) {
-    buffer = binary[i];
+  binary.forEach(buffer => {
     if (size < textSize) {
       INST_INFO[textIndex] = parseInstr(buffer, size);
       textIndex += 1;
@@ -192,8 +203,8 @@ export function initialize(
       parseData(buffer, size - textSize);
     }
     size += 4;
-  }
-  //printParseResult(INST_INFO, textSize, dataSize);
+  });
+
   currentState.PC = MEM_TEXT_START;
 
   RUN_BIT = 1;
@@ -207,7 +218,7 @@ export function initialize(
 export class memRegionT {
   start: number;
   size: number;
-  mem: number[]; ////////////////////////////////////
+  mem: number[];
   offBound: number;
   type: number;
   dirty: boolean;
@@ -250,10 +261,6 @@ const SLTIU = new instT('sltiu', '001011', 'I', '');
 const J = new instT('j', '000010', 'J', '');
 const JAL = new instT('jal', '000011', 'J', '');
 
-export interface IinstList {
-  [key: string]: instT;
-}
-
 export const instList: IinstList = {
   add: ADD,
   addi: ADDI,
@@ -287,9 +294,6 @@ export const instList: IinstList = {
 // Global symbol table
 export const symbolStruct = new symbolT();
 
-export interface ISYMBOL_TABLE {
-  [key: string]: number;
-}
 export let SYMBOL_TABLE: ISYMBOL_TABLE = {};
 
 export const resetSymbolTable = () => {

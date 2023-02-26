@@ -1,15 +1,20 @@
-import {makeBinaryObject, makeBinaryArray} from './src/simulator/assembler';
-import {initialize, initializeMem} from './src/utils/constants';
+import {makeBinaryObject, makeBinaryArray} from '@src/simulator/assembler';
+import {initialize, initializeMem} from '@src/utils/constants';
 import {
   IMapDetail,
   mainProcess,
   makeMappingDetail,
   simulatorOutputType,
-} from './src/utils/functions';
+} from '@src/utils/functions';
 
-interface IAssemble {
-  output: string[];
-  mappingDetail: IMapDetail[] | null;
+export interface IAssemble {
+  readonly output: string[];
+  readonly mappingDetail: IMapDetail[] | null;
+}
+
+export interface ISimulatorOutput {
+  readonly result: simulatorOutputType;
+  history: simulatorOutputType[] | null;
 }
 
 export function assemble(
@@ -55,13 +60,6 @@ export function assemble(
   } = makeBinaryObject(assemblyInstructions);
 
   let mappingDetail: IMapDetail[] | null = null;
-  // console.log('assemblyInstructions:', assemblyInstructions);
-  // console.log('textSeg:', textSeg);
-  // console.log('dataSectionSize:', dataSectionSize);
-  // console.log('textSectionSize: ', textSectionSize);
-  // console.log('binaryText: ', binaryText);
-  // console.log('binaryData: ', binaryData);
-  // console.log('mappingTable: ', mappingTable);
 
   const output: string[] = makeBinaryArray(
     dataSectionSize,
@@ -81,11 +79,6 @@ export function assemble(
   }
 
   return {output, mappingDetail};
-}
-
-export interface ISimulatorOutput {
-  result: simulatorOutputType;
-  history: simulatorOutputType[] | null;
 }
 
 export async function simulator(
@@ -141,14 +134,16 @@ export async function simulator(
     makeBinaryObject(assemblyInstructions);
 
   initializeMem();
-  const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
 
+  const CYCLES: simulatorOutputType[] = new Array<simulatorOutputType>();
   const INST_INFO = initialize(
     binaryText.concat(binaryData),
     textSectionSize,
     dataSectionSize,
   );
+
   const result = await mainProcess(INST_INFO, cycleNum, CYCLES);
+
   return new Promise<ISimulatorOutput>((resolve, reject) => {
     try {
       const output: ISimulatorOutput = {result, history: null};

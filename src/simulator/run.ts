@@ -5,10 +5,9 @@ import {
   instruction,
   MEM_TEXT_START,
   NUM_INST,
-} from '../utils/constants';
-import {getInstInfo, memRead, memWrite, memWriteHalf} from '../utils/functions';
+} from '@utils/constants';
+import {getInstInfo, memRead, memWrite, memWriteHalf} from '@utils/functions';
 
-/* assignment2 run*/
 export function OPCODE(INST: instruction): number {
   return INST.opcode;
 }
@@ -49,30 +48,6 @@ export function setRD(INST: instruction, VAL: number): void {
   INST.rd = VAL;
 }
 
-export function FS(INST: instruction): number {
-  return RD(INST);
-}
-
-export function setFS(INST: instruction, VAL: number): void {
-  setRD(INST, VAL);
-}
-
-export function FT(INST: instruction): number {
-  return RT(INST);
-}
-
-export function SET_FT(INST: instruction, VAL: number): void {
-  setRT(INST, VAL);
-}
-
-export function FD(INST: instruction): number {
-  return SHAMT(INST);
-}
-
-export function setFD(INST: instruction, VAL: number): void {
-  setSHAMT(INST, VAL);
-}
-
 export function SHAMT(INST: instruction): number {
   return INST.shamt;
 }
@@ -89,45 +64,8 @@ export function setIMM(INST: instruction, VAL: number): void {
   INST.imm = VAL;
 }
 
-export function BASE(INST: instruction): number {
-  return RS(INST);
-}
-
-export function setBASE(INST: instruction, VAL: number): void {
-  setRS(INST, VAL);
-}
-
 export function IOFFSET(INST: instruction): number {
   return IMM(INST);
-}
-
-export function setIOFFSET(INST: instruction, VAL: number): void {
-  setIMM(INST, VAL);
-}
-
-export function IDISP(INST: instruction): number {
-  const X = INST.imm << 2;
-  return signEX(X);
-}
-
-export function COND(INST: instruction): number {
-  return RS(INST);
-}
-
-export function setCOND(INST: instruction, VAL: number): void {
-  setRS(INST, VAL);
-}
-
-export function CC(INST: instruction): number {
-  return RT(INST) >> 2;
-}
-
-export function ND(INST: instruction): number {
-  return (RT(INST) & 0x2) >> 1;
-}
-
-export function TF(INST: instruction): number {
-  return RT(INST) & 0x1;
 }
 
 export function TARGET(INST: instruction): number {
@@ -138,31 +76,6 @@ export function setTARGET(INST: instruction, VAL: number): void {
   INST.target = VAL;
 }
 
-export function ENCODING(INST: instruction): number {
-  return INST.encoding;
-}
-
-export function setENCODIGN(INST: instruction, VAL: number): void {
-  INST.encoding = VAL;
-}
-
-export function EXPR(INST: instruction): number {
-  return INST.expr;
-}
-
-export function setEXPR(INST: instruction, VAL: number): void {
-  INST.expr = VAL;
-}
-
-// export function SOURCE(INST: instruction) {
-//   return INST.source_line;
-// }
-
-// export function setSOURCE(INST: instruction, VAL) {
-//   INST.source_line = VAL;
-// }
-
-/* Sign Extension */
 export function signEX(X: number): number {
   if (X & 0x8000) return X | 0xffff0000;
   else return X;
@@ -170,13 +83,6 @@ export function signEX(X: number): number {
 
 export function zeroEX(X: number): number {
   return X & 0x0000ffff;
-}
-
-export function branchINST(TEST, TARGET: number): void {
-  if (TEST) {
-    const target = TARGET;
-    jumpINST(target);
-  }
 }
 
 export function jumpINST(TARGET: number): void {
@@ -187,11 +93,11 @@ export function loadINST(LD: number, MASK: number): number {
   return LD & MASK;
 }
 
-/*
-  Procedure: process_instruction
-  Purpose: Process one instruction
-*/
 export function process_instruction() {
+  /*
+   * Procedure: process_instruction
+   * Purpose: Process one instruction
+   */
   const info: instruction = getInstInfo(currentState.PC);
 
   // R type
@@ -324,7 +230,6 @@ export function process_instruction() {
       if (currentState.REGS[rs] < signEX(imm)) currentState.REGS[rt] = 1;
       else currentState.REGS[rt] = 0;
     }
-
     // SLTIU
     else if (opcode === 0xb) {
       if (currentState.REGS[rs] < signEX(imm)) currentState.REGS[rt] = 1;
