@@ -238,9 +238,9 @@ const outputFolderPath = 'sample_input/sample';
 const outputFileName = 'example1.o';
 
 const assemblyInstructions = makeInput(inputFolderName, inputFileName);
-const binary = assemble(assemblyInstructions);
+const { output, mappingDetail } = assemble(assemblyInstructions);
 
-makeObjectFile(outputFolderPath, outputFileName, binary);
+makeObjectFile(outputFolderPath, outputFileName, output);
 ```
 
 ### Input/Output
