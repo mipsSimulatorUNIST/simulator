@@ -43,6 +43,7 @@ export interface simulatorOutputType {
   registers: {[key: string]: string};
   dataSection: {[key: string]: string} | Record<string, never>;
   stackSection: {[key: string]: string} | Record<string, never>;
+  instruction: {[key: string]: string};
 }
 
 export function parseInstr(buffer: string, index: number): instruction {
@@ -306,15 +307,24 @@ export function parseSimulatorOutput(rawOutput: string): simulatorOutputType {
   }
 
   const outputList = rawOutput
-    .split(/Program Counter\n|Registers\n|Data section|Stack section\n/)
+    .split(
+      /Program Counter\n|Registers\n|Data section|Stack section|Instruction\n/,
+    )
     .filter(e => e !== '');
 
   const PC = setTypeParser(outputList[0]);
   const registers = setTypeParser(outputList[1]);
   const dataSection = setTypeParser(outputList[2] || '');
   const stackSection = setTypeParser(outputList[3] || '');
+  const instruction = setTypeParser(outputList[4] || '');
 
-  return {PC: PC.PC, registers, dataSection, stackSection};
+  return {
+    PC: PC.PC,
+    registers,
+    dataSection,
+    stackSection,
+    instruction,
+  };
 }
 
 export function makeOutput(
@@ -716,6 +726,9 @@ export function rdump(): string {
     //   .toString(16)
     //   .padStart(8, '0')}\n`;
   }
+  rdump_string += 'Instructions\n';
+  rdump_string += `binary: 0x${currentState.instruction.binary}\n`;
+  rdump_string += `assembly: 0x${currentState.instruction.assembly}\n`;
 
   rdump_string += '\n';
   return rdump_string;

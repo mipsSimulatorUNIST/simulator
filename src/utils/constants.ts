@@ -129,10 +129,18 @@ export class laStruct {
 export class cpuState {
   PC: number;
   REGS: number[];
+  instruction: {
+    assembly: string;
+    binary: string;
+  };
   constructor() {
     this.PC = 0;
     this.REGS = Array.from({length: 32}, () => 0);
     this.REGS[29] = MEM_STACK_START;
+    this.instruction = {
+      assembly: '',
+      binary: '',
+    };
   }
 }
 
