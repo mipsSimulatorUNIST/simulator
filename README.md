@@ -13,7 +13,7 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 
 > ⚠️ [Changes](#changes)
 >
-> Example code in this document is working in `>= version 2.1.3`
+> Example code in this document is working in `>= version 2.1.5`
 >
 > if you are using previous version, please read ⚠️ [Changes](#changes)
 
@@ -238,9 +238,9 @@ const outputFolderPath = 'sample_input/sample';
 const outputFileName = 'example1.o';
 
 const assemblyInstructions = makeInput(inputFolderName, inputFileName);
-const binary = assemble(assemblyInstructions);
+const { output, mappingDetail } = assemble(assemblyInstructions);
 
-makeObjectFile(outputFolderPath, outputFileName, binary);
+makeObjectFile(outputFolderPath, outputFileName, output);
 ```
 
 ### Input/Output

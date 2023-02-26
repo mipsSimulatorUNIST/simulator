@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run tests
-        run: npm test
+        run: npm run pre-test
 
   publish-npm:
     needs: build
@@ -41,6 +41,6 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Publish package to npm
-        run: npm publish
+        run: npm run publish-npm
         env:
           NODE_AUTH_TOKEN: ${{secrets.mips_token}}
