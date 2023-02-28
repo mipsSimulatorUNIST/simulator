@@ -2,5 +2,11 @@
   "clearMocks": true,
   "verbose": true,
   "collectCoverage": true,
-  "modulePathIgnorePatterns": ["dist"]
+  "modulePathIgnorePatterns": ["dist"],
+  "moduleNameMapper": {
+    "@root(.*)$": "<rootDir>/$1",
+    "@src(.*)$": "<rootDir>/src$1",
+    "@utils(.*)$": "<rootDir>/src/utils$1",
+    "@simulator(.*)$": "<rootDir>/src/simulator$1"
+  }
 }

@@ -1,6 +1,6 @@
-import {assemble} from '../../index';
-import {resetSymbolTable} from '../../src/utils/constants';
-import {makeInput, makeOutput, IMapDetail} from '../../src/utils/functions';
+import {assemble} from '@root/index';
+import {resetSymbolTable} from '@utils/constants';
+import {makeInput, makeOutput, IMapDetail} from '@utils/functions';
 
 const mappingDetailOutput: IMapDetail[] = [
   {
@@ -184,8 +184,8 @@ for (let i = 1; i <= 7; i++) {
     const input = makeInput('sample_input', `example${i}.s`);
     const {output} = assemble(input, true);
     const testOutput = makeOutput('sample_output', `example${i}.o`)
-      .split('\n') // 문자 -> 문자열 전환
-      .filter(ele => ele); // "" 제거, ""는 false와 동일
+      .split('\n') // string -> string[] 전환
+      .filter(ele => ele); // "" deleted, "" == false
 
     expect(output).toEqual(testOutput);
   });

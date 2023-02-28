@@ -8,8 +8,8 @@ import {
   symbolT,
   SYMBOL_TABLE,
   resetSymbolTable,
-} from '../utils/constants';
-import {numToBits, symbolTableAddEntry, toHexAndPad} from '../utils/functions';
+} from '@utils/constants';
+import {numToBits, symbolTableAddEntry, toHexAndPad} from '@utils/functions';
 
 export const makeSymbolTable = (inputs: string[]) => {
   /*
@@ -47,6 +47,7 @@ export const makeSymbolTable = (inputs: string[]) => {
 
   const dataSeg: string[] = [];
   const textSeg: string[] = [];
+
   inputs.forEach((input: string) => {
     const splited: string[] = input.split('\t').filter(s => s !== ''); // ex. ['array:', '.word', '3']
     const symbol: symbolT = new symbolT();
@@ -98,6 +99,7 @@ export const makeSymbolTable = (inputs: string[]) => {
 
     address += BYTES_PER_WORD;
   });
+
   return {dataSeg, textSeg, dataSectionSize, textSectionSize};
 };
 
@@ -126,25 +128,20 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
 
   let binaryInstructionCounter = 0;
 
-  for (let i = 0; i < textSeg.length; i++) {
-    const text = textSeg[i];
-
+  textSeg.forEach((text, i) => {
     mappingTable.push([]);
     instruct = text.slice(1).replace(/ /g, '').split(/,|\t/);
     const opName: string = instruct[0];
-    //console.log('instruct', instruct);
 
     if (opName === 'la') {
       address = SYMBOL_TABLE[instruct[2]];
       rt = numToBits(Number(instruct[1].replace('$', '')), 5);
       imm = numToBits(parseInt(address.toString(16).slice(0, 4), 16), 16);
       binaryText.push('001111' + '00000' + rt + imm);
-      //console.log('001111' + '00000' + rt + imm); //LUI opcode
 
       if (address.toString(16).slice(4, 8) !== '0000') {
         imm = numToBits(parseInt(address.toString(16).slice(4, 8), 16), 16);
         binaryText.push('001101' + rt + rt + imm);
-        //console.log('001101' + rt + rt + numToBits(imm, 16)); //ORI opcode
         curAddress += BYTES_PER_WORD;
 
         // if two binary instructions are made by la instruction, then it should map 'current assembly instruction' to 'two binary instructions'
@@ -158,7 +155,6 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
       rd = numToBits(Number(instruct[1].replace('$', '')), 5);
       shamt = '00000';
       binaryText.push('000000' + rs + rt + rd + shamt + '100000'); //funct = "100000"
-      //console.log('000000' + rs + rt + rd + shamt + '100000');
     } else {
       const opInfo: instT = instList[opName];
       if (opInfo.type === 'R') {
@@ -179,7 +175,6 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
           shamt = '00000';
         }
         binaryText.push(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
-        //console.log(opInfo.op + rs + rt + rd + shamt + opInfo.funct);
       } else if (opInfo.type === 'I') {
         if (opInfo.name === 'lui') {
           rt = numToBits(Number(instruct[1].replace('$', '')), 5);
@@ -215,18 +210,17 @@ export function recordTextSection(textSeg: string[]): [string[], number[][]] {
               : numToBits(Number(instruct[3]), 16);
         }
         binaryText.push(opInfo.op + rs + rt + imm);
-        //console.log(opInfo.op + rs + rt + numToBits(imm, 16));
       } else if (opInfo.type === 'J') {
         address = Number(SYMBOL_TABLE[instruct[1]]) / 4;
         binaryText.push(opInfo.op + numToBits(address, 26));
-        //console.log(opInfo.op + numToBits(address, 26));
       }
     }
     curAddress += BYTES_PER_WORD;
 
     mappingTable[i].push(binaryInstructionCounter);
     binaryInstructionCounter++;
-  }
+  });
+
   return [binaryText, mappingTable];
 }
 
@@ -248,14 +242,12 @@ export function recordDataSection(dataSeg: string[]): string[] {
       data.slice(0, 2) === '0x' ? parseInt(data.slice(2), 16) : Number(data);
     binaryData.push(numToBits(dataNum));
   }
-  //console.log(numToBits(dataNum));
   return binaryData;
 }
 
 export function makeBinaryObject(inputs: string[]) {
   const {dataSeg, textSeg, dataSectionSize, textSectionSize} =
     makeSymbolTable(inputs);
-
   const [binaryText, mappingTable]: [string[], number[][]] =
     recordTextSection(textSeg);
   const binaryData: string[] = recordDataSection(dataSeg);
@@ -307,5 +299,6 @@ export function makeBinaryString(
   binarySize.concat(binaryText, binaryData).map(binaryLine => {
     output += `${binaryLine}\n`;
   });
+
   return output;
 }

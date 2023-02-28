@@ -1,8 +1,5 @@
-import {
-  makeSymbolTable,
-  recordDataSection,
-} from '../../src/simulator/assembler';
-import {resetSymbolTable} from '../../src/utils/constants';
+import {makeSymbolTable, recordDataSection} from '@src/simulator/assembler';
+import {resetSymbolTable} from '@src/utils/constants';
 
 const testInput = [
   '\t.data',

@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import * as fs from 'fs';
 import {exit} from 'process';
 
@@ -12,7 +12,7 @@ import {
   setRT,
   setSHAMT,
   setTARGET,
-} from '../simulator/run';
+} from '@simulator/run';
 
 import {
   bcolors,
@@ -22,7 +22,7 @@ import {
   INST_INFO,
   instAddOne,
   instruction,
-  InstructionType,
+  Iinstruction,
   memData,
   memStack,
   memRegions,
@@ -36,13 +36,24 @@ import {
   RUN_BIT,
   SYMBOL_TABLE,
   SymbolTableType,
-} from './constants';
+} from '@utils/constants';
 
 export interface simulatorOutputType {
-  PC: string;
-  registers: {[key: string]: string};
-  dataSection: {[key: string]: string} | Record<string, never>;
-  stackSection: {[key: string]: string} | Record<string, never>;
+  readonly PC: string;
+  readonly registers: {[key: string]: string};
+  readonly dataSection: {[key: string]: string} | Record<string, never>;
+  readonly stackSection: {[key: string]: string} | Record<string, never>;
+}
+
+export interface IBinaryData {
+  readonly lineNumber: number;
+  readonly data: string;
+}
+
+export interface IMapDetail {
+  readonly key: number;
+  readonly assembly: string;
+  readonly binary: IBinaryData[];
 }
 
 export function parseInstr(buffer: string, index: number): instruction {
@@ -82,7 +93,7 @@ export function parseData(buffer: string, index: number) {
 }
 
 export function printParseResult(
-  INST_INFO: InstructionType[],
+  INST_INFO: Iinstruction[],
   textSize: number,
   dataSize: number,
 ) {
@@ -181,7 +192,6 @@ export function log(printType: number, content: string) {
   console.log(pType[printType] + content);
 }
 
-// Check the value is empty or not
 export function isEmpty(value: string | null | undefined | object) {
   const emptyArray: string[] = [''];
   if (
@@ -389,9 +399,9 @@ export function makeObjectFile(
     } else throw 'OUTPUT_NOT_EXISTS';
     const fd: number = fs.openSync(outputFilePath, 'a');
 
-    for (const item of content) {
+    content.forEach(item => {
       fs.appendFileSync(fd, item + '\n', 'utf-8');
-    }
+    });
 
     fs.closeSync(fd);
   } catch (err) {
@@ -400,17 +410,6 @@ export function makeObjectFile(
     } else console.error(err);
     exit(1);
   }
-}
-
-export interface IBinaryData {
-  lineNumber: number;
-  data: string;
-}
-
-export interface IMapDetail {
-  key: number;
-  assembly: string;
-  binary: IBinaryData[];
 }
 
 export function makeMappingDetail(
@@ -423,8 +422,7 @@ export function makeMappingDetail(
   const mappingDetail: IMapDetail[] | null = [] as IMapDetail[];
   let textCounter = 0;
 
-  for (let i = 0; i < assemblyFile.length; i++) {
-    const assemblyLine = assemblyFile[i];
+  assemblyFile.forEach((assemblyLine, i) => {
     const binaryInstructionNumbers: number[] = [];
     let binaryInstructions: string[] = [];
 
@@ -449,12 +447,14 @@ export function makeMappingDetail(
     }
 
     const binaryData: IBinaryData[] = [];
+
     binaryInstructions.forEach((inst, j) => {
       const binaryInstructionIndex = binaryInstructionNumbers[j];
       const temp: IBinaryData = {
         lineNumber: binaryInstructionIndex,
         data: inst,
       };
+
       binaryData.push(temp);
     });
 
@@ -463,7 +463,7 @@ export function makeMappingDetail(
       assembly: assemblyLine,
       binary: binaryData,
     });
-  }
+  });
 
   return mappingDetail;
 }
@@ -509,32 +509,28 @@ export function memRead(address: number): number {
 */
 
 export function memWrite(address: number, value: number): void {
-  for (let i = 0; i < MEM_NREGIONS; ++i) {
+  memRegions.forEach(memRegion => {
     if (
-      address >= memRegions[i].start &&
-      address < memRegions[i].start + memRegions[i].size
+      address >= memRegion.start &&
+      address < memRegion.start + memRegion.size
     ) {
-      const offset = address - memRegions[i].start;
+      const offset = address - memRegion.start;
 
-      memRegions[i].mem[offset + 3] = (value >> 24) & 0xff;
-      memRegions[i].mem[offset + 2] = (value >> 16) & 0xff;
-      memRegions[i].mem[offset + 1] = (value >> 8) & 0xff;
-      memRegions[i].mem[offset + 0] = (value >> 0) & 0xff;
+      memRegion.mem[offset + 3] = (value >> 24) & 0xff;
+      memRegion.mem[offset + 2] = (value >> 16) & 0xff;
+      memRegion.mem[offset + 1] = (value >> 8) & 0xff;
+      memRegion.mem[offset + 0] = (value >> 0) & 0xff;
 
       /* set_offBound */
-      memRegions[i].dirty = true;
-      if (memRegions[i].type === MEM_GROW_UP) {
-        memRegions[i].offBound =
-          offset + 4 > memRegions[i].offBound
-            ? offset + 4
-            : memRegions[i].offBound;
+      memRegion.dirty = true;
+      if (memRegion.type === MEM_GROW_UP) {
+        memRegion.offBound =
+          offset + 4 > memRegion.offBound ? offset + 4 : memRegion.offBound;
       } else
-        memRegions[i].offBound =
-          offset + 4 < memRegions[i].offBound
-            ? offset + 4
-            : memRegions[i].offBound;
+        memRegion.offBound =
+          offset + 4 < memRegion.offBound ? offset + 4 : memRegion.offBound;
     }
-  }
+  });
 }
 
 /*
@@ -543,30 +539,26 @@ export function memWrite(address: number, value: number): void {
 */
 
 export function memWriteHalf(address: number, value: number): void {
-  for (let i = 0; i < MEM_NREGIONS; ++i) {
+  memRegions.forEach(memRegion => {
     if (
-      address >= memRegions[i].start &&
-      address < memRegions[i].start + memRegions[i].size
+      address >= memRegion.start &&
+      address < memRegion.start + memRegion.size
     ) {
-      const offset = address - memRegions[i].start;
+      const offset = address - memRegion.start;
 
-      memRegions[i].mem[offset + 1] = (value >> 8) & 0xff;
-      memRegions[i].mem[offset + 0] = (value >> 0) & 0xff;
+      memRegion.mem[offset + 1] = (value >> 8) & 0xff;
+      memRegion.mem[offset + 0] = (value >> 0) & 0xff;
 
       /* set_offBound */
-      memRegions[i].dirty = true;
-      if (memRegions[i].type === MEM_GROW_UP)
-        memRegions[i].offBound =
-          offset + 2 > memRegions[i].offBound
-            ? offset + 2
-            : memRegions[i].offBound;
+      memRegion.dirty = true;
+      if (memRegion.type === MEM_GROW_UP)
+        memRegion.offBound =
+          offset + 2 > memRegion.offBound ? offset + 2 : memRegion.offBound;
       else
-        memRegions[i].offBound =
-          offset + 2 < memRegions[i].offBound
-            ? offset + 2
-            : memRegions[i].offBound;
+        memRegion.offBound =
+          offset + 2 < memRegion.offBound ? offset + 2 : memRegion.offBound;
     }
-  }
+  });
 }
 
 /*
@@ -583,7 +575,7 @@ export function initMemory(): void {
 */
 export function initInstInfo(
   NUM_INST: number,
-  INST_INFO: InstructionType[],
+  INST_INFO: Iinstruction[],
 ): void {
   for (let i = 0; i < NUM_INST; ++i) {
     INST_INFO[i].value = 0;
@@ -621,7 +613,7 @@ export async function mainProcess(
   return new Promise<simulatorOutputType>((resolve, reject) => {
     try {
       if (DEBUG_SET) {
-        console.log(`Simulating for ${cycles} cycles...!!\n`);
+        console.log(`Simulating for ${cycles} cycles...!\n`);
         console.log('MAIN PROCESS', CYCLES);
         while (i > 0) {
           cycle();
@@ -692,9 +684,6 @@ export function mdump(start: number, stop: number): string {
   let mdump_string = '';
   for (let i = start; i < stop + 1; i += 4) {
     mdump_string += `0x${toHexAndPad(i)}: 0x${toHexAndPad(memRead(i))}\n`;
-    // mdump_string += `0x${i.toString(16).padStart(8, '0')}: 0x${memRead(i)
-    //   .toString(16)
-    //   .padStart(8, '0')}\n`;
   }
   mdump_string += '\n';
   return mdump_string;
@@ -708,13 +697,10 @@ export function rdump(): string {
   let rdump_string = '';
   rdump_string += 'Program Counter\n';
   rdump_string += `PC: 0x${toHexAndPad(currentState.PC)}\n`;
-  // rdump_string += `PC: 0x${currentState.PC.toString(16).padStart(8, '0')}\n`;
   rdump_string += `Registers\n`;
+
   for (let k = 0; k < MIPS_REGS; ++k) {
     rdump_string += `R${k}: 0x${toHexAndPad((currentState.REGS[k] >>>= 0))}\n`;
-    // rdump_string += `R${k}: 0x${(currentState.REGS[k] >>>= 0)
-    //   .toString(16)
-    //   .padStart(8, '0')}\n`;
   }
 
   rdump_string += '\n';
@@ -729,14 +715,13 @@ export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
   let running_string = '';
   if (RUN_BIT === 0) {
     running_string = "Can't simulate, Simulator is halted\n";
-    //console.log(running_string);
   }
 
-  running_string = `Simulating for ${num_cycles} cycles...\n\n`;
+  running_string = `Simulating for ${num_cycles} cycles...!\n\n`;
 
   for (let i = 0; i < num_cycles; ++i) {
     if (RUN_BIT === 0) {
-      running_string += 'Simulator halted\n\n';
+      running_string += `Simulator halted ${i}th cycle.\n\n`;
       break;
     }
     let EachCycle: string = rdump();
@@ -744,6 +729,5 @@ export function running(num_cycles: number, CYCLES: simulatorOutputType[]) {
     CYCLES.push(parseSimulatorOutput(EachCycle));
     cycle();
   }
-
   console.log(running_string);
 }
