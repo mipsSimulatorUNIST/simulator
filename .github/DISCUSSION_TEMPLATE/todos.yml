@@ -1,0 +1,44 @@
+title: '[TODO]  '
+labels: ['TODO']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        TODO
+  - type: textarea
+    id: TODO
+    attributes:
+      label: TODOS with main points
+      description: 'TODOS with main points with 3 conditions'
+      value: |
+        ## [main points]
+        1.
+        2.
+        3.
+        ...
+        ## [conditions]
+        1. if features are added, it should have test code with jest (unit test, integration test).
+        2. if it has changes with previous version, it should be written in README.md. 
+        3. if it fix buges, describe which bug is found, and how solve it.
+        ...
+      render: bash
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Additional
+        And some more additionals
+  - type: dropdown
+    id: download
+    attributes:
+      label: which category?
+      options:
+        - Documentation
+        - New Features
+        - Pull request review time
+        - testing improvements
+        - Bug fix time
+        - Release cadence
+    validations:
+      required: true

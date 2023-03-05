@@ -1,14 +1,14 @@
-title: '[General] '
-labels: ['General Introduction']
+title: '[Announcement]  '
+labels: ['Announcement']
 body:
   - type: markdown
     attributes:
       value: |
-        This is text that will show up in the template!
+        Announcement
   - type: textarea
-    id: improvements
+    id: improvements and changes
     attributes:
-      label: Top 3 improvements
+      label: Top 3 improvements and changes
       description: 'What are the top 3 improvements we could make to this project?'
       value: |
         1.
@@ -21,8 +21,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Markdown header
-        And some more markdown
+        ## Additional
+        And some more additionals
   - type: input
     id: has-id
     attributes:
@@ -36,20 +36,16 @@ body:
       label: Which area of this project could be most improved?
       options:
         - Documentation
+        - New Features
         - Pull request review time
+        - testing improvements
         - Bug fix time
         - Release cadence
     validations:
       required: true
   - type: checkboxes
     attributes:
-      label: Check that box!
+      label: new release version
       options:
-        - label: This one!
-          required: true
-        - label: I won't stop you if you check this one, too
-  - type: markdown
-    attributes:
-      value: |
-        ### The thrilling conclusion
-        _to our template_
+        - label: yes, it has deployed with new version
+        - label: no, it's not version change
