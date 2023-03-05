@@ -20,7 +20,7 @@ const inquirerSendingRepository = async () => {
       type: 'list',
       name: 'sendingRepository',
       message: '보낼 브랜치 입력',
-      choices: ['main', 'release', 'feature/118/action'],
+      choices: ['main', 'release', 'feature/118/mergeAction'],
     },
   ]);
 
@@ -75,7 +75,7 @@ const inquireConfirmation = async (origin, next) => {
   // `gh workflow` 명령어를 실행하며 사용자에게 입력받은 값을 넘겨 줍니다.
   if (confirmation === '확인했어요') {
     exec(
-      `gh workflow run .github/workflows/merge.yml --ref ${sendingRepository} -F SendingRepository=${sendingRepository} -F ReceivingRepository=${receivngRepository}`,
+      `gh workflow run merge --ref ${sendingRepository} -F SendingRepository=${sendingRepository} -F ReceivingRepository=${receivngRepository}`,
     );
   }
 })();

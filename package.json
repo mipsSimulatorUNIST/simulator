@@ -10,7 +10,8 @@
     "lint": "./node_modules/.bin/eslint .",
     "test": "jest",
     "pre-test": "npm run build && npm run lint && npm run test",
-    "publish-npm": "npm run pre-test && npm publish"
+    "publish-npm": "npm run pre-test && npm publish",
+    "merge": "node ./merge.js"
   },
   "repository": {
     "type": "git",
