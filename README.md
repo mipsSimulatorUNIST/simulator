@@ -309,6 +309,8 @@ const {result, history} = fetchSimulator(assemblyInstructions);
 
 ## Usage for React/Next
 
+You can check out the code and exmaple from [**mips-react-example-ts**](https://github.com/mipsSimulatorUNIST/mips-react-examples-ts)
+
 ### Problem
 
 If you use this npm package in your `react` or `next` project, problems will occur in the 'fs', 'path', and 'process' parts that load files.
