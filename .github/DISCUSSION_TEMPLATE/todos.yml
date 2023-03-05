@@ -33,11 +33,6 @@ body:
       render: markdown
     validations:
       required: true
-  - type: markdown
-    attributes:
-      value: |
-        ## Additional
-        And some more additionals
   - type: dropdown
     id: download
     attributes:
