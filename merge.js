@@ -20,7 +20,7 @@ const inquirerSendingRepository = async () => {
       type: 'list',
       name: 'sendingRepository',
       message: '보낼 브랜치 입력',
-      choices: ['main', 'release', 'feature/118/mergeAction'],
+      choices: ['main', 'release'],
     },
   ]);
 
@@ -33,7 +33,7 @@ const inquirerReceivngRepository = async () => {
       type: 'list',
       name: 'receivngRepository',
       message: '받을 브랜치 입력',
-      choices: ['main', 'release', 'feature/118/mergeCheck'],
+      choices: ['main', 'release'],
     },
   ]);
 
