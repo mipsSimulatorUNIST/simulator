@@ -8,20 +8,29 @@ body:
   - type: textarea
     id: TODO
     attributes:
-      label: TODOS with main points
+      label: TODOS with main points and conditions
       description: 'TODOS with main points with 3 conditions'
       value: |
+
         ## [main points]
+
+        > what you have to do
+
         1.
         2.
         3.
         ...
+
         ## [conditions]
+
+        > follow these condition
+
         1. if features are added, it should have test code with jest (unit test, integration test).
         2. if it has changes with previous version, it should be written in README.md. 
         3. if it fix buges, describe which bug is found, and how solve it.
         ...
-      render: bash
+
+      render: markdown
     validations:
       required: true
   - type: markdown
