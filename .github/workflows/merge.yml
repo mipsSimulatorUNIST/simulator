@@ -1,0 +1,38 @@
+name: merge
+
+on:
+  workflow_dispatch:
+    inputs:
+      SendingRepository:
+        required: true
+        type: string
+      ReceivingRepository:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.SendingRepository }}
+
+  sync-release:
+    needs: build
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.SendingRepository }}
+
+      - name: Merge main -> release
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: ${{ github.event.inputs.SendingRepository }}
+          target_branch: ${{ github.event.inputs.ReceivingRepository }}
+          github_token: ${{ github.token }}

@@ -52,5 +52,6 @@
     "fs": false,
     "path": false,
     "process": false
-  }
+  },
+  "type": "module"
 }
