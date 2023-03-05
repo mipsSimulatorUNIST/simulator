@@ -309,7 +309,7 @@ const {result, history} = fetchSimulator(assemblyInstructions);
 
 ## Usage for React/Next
 
-You can check out the code and exmaple from [**mips-react-example-ts**](https://github.com/mipsSimulatorUNIST/mips-react-examples-ts)
+You can check out the code and example from [**mips-react-example-ts**](https://github.com/mipsSimulatorUNIST/mips-react-examples-ts)
 
 ### Problem
 
