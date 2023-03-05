@@ -23,7 +23,7 @@ body:
     attributes:
       label: Steps to reproduce
       description: Provide a detailed list of steps that reproduce the issue.
-      placeholder: |
+      placeholder:
     validations:
       required: true
   - type: textarea
