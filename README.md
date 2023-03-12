@@ -11,6 +11,11 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 
 [_Coverage Status_ &rarr;](https://mipssimulatorunist.github.io/simulator/)
 
+
+[demo simulator&rarr;](https://mipssimulatorunist.github.io/reactGUI/simulator)
+
+![ezgif com-video-to-gif (1)](https://user-images.githubusercontent.com/44657722/224466039-b06823a0-d8cd-4e3e-aa2b-4b9fb8602e51.gif)
+
 > ⚠️ [Changes](#changes)
 >
 > Example code in this document is working in `>= version 2.1.5`
