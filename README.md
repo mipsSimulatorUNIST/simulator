@@ -504,6 +504,8 @@ We have completed building CI, and test automation is also ready.
 
 We are using testing library with `jest`
 
+For more information, check the [**mips-simulator-js contribution guide**](https://bamsstory.notion.site/Mips-simulator-js-contribution-guide-0f4ef3b9f526446589dda5f3457570dc)
+
 **_Always opening_** to join this project for developing this library.
 
 ❗️[_ISSUE_ &rarr;](https://github.com/mipsSimulatorUNIST/simulator/issues)
