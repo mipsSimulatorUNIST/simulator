@@ -11,6 +11,11 @@ You can use Node.js MIPS Simulator with [npm](https://www.npmjs.com/package/mips
 
 [_Coverage Status_ &rarr;](https://mipssimulatorunist.github.io/simulator/)
 
+
+[demo simulator&rarr;](https://mipssimulatorunist.github.io/reactGUI/simulator)
+
+![ezgif com-video-to-gif (1)](https://user-images.githubusercontent.com/44657722/224466039-b06823a0-d8cd-4e3e-aa2b-4b9fb8602e51.gif)
+
 > ⚠️ [Changes](#changes)
 >
 > Example code in this document is working in `>= version 2.1.5`
@@ -309,6 +314,8 @@ const {result, history} = fetchSimulator(assemblyInstructions);
 
 ## Usage for React/Next
 
+You can check out the code and example from [**mips-react-example-ts**](https://github.com/mipsSimulatorUNIST/mips-react-examples-ts)
+
 ### Problem
 
 If you use this npm package in your `react` or `next` project, problems will occur in the 'fs', 'path', and 'process' parts that load files.
@@ -501,6 +508,25 @@ If you want to contribute to [**mips-simulator-js**](https://www.npmjs.com/packa
 We have completed building CI, and test automation is also ready.
 
 We are using testing library with `jest`
+
+All work on Mips-simulator-js happens directly on [Github](https://github.com/mipsSimulatorUNIST/simulator). Both core team members and external contributors send pull requests which go through the same review process.
+
+### Contribution process
+
+Thank you for your interest in contributing to Mips-simulator-js. Before you begin writing code, it is important that you share your intention to contribute with the team, based on the type of contribution
+
+1. You want to **propose a new feature** and implement it.
+    - Post about your intended feature in an [issue](https://github.com/mipsSimulatorUNIST/simulator/issues), then implement it.
+    - We suggest that the branch name that you implement is better to be {type}/{issue number}/{issue name}. ex) feature/118/githubAction, bugfix/120/typo
+    
+2. You want to **implement a feature or bug-fix** for an outstanding issue.
+    - Search for your issue in the [Mips-simulator-js issue list](https://github.com/mipsSimulatorUNIST/simulator/issues).
+    - Pick an issue and comment that you'd like to work on the feature or bug-fix.
+    - If you need more context on a particular issue, please ask and we shall provide.
+    
+3. **Open pull request**
+    - You implement and test your feature or bug-fix, please submit a Pull Request to [https://github.com/mipsSimulatorUNIST/simulator/pulls](https://github.com/mipsSimulatorUNIST/simulator/pulls) with some test case.
+    - Once a pull request is accepted and CI is passing, there is nothing else you need to do. we will check and merge the PR for you.
 
 **_Always opening_** to join this project for developing this library.
 
