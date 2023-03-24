@@ -3,6 +3,8 @@ name: npm publish
 on:
   release:
     types: [created]
+    branches:
+      - main
 
 jobs:
   build:
@@ -44,3 +46,21 @@ jobs:
         run: npm run publish-npm
         env:
           NODE_AUTH_TOKEN: ${{secrets.mips_token}}
+
+  sync-release:
+    needs: publish-npm
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Merge release to main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: release
+          github_token: ${{ github.token }}
